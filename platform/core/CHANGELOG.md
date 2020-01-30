@@ -3,6 +3,95 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [2.3.6](https://github.com/OHIF/Viewers/compare/@ohif/core@2.3.5...@ohif/core@2.3.6) (2020-01-28)
+
+**Note:** Version bump only for package @ohif/core
+
+
+
+
+
+## [2.3.5](https://github.com/OHIF/Viewers/compare/@ohif/core@2.3.4...@ohif/core@2.3.5) (2020-01-28)
+
+**Note:** Version bump only for package @ohif/core
+
+
+
+
+
+## [2.3.4](https://github.com/OHIF/Viewers/compare/@ohif/core@2.3.3...@ohif/core@2.3.4) (2020-01-27)
+
+**Note:** Version bump only for package @ohif/core
+
+
+
+
+
+## [2.3.3](https://github.com/OHIF/Viewers/compare/@ohif/core@2.3.2...@ohif/core@2.3.3) (2020-01-24)
+
+**Note:** Version bump only for package @ohif/core
+
+
+
+
+
+## [2.3.2](https://github.com/OHIF/Viewers/compare/@ohif/core@2.3.1...@ohif/core@2.3.2) (2020-01-06)
+
+**Note:** Version bump only for package @ohif/core
+
+
+
+
+
+## [2.3.1](https://github.com/OHIF/Viewers/compare/@ohif/core@2.3.0...@ohif/core@2.3.1) (2019-12-30)
+
+
+### Bug Fixes
+
+* 🐛 1241: Make Plugin switch part of ToolbarModule ([#1322](https://github.com/OHIF/Viewers/issues/1322)) ([6540e36](https://github.com/OHIF/Viewers/commit/6540e36818944ac2eccc696186366ae495b33a04)), closes [#1241](https://github.com/OHIF/Viewers/issues/1241)
+
+
+
+
+
+# [2.3.0](https://github.com/OHIF/Viewers/compare/@ohif/core@2.2.1...@ohif/core@2.3.0) (2019-12-20)
+
+
+### Features
+
+* 🎸 Configuration so viewer tools can nix handles ([#1304](https://github.com/OHIF/Viewers/issues/1304)) ([63594d3](https://github.com/OHIF/Viewers/commit/63594d36b0bdba59f0901095aed70b75fb05172d)), closes [#1223](https://github.com/OHIF/Viewers/issues/1223)
+
+
+
+
+
+## [2.2.1](https://github.com/OHIF/Viewers/compare/@ohif/core@2.2.0...@ohif/core@2.2.1) (2019-12-18)
+
+**Note:** Version bump only for package @ohif/core
+
+
+
+
+
+# [2.2.0](https://github.com/OHIF/Viewers/compare/@ohif/core@2.1.1...@ohif/core@2.2.0) (2019-12-16)
+
+
+### Features
+
+* 🎸 Expose extension config to modules ([#1279](https://github.com/OHIF/Viewers/issues/1279)) ([4ea239a](https://github.com/OHIF/Viewers/commit/4ea239a9535ef297e23387c186e537ab273744ea)), closes [#1268](https://github.com/OHIF/Viewers/issues/1268)
+
+
+
+
+
+## [2.1.1](https://github.com/OHIF/Viewers/compare/@ohif/core@2.1.0...@ohif/core@2.1.1) (2019-12-16)
+
+**Note:** Version bump only for package @ohif/core
+
+
+
+
+
 # [2.1.0](https://github.com/OHIF/Viewers/compare/@ohif/core@2.0.2...@ohif/core@2.1.0) (2019-12-11)
 
 

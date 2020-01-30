@@ -13,7 +13,7 @@ version: 2.1
 ##
 orbs:
   codecov: codecov/codecov@1.0.5
-  cypress: cypress-io/cypress@1.11.0
+  cypress: cypress-io/cypress@1.13.0
 executors:
   # Custom executor to override Cypress config
   deploy-to-prod-executor:
@@ -346,20 +346,17 @@ workflows:
           record: false
           store_artifacts: false
           working_directory: platform/viewer
-          build: |
-            # Make sure we have correct permissions to start server
-            chmod +x ~/project/.circleci/start-test-server.sh
-            # Build our client
-            npx cross-env QUICK_BUILD=true yarn run build
-          start: ~/project/.circleci/start-test-server.sh && yarn run dev
+          build: npx cross-env QUICK_BUILD=true yarn run build
+          start: yarn run test:e2e:serve
+          spec: 'cypress/integration/common/**/*,cypress/integration/pwa/**/*'
           wait-on: 'http://localhost:3000'
           cache-key: 'yarn-packages-{{ checksum "yarn.lock" }}'
           no-workspace: true # Don't persist workspace
           post-steps:
             - store_artifacts:
-                path: ~/project/platform/viewer/cypress/screenshots
-            - store_test_results:
-                path: ~/project/platform/viewer/cypress/results
+                path: platform/viewer/cypress/screenshots
+            - store_artifacts:
+                path: platform/viewer/cypress/videos
           requires:
             - UNIT_TESTS
       # E2E: script-tag
@@ -376,13 +373,15 @@ workflows:
           working_directory: platform/viewer
           build: npx cross-env QUICK_BUILD=true yarn run build:package
           start: yarn run test:e2e:serve
-          spec: 'cypress/integration/common/**/*'
+          spec: 'cypress/integration/common/**/*,cypress/integration/script-tag/**/*'
           wait-on: 'http://localhost:3000'
           cache-key: 'yarn-packages-{{ checksum "yarn.lock" }}'
           no-workspace: true # Don't persist workspace
           post-steps:
             - store_artifacts:
                 path: platform/viewer/cypress/screenshots
+            - store_artifacts:
+                path: platform/viewer/cypress/videos
           requires:
             - UNIT_TESTS
 
@@ -394,6 +393,7 @@ workflows:
       - cypress/run:
           name: 'Generate Percy Snapshots'
           executor: cypress/browsers-chrome76
+          browser: chrome
           pre-steps:
             - run: 'rm -rf ~/.yarn && npm i -g yarn && yarn -v && yarn global
                 add wait-on' # Use yarn latest
@@ -408,6 +408,8 @@ workflows:
           post-steps:
             - store_artifacts:
                 path: platform/viewer/cypress/screenshots
+            - store_artifacts:
+                path: platform/viewer/cypress/videos
           requires:
             - AWAIT_APPROVAL
 
@@ -464,9 +466,11 @@ workflows:
             branches:
               only: master
       # Update base branch snapshots
+      # and record a Cypress dashboard test run
       - cypress/run:
           name: 'Generate Percy Snapshots'
           executor: cypress/browsers-chrome76
+          browser: chrome
           pre-steps:
             - run: 'rm -rf ~/.yarn && npm i -g yarn && yarn -v && yarn global
                 add wait-on' # Use yarn latest
@@ -481,28 +485,13 @@ workflows:
           post-steps:
             - store_artifacts:
                 path: platform/viewer/cypress/screenshots
+            - store_artifacts:
+                path: platform/viewer/cypress/videos
+            - store_test_results:
+                path: platform/viewer/cypress/results
           filters:
             branches:
               only: master
       - DOCKER_MASTER_PUBLISH:
           requires:
             - NPM_PUBLISH
-#
-#
-# Potentially use to E2E test STAGING environment
-# before publishing to production
-# - cypress/run:
-#     name: 'E2E: PWA'
-#     executor: deploy-to-prod-executor
-#     browser: chrome
-#     working_directory: platform/viewer
-#     cache-key: 'yarn-packages-{{ checksum "yarn.lock" }}'
-#     yarn: true
-#     record: false
-#     no-workspace: true
-#     store_artifacts: true
-#     post-steps:
-#       - store_artifacts:
-#           path: platform/viewer/cypress/screenshots
-#       - store_test_results:
-#           path: cypress/results
