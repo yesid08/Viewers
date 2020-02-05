@@ -15,6 +15,7 @@ curl -X PUT http://localhost:5984/_replicator
 curl -X PUT http://localhost:5984/_global_changes
 
 # Setup Python client
+apt-get install software-properties-common
 add-apt-repository ppa:deadsnakes/ppa
 apt-get update
 apt-get -y install python3.6 python3-pip
