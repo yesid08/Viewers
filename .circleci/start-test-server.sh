@@ -15,7 +15,8 @@ curl -X PUT http://localhost:5984/_replicator
 curl -X PUT http://localhost:5984/_global_changes
 
 # Setup Python client
-apt-get -y install python3.7 python3-pip
+apt-get -y install python3.6 python3-pip
+pip install pydicom
 pip install dicomweb-client
 
 python seed-db.py
