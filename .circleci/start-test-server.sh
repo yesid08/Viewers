@@ -22,4 +22,4 @@ apt-get -y install python3.4 python3-pip
 pip3 install pydicom
 pip3 install dicomweb-client
 
-python seed-db.py
+python3.4 seed-db.py
