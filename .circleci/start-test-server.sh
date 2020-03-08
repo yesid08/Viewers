@@ -18,7 +18,7 @@ curl -X PUT http://localhost:5984/_global_changes
 apt-get -y install software-properties-common
 add-apt-repository ppa:deadsnakes/ppa
 apt-get -y update
-apt-get -y install python3.6 python3-pip
+apt-get -y install python3.4 python3-pip
 pip3 install pydicom
 pip3 install dicomweb-client
 
