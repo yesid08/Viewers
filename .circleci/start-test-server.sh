@@ -19,7 +19,7 @@ apt-get -y install software-properties-common
 add-apt-repository ppa:deadsnakes/ppa
 apt-get -y update
 apt-get -y install python3.6 python3-pip
-pip install pydicom
-pip install dicomweb-client
+pip3 install pydicom
+pip3 install dicomweb-client
 
 python seed-db.py
