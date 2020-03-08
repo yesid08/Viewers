@@ -343,9 +343,9 @@ workflows:
                 # Add `wait-on` library for Cypress orb? (global)
                 yarn global add wait-on
             - run: |
-                curl -X PUT http://localhost:5984/_users
-                curl -X PUT http://localhost:5984/_replicator
-                curl -X PUT http://localhost:5984/_global_changes
+                curl --retry 10 --retry-delay 5 -v -X PUT http://localhost:5984/_users
+                curl --retry 10 --retry-delay 5 -X PUT http://localhost:5984/_replicator
+                curl --retry 10 --retry-delay 5 -X PUT http://localhost:5984/_global_changes
           yarn: true
           record: false
           store_artifacts: false
