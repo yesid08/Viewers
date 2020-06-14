@@ -101,7 +101,7 @@
   float: left;
   font-size: 13px;
   font-weight: 700;
-  color: #91b9cd;
+  color: var(--default-color);
   margin-right: 1rem;
 }
 
@@ -111,17 +111,19 @@
   height: 20px;
   line-height: 20px;
   width: 100%;
-  background-color: #91b9cd;
+  background-color: var(--default-color);
   color: #ffffff;
   font-weight: bold;
   text-align: center;
 }
 
 @media only screen and (max-width: 768px) {
+
   .entry-header,
   .entry-header.header-big {
     padding: 30px 15px 10px 15px;
   }
+
   .entry-header.header-big .header-logo-image {
     margin: 0 10px 0 0;
     width: 25px;
@@ -136,6 +138,7 @@
   .notification-bar {
     display: block;
   }
+
   .header-menu .research-use {
     display: none;
   }
