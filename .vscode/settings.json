@@ -31,5 +31,23 @@
   "workbench.colorCustomizations": {},
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "cSpell.ignoreWords": [
+    "a",
+    "comando",
+    "esto",
+    "n",
+    "patolog",
+    "patología",
+    "predecir",
+    "predecir volumen",
+    "predicci",
+    "predicción",
+    "proceso",
+    "prueba",
+    "realizando",
+    "segundos",
+    "tomara",
+    "volumen"
+  ]
 }
