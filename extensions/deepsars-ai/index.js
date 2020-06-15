@@ -42,7 +42,15 @@ export const DeepSARSAIExtension = {
       definitions: {
         comando01: {
           commandFn: function() {
-            console.log(cornerstone.getEnabledElements());
+            const defaultEnabledElement = cornerstone.getEnabledElements()[0];
+            const image = defaultEnabledElement.image;
+            const imageIdArray = image.imageId.split('/');
+            const dicomUIDs = {
+              StudyInstanceUID: imageIdArray.slice(-7)[0],
+              SeriesInstanceUID: imageIdArray.slice(-5)[0],
+              SOPInstanceUID: imageIdArray.slice(-3)[0],
+            };
+            console.log(dicomUIDs);
             UINotificationService.show({
               title: 'Modal de prueba',
               message: 'Esto es un modal',
