@@ -34,3 +34,6 @@ screenshots/
 
 # Locize settings
 .locize
+
+#server Conf
+platform/viewer/public/config/default.js
