@@ -34,8 +34,8 @@ function ViewerRouting({ match: routeMatch, location: routeLocation }) {
   // Is only applied if target server does not set `requestOptions` property.
   //
   // See: `getAuthorizationHeaders.js`
-  let query = useQuery();
-  const authToken = query.get('token');
+  //let query = useQuery();
+  const authToken = localStorage.getItem('token');
 
   if (authToken) {
     user.getAccessToken = () => authToken;
