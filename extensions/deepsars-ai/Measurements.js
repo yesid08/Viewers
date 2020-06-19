@@ -2,14 +2,16 @@ import OHIF from '@ohif/core';
 import cornerstone from 'cornerstone-core';
 import { tempMeasurements } from './mocks/MeasurementsMock';
 
-const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
-
 export const saveMeasurements = () => {
+  const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
   console.log('The following tool anotations are going to be saved');
   console.log(localMeasurementAPI.tools);
 };
 
 export const retrieveAllMeasurements = () => {
+  const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
+  console.log(localMeasurementAPI);
+  console.log(OHIF.measurements);
   tempMeasurements.forEach(tempMeasurements =>
     localMeasurementAPI.addMeasurement(
       tempMeasurements.toolType,
