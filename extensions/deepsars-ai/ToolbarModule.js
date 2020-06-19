@@ -75,7 +75,32 @@ const BUTTON_RX = {
   icon: 'brain',
   buttons: [BUTTON_RX_PREDICT, BUTTON_RX_PATHOLOGY, BUTTON_RX_PROBABILITY],
 };
+const BUTTON_MEASUREMENT_SAVE = {
+  id: 'saveMeasurement',
+  label: 'Guardar Marcaciones',
+  icon: 'database',
+  type: 'command',
+  commandName: 'save_measurement',
+};
+const BUTTON_MEASUREMENT_LOAD = {
+  id: 'loadMeasurement',
+  label: 'Cargar Marcaciones',
+  icon: 'inline-edit',
+  type: 'command',
+  commandName: 'load_measurement',
+};
+const BUTTON_MEASUREMENT = {
+  id: 'measurement',
+  label: 'Anotaciones',
+  icon: 'list',
+  buttons: [BUTTON_MEASUREMENT_SAVE, BUTTON_MEASUREMENT_LOAD],
+};
 export default {
-  definitions: [BUTTON_CT_VOLUME, BUTTON_CT_SLICE, BUTTON_RX],
+  definitions: [
+    BUTTON_CT_VOLUME,
+    BUTTON_CT_SLICE,
+    BUTTON_RX,
+    BUTTON_MEASUREMENT,
+  ],
   defaultContext: 'VIEWER',
 };

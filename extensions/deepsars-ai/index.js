@@ -1,5 +1,5 @@
 import cornerstone from 'cornerstone-core';
-import { retrieveAllMeasurements } from './Measurements';
+import { retrieveAllMeasurements, saveMeasurements } from './Measurements';
 import ToolbarModule from './ToolbarModule';
 export const DeepSARSAiExtension = {
   id: 'volumenCtExtension',
@@ -184,7 +184,18 @@ export const DeepSARSAiExtension = {
           storeContexts: [],
           options: {},
         },
+        load_measurement: {
+          commandFn: retrieveAllMeasurements,
+          storeContexts: [],
+          options: {},
+        },
+        save_measurement: {
+          commandFn: saveMeasurements,
+          storeContexts: [],
+          options: {},
+        },
       },
+
       defaultContext: ['VIEWER'],
     };
   },
