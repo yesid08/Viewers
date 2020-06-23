@@ -196,6 +196,20 @@ export const DeepSARSAiExtension = {
           storeContexts: [],
           options: {},
         },
+        reload: {
+          commandFn: function() {
+            location.reload();
+          },
+          storeContexts: [],
+          options: {},
+        },
+        load_heat_map: {
+          commandFn: function() {
+            console.log(cornerstone);
+          },
+          storeContexts: [],
+          options: {},
+        },
       },
 
       defaultContext: ['VIEWER'],

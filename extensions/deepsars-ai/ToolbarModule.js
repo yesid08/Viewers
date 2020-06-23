@@ -95,12 +95,26 @@ const BUTTON_MEASUREMENT = {
   icon: 'list',
   buttons: [BUTTON_MEASUREMENT_SAVE, BUTTON_MEASUREMENT_LOAD],
 };
+const BUTTON_HEAT_MAP_2D = {
+  id: 'heat_map_2d',
+  label: 'heat_map',
+  icon: 'sun',
+  commandName: 'load_heat_map',
+};
+const BUTTON_RELOAD = {
+  id: 'reload',
+  label: 'reload',
+  icon: 'reset',
+  commandName: 'reload',
+};
 export default {
   definitions: [
     BUTTON_CT_VOLUME,
     BUTTON_CT_SLICE,
     BUTTON_RX,
     BUTTON_MEASUREMENT,
+    BUTTON_HEAT_MAP_2D,
+    BUTTON_RELOAD,
   ],
   defaultContext: 'VIEWER',
 };
