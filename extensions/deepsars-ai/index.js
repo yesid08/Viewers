@@ -205,7 +205,25 @@ export const DeepSARSAiExtension = {
         },
         load_heat_map: {
           commandFn: function() {
-            console.log(cornerstone);
+            var ids = [];
+            const defaultEnabledElement = cornerstone.getEnabledElements()[0];
+            const actual_image = defaultEnabledElement.image;
+            const actual_imageIdArray = actual_image.imageId.split('/');
+            var SeriesInstanceUID = actual_imageIdArray.slice(-5)[0];
+
+            var cached_images = cornerstone.imageCache.cachedImages;
+            cached_images.forEach(information => {
+              const imageIdArray = information.imageId.split('/');
+              const dicomUIDs = {
+                StudyInstanceUID: imageIdArray.slice(-7)[0],
+                SeriesInstanceUID: imageIdArray.slice(-5)[0],
+                SOPInstanceUID: imageIdArray.slice(-3)[0],
+              };
+              if (dicomUIDs.SeriesInstanceUID == SeriesInstanceUID) {
+                ids.push(dicomUIDs.SOPInstanceUID);
+              }
+            });
+            console.log(ids.length);
           },
           storeContexts: [],
           options: {},
