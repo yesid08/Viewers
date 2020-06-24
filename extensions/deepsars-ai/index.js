@@ -45,18 +45,20 @@ export const DeepSARSAiExtension = {
             });
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
-              if (xhttp.readyState == 4 && xhttp.status == 200) {
-                UINotificationService.show({
-                  title: 'Realizado',
-                  message: xhttp.responseText,
-                });
-                console.log(xhttp.responseText);
-              } else {
-                UINotificationService.show({
-                  type: 'error',
-                  title: 'Error',
-                  message: 'Sin conexión.',
-                });
+              if (xhttp.readyState == 4) {
+                if (xhttp.status == 200) {
+                  UINotificationService.show({
+                    title: 'Realizado',
+                    message: xhttp.responseText,
+                  });
+                  console.log(xhttp.responseText);
+                } else {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexión.',
+                  });
+                }
               }
             };
             xhttp.open('POST', 'http://localhost/backend/trs/aiModels/', true);
@@ -224,6 +226,37 @@ export const DeepSARSAiExtension = {
               }
             });
             console.log(ids.length);
+          },
+          storeContexts: [],
+          options: {},
+        },
+        show_current_segmentation: {
+          commandFn: function() {
+            const defaultEnabledElement = cornerstone.getEnabledElements()[0];
+            const image = defaultEnabledElement.image;
+            const imageIdArray = image.imageId.split('/');
+            const dicomUIDs = {
+              StudyInstanceUID: imageIdArray.slice(-7)[0],
+              SeriesInstanceUID: imageIdArray.slice(-5)[0],
+              SOPInstanceUID: imageIdArray.slice(-3)[0],
+            };
+            var segmentationModule = cornerstoneTools.getModule('segmentation');
+            var segmentationSeries = segmentationModule.state.series;
+            var wadorsKey = Object.keys(segmentationSeries).find(wadors => {
+              return (
+                wadors.split('/').slice(-7)[0] == dicomUIDs.StudyInstanceUID
+              );
+            });
+            if (!wadorsKey) {
+              console.log('There are no segmentations to show');
+            } else {
+              var segmentationSeriesMetadata =
+                segmentationSeries[wadorsKey].labelmaps3D[0].metadata;
+              console.log(segmentationSeriesMetadata);
+              var segmentationMaskDataArray =
+                segmentationSeries[wadorsKey].labelmaps3D[0].labelmaps2D;
+              console.log(segmentationMaskDataArray);
+            }
           },
           storeContexts: [],
           options: {},

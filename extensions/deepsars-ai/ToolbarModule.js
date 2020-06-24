@@ -97,15 +97,21 @@ const BUTTON_MEASUREMENT = {
 };
 const BUTTON_HEAT_MAP_2D = {
   id: 'heat_map_2d',
-  label: 'heat_map',
+  label: 'Mapa de calor',
   icon: 'sun',
   commandName: 'load_heat_map',
 };
 const BUTTON_RELOAD = {
   id: 'reload',
-  label: 'reload',
+  label: 'Recargar',
   icon: 'reset',
   commandName: 'reload',
+};
+const BUTTON_SHOW_SEGMENTATION = {
+  id: 'segmentation',
+  label: 'Mostrar segmentaciones',
+  icon: 'dot-circle',
+  commandName: 'show_current_segmentation',
 };
 export default {
   definitions: [
@@ -115,6 +121,7 @@ export default {
     BUTTON_MEASUREMENT,
     BUTTON_HEAT_MAP_2D,
     BUTTON_RELOAD,
+    BUTTON_SHOW_SEGMENTATION,
   ],
   defaultContext: 'VIEWER',
 };
