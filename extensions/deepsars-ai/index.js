@@ -1,5 +1,8 @@
+/* eslint-disable no-console */
 import cornerstone from 'cornerstone-core';
 import { retrieveAllMeasurements, saveMeasurements } from './Measurements';
+import { getDicomUIDs } from './utils';
+
 import ToolbarModule from './ToolbarModule';
 export const DeepSARSAiExtension = {
   id: 'volumenCtExtension',
@@ -12,14 +15,7 @@ export const DeepSARSAiExtension = {
       definitions: {
         predecirVolumenCt: {
           commandFn: function() {
-            const defaultEnabledElement = cornerstone.getEnabledElements()[0];
-            const image = defaultEnabledElement.image;
-            const imageIdArray = image.imageId.split('/');
-            const dicomUIDs = {
-              StudyInstanceUID: imageIdArray.slice(-7)[0],
-              SeriesInstanceUID: imageIdArray.slice(-5)[0],
-              SOPInstanceUID: imageIdArray.slice(-3)[0],
-            };
+            const dicomUIDs = getDicomUIDs();
             var requestPrediction = {
               microservice: 'orthanc',
               task: 'predict_pathology',
@@ -39,6 +35,7 @@ export const DeepSARSAiExtension = {
               route: 'aiModels',
               _v: 3,
             };
+
             UINotificationService.show({
               title: 'Realizando predicción',
               message: 'Este proceso tomara unos segundos.',
@@ -47,11 +44,18 @@ export const DeepSARSAiExtension = {
             xhttp.onreadystatechange = function() {
               if (xhttp.readyState == 4) {
                 if (xhttp.status == 200) {
-                  UINotificationService.show({
-                    title: 'Realizado',
-                    message: xhttp.responseText,
-                  });
-                  console.log(xhttp.responseText);
+                  var response = JSON.parse(xhttp.response);
+                  if (response.data.hasOwnProperty('error')) {
+                    UINotificationService.show({
+                      title: 'Error de Predicción',
+                      type: 'warning',
+                      message: 'Por favor intente de nuevo',
+                    });
+                  } else {
+                    UINotificationService.show({
+                      title: 'Predicción exitosa',
+                    });
+                  }
                 } else {
                   UINotificationService.show({
                     type: 'error',

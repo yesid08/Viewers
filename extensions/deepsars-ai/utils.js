@@ -1,5 +1,5 @@
 import cornerstone from 'cornerstone-core';
-export const getdicomUIDs = () => {
+export const getDicomUIDs = () => {
   const defaultEnabledElement = cornerstone.getEnabledElements()[0];
   const image = defaultEnabledElement.image;
   const imageIdArray = image.imageId.split('/');
