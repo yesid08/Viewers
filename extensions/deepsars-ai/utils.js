@@ -1,4 +1,5 @@
 import cornerstone from 'cornerstone-core';
+import OHIF from '@ohif/core';
 export const getDicomUIDs = () => {
   const defaultEnabledElement = cornerstone.getEnabledElements()[0];
   const image = defaultEnabledElement.image;
@@ -8,4 +9,13 @@ export const getDicomUIDs = () => {
     SeriesInstanceUID: imageIdArray.slice(-5)[0],
     SOPInstanceUID: imageIdArray.slice(-3)[0],
   };
+};
+
+export const getAllInstancesUIDs = () => {
+  const allSlicesUIDS = [];
+  const UIDsMap = OHIF.cornerstone.metadataProvider.imageIdToUIDs;
+  for (const [key, value] of UIDsMap.entries()) {
+    allSlicesUIDS.push(value);
+  }
+  return allSlicesUIDS;
 };
