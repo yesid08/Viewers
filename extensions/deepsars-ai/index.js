@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
-import cornerstone from 'cornerstone-core';
 import { retrieveAllMeasurements, saveMeasurements } from './Measurements';
-import { getDicomUIDs } from './utils';
+import { getDicomUIDs, getAllInstancesUIDs } from './utils';
 import cornerstoneTools from 'cornerstone-tools';
 
 import ToolbarModule from './ToolbarModule';
@@ -208,25 +207,8 @@ export const DeepSARSAiExtension = {
         },
         load_heat_map: {
           commandFn: function() {
-            var ids = [];
-            const defaultEnabledElement = cornerstone.getEnabledElements()[0];
-            const actual_image = defaultEnabledElement.image;
-            const actual_imageIdArray = actual_image.imageId.split('/');
-            var SeriesInstanceUID = actual_imageIdArray.slice(-5)[0];
-
-            var cached_images = cornerstone.imageCache.cachedImages;
-            cached_images.forEach(information => {
-              const imageIdArray = information.imageId.split('/');
-              const dicomUIDs = {
-                StudyInstanceUID: imageIdArray.slice(-7)[0],
-                SeriesInstanceUID: imageIdArray.slice(-5)[0],
-                SOPInstanceUID: imageIdArray.slice(-3)[0],
-              };
-              if (dicomUIDs.SeriesInstanceUID == SeriesInstanceUID) {
-                ids.push(dicomUIDs.SOPInstanceUID);
-              }
-            });
-            console.log(ids);
+            const allDicomUIDs = getAllInstancesUIDs();
+            console.log(allDicomUIDs);
           },
           storeContexts: [],
           options: {},
