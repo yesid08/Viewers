@@ -89,14 +89,7 @@ export const DeepSARSAiExtension = {
         },
         predecirSliceCt: {
           commandFn: function() {
-            const defaultEnabledElement = cornerstone.getEnabledElements()[0];
-            const image = defaultEnabledElement.image;
-            const imageIdArray = image.imageId.split('/');
-            const dicomUIDs = {
-              StudyInstanceUID: imageIdArray.slice(-7)[0],
-              SeriesInstanceUID: imageIdArray.slice(-5)[0],
-              SOPInstanceUID: imageIdArray.slice(-3)[0],
-            };
+            const dicomUIDs = getDicomUIDs();
             var requestPrediction = {
               microservice: 'orthanc',
               task: 'predict_pathology',
@@ -147,14 +140,7 @@ export const DeepSARSAiExtension = {
         },
         predecirSliceRx: {
           commandFn: function() {
-            const defaultEnabledElement = cornerstone.getEnabledElements()[0];
-            const image = defaultEnabledElement.image;
-            const imageIdArray = image.imageId.split('/');
-            const dicomUIDs = {
-              StudyInstanceUID: imageIdArray.slice(-7)[0],
-              SeriesInstanceUID: imageIdArray.slice(-5)[0],
-              SOPInstanceUID: imageIdArray.slice(-3)[0],
-            };
+            const dicomUIDs = getDicomUIDs();
             var requestPrediction = {
               microservice: 'orthanc',
               task: 'predict_pathology',
@@ -247,14 +233,7 @@ export const DeepSARSAiExtension = {
         },
         show_current_segmentation: {
           commandFn: function() {
-            const defaultEnabledElement = cornerstone.getEnabledElements()[0];
-            const image = defaultEnabledElement.image;
-            const imageIdArray = image.imageId.split('/');
-            const dicomUIDs = {
-              StudyInstanceUID: imageIdArray.slice(-7)[0],
-              SeriesInstanceUID: imageIdArray.slice(-5)[0],
-              SOPInstanceUID: imageIdArray.slice(-3)[0],
-            };
+            const dicomUIDs = getDicomUIDs();
             var segmentationModule = cornerstoneTools.getModule('segmentation');
             var segmentationSeries = segmentationModule.state.series;
             var wadorsKey = Object.keys(segmentationSeries).find(wadors => {
