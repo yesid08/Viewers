@@ -32,12 +32,12 @@ const BUTTON_CT_SLICE_PREDICT = {
   type: 'command',
   commandName: 'predecirSliceCt',
 };
-const BUTTON_CT_SLICE_PATHOLOGY = {
+export const BUTTON_CT_SLICE_PATHOLOGY = {
   id: 'pathologySlice',
   label: 'Patología',
   icon: 'lung',
 };
-const BUTTON_CT_SLICE_PROBABILITY = {
+export const BUTTON_CT_SLICE_PROBABILITY = {
   id: 'precisionSlice',
   label: 'Precisión',
   icon: 'measure-target',
@@ -59,12 +59,12 @@ const BUTTON_RX_PREDICT = {
   type: 'command',
   commandName: 'predecirSliceRx',
 };
-const BUTTON_RX_PATHOLOGY = {
+export const BUTTON_RX_PATHOLOGY = {
   id: 'pathologySlice',
   label: 'Patología',
   icon: 'lung',
 };
-const BUTTON_RX_PROBABILITY = {
+export const BUTTON_RX_PROBABILITY = {
   id: 'precisionSlice',
   label: 'Precisión',
   icon: 'measure-target',
