@@ -2,8 +2,10 @@
 import cornerstone from 'cornerstone-core';
 import { retrieveAllMeasurements, saveMeasurements } from './Measurements';
 import { getDicomUIDs } from './utils';
+import cornerstoneTools from 'cornerstone-tools';
 
 import ToolbarModule from './ToolbarModule';
+import * as BUTTONS from './ToolbarModule';
 export const DeepSARSAiExtension = {
   id: 'volumenCtExtension',
   getToolbarModule() {
@@ -52,8 +54,17 @@ export const DeepSARSAiExtension = {
                       message: 'Por favor intente de nuevo',
                     });
                   } else {
+                    console.log(BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY);
+                    var pathology = response.data.class;
+                    var probability = response.data.probability;
                     UINotificationService.show({
                       title: 'Predicción exitosa',
+                      message:
+                        'La clase predicha fue ' +
+                        pathology +
+                        ' con una confianza de ' +
+                        probability.toFixed(2) * 100 +
+                        '%',
                     });
                   }
                 } else {
@@ -229,7 +240,7 @@ export const DeepSARSAiExtension = {
                 ids.push(dicomUIDs.SOPInstanceUID);
               }
             });
-            console.log(ids.length);
+            console.log(ids);
           },
           storeContexts: [],
           options: {},

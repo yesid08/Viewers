@@ -22,18 +22,16 @@ window.config = {
       });
     },
   },
-  extensions: [
-
-  ],
+  extensions: [],
   showStudyList: true,
   filterQueryParam: false,
   servers: {
     dicomWeb: [
       {
         name: 'Orthanc',
-        wadoUriRoot: 'http://localhost/wado',
-        qidoRoot: 'http://localhost/dicom-web',
-        wadoRoot: 'http://localhost/dicom-web',
+        wadoUriRoot: 'http://179.12.227.72/wado',
+        qidoRoot: 'http://179.12.227.72/dicom-web',
+        wadoRoot: 'http://179.12.227.72/dicom-web',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',

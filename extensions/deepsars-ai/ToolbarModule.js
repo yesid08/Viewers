@@ -5,7 +5,7 @@ const BUTTON_CT_VOLUME_PREDICT = {
   type: 'command',
   commandName: 'predecirVolumenCt',
 };
-const BUTTON_CT_VOLUME_PATHOLOGY = {
+export const BUTTON_CT_VOLUME_PATHOLOGY = {
   id: 'pathologyVolumen',
   label: 'Patología',
   icon: 'lung',
