@@ -10,7 +10,7 @@ export const BUTTON_CT_VOLUME_PATHOLOGY = {
   label: 'Patología',
   icon: 'lung',
 };
-const BUTTON_CT_VOLUME_PROBABILITY = {
+export const BUTTON_CT_VOLUME_PROBABILITY = {
   id: 'precisionVolumen',
   label: 'Precisión',
   icon: 'measure-target',
