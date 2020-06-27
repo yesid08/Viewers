@@ -260,7 +260,7 @@ export const DeepSARSAiExtension = {
             targetUIDs.forEach(dicomUID => {
               var requestPrediction = {
                 microservice: 'orthanc',
-                task: 'diagnose',
+                task: 'prepare',
                 file_ID: dicomUID.SOPInstanceUID,
                 file_type: 'slice',
                 file_mod: 'ct',
@@ -282,6 +282,7 @@ export const DeepSARSAiExtension = {
                 message: 'Este proceso tomara unos segundos.',
               });
               var xhttp = new XMLHttpRequest();
+              // xhttp.timeout = 1000 * 3600;
               xhttp.onreadystatechange = function() {
                 if (xhttp.readyState == 4) {
                   if (xhttp.status == 200) {
@@ -293,9 +294,8 @@ export const DeepSARSAiExtension = {
                         message: 'Por favor intente de nuevo',
                       });
                     } else {
-                      var pathology = response.data.class;
-                      var probability =
-                        response.data.probability.toFixed(2) * 100 + '%';
+                      var pathology = ''; //response.data.class;
+                      var probability = ''; //response.data.probability.toFixed(2) * 100 + '%';
                       BUTTONS.BUTTON_RX_PATHOLOGY.label = pathology;
                       BUTTONS.BUTTON_RX_PROBABILITY.label = probability;
                       UINotificationService.show({
@@ -319,7 +319,7 @@ export const DeepSARSAiExtension = {
               xhttp.open(
                 'POST',
                 'http://localhost/backend/trs/aiModels/',
-                true
+                false
               );
               xhttp.setRequestHeader(
                 'Authorization',
