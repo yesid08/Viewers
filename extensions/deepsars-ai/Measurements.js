@@ -30,7 +30,6 @@ export const retrieveAllMeasurements = () => {
             "textBox": { "active": false, "hasMoved": false, "movesIndependently": false, "drawnIndependently": true, "allowedOutsideImage": true, "hasBoundingBox": true, "x": 265.3317132442284, "y": 211.51883353584446, "boundingBox": { "width": 284.953125, "height": 45, "left": 482.49999999999994, "top": 317.5 } }
           },
           "uuid": "5f5bb77d-eb89-43b8-9e55-bc0839008186",
-          "PatientID": "91478093",
           "StudyInstanceUID": studyObj.studyInstanceUID,
           "SeriesInstanceUID": obj.SeriesInstanceUID,
           "SOPInstanceUID": tempInstance.SOPInstanceUID,
@@ -43,9 +42,9 @@ export const retrieveAllMeasurements = () => {
           "timepointId": "TimepointId",
           "cachedStats": { "area": 6465.979919297357, "count": 10712, "mean": -68.47638162808066, "variance": 37347.40926293427, "stdDev": 193.25477811152373, "min": -1217, "max": 379 },
           "viewport": { "scale": 1.607421875, "translation": { "x": 0, "y": 0 }, "voi": { "windowWidth": 1600, "windowCenter": -550 }, "invert": false, "pixelReplication": false, "rotation": 0, "hflip": false, "vflip": false, "labelmap": false, "displayedArea": { "tlhc": { "x": 1, "y": 1 }, "brhc": { "x": 512, "y": 512 }, "rowPixelSpacing": 0.781, "columnPixelSpacing": 0.781, "presentationSizeMode": "NONE" } },
-          "unit": "HU",
-          "location": "Abdomen/Chest Wall",
-          "description": "Sqr#" + (idx + 1)
+          "unit": "HU", //inits
+          "location": "Abdomen/Chest Wall", //Cattegory
+          "description": "Sqr#" + (idx + 1) //measurement desc
         });
       }
     });
