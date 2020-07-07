@@ -118,10 +118,8 @@ export default {
     BUTTON_CT_VOLUME,
     BUTTON_CT_SLICE,
     BUTTON_RX,
-    BUTTON_MEASUREMENT,
     BUTTON_HEAT_MAP_2D,
     BUTTON_RELOAD,
-    BUTTON_SHOW_SEGMENTATION,
   ],
   defaultContext: 'VIEWER',
 };
