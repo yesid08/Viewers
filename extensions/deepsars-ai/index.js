@@ -20,7 +20,7 @@ export const DeepSARSAiExtension = {
     return {
       definitions: {
         predecirVolumenCt: {
-          commandFn: function() {
+          commandFn: function () {
             var requestPayload = generatePetitionData(
               'volumen',
               'ct',
@@ -35,7 +35,7 @@ export const DeepSARSAiExtension = {
 
             var requestPromise = launchPetition(
               'POST',
-              'http://localhost/trs/aiModels/',
+              '/trs/aiModels/',
               requestPayload
             );
             requestPromise
@@ -54,7 +54,7 @@ export const DeepSARSAiExtension = {
           options: {},
         },
         predecirSliceCt: {
-          commandFn: function() {
+          commandFn: function () {
             const dicomUIDs = getDicomUIDs();
             var requestPrediction = {
               microservice: 'orthanc',
@@ -80,7 +80,7 @@ export const DeepSARSAiExtension = {
               message: 'Este proceso tomara unos segundos.',
             });
             var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
+            xhttp.onreadystatechange = function () {
               if (xhttp.readyState == 4) {
                 if (xhttp.status == 200) {
                   var response = JSON.parse(xhttp.response);
@@ -116,7 +116,7 @@ export const DeepSARSAiExtension = {
             };
             xhttp.open(
               'POST',
-              'https://deepsars.uis.edu.co/trs/aiModels/',
+              '/trs/aiModels/',
               true
             );
             xhttp.setRequestHeader(
@@ -130,7 +130,7 @@ export const DeepSARSAiExtension = {
           options: {},
         },
         predecirSliceRx: {
-          commandFn: function() {
+          commandFn: function () {
             const dicomUIDs = getDicomUIDs();
             var requestPrediction = {
               microservice: 'orthanc',
@@ -156,7 +156,7 @@ export const DeepSARSAiExtension = {
               message: 'Este proceso tomara unos segundos.',
             });
             var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
+            xhttp.onreadystatechange = function () {
               if (xhttp.readyState == 4) {
                 if (xhttp.status == 200) {
                   var response = JSON.parse(xhttp.response);
@@ -190,7 +190,7 @@ export const DeepSARSAiExtension = {
                 }
               }
             };
-            xhttp.open('POST', 'http://localhost/trs/aiModels/', true);
+            xhttp.open('POST', '/trs/aiModels/', true);
             xhttp.timeout = 80000;
             xhttp.setRequestHeader(
               'Authorization',
@@ -203,7 +203,9 @@ export const DeepSARSAiExtension = {
           options: {},
         },
         load_measurement: {
-          commandFn: retrieveAllMeasurements,
+          commandFn: () => {
+            retrieveAllMeasurements(getDicomUIDs().SeriesInstanceUID);
+          },
           storeContexts: [],
           options: {},
         },
@@ -213,14 +215,14 @@ export const DeepSARSAiExtension = {
           options: {},
         },
         reload: {
-          commandFn: function() {
+          commandFn: function () {
             location.reload();
           },
           storeContexts: [],
           options: {},
         },
         load_heat_map: {
-          commandFn: function() {
+          commandFn: function () {
             const allDicomUIDs = getAllInstancesUIDs();
             const targetUIDs = allDicomUIDs.filter(dicomUID => {
               return (
@@ -260,7 +262,7 @@ export const DeepSARSAiExtension = {
               var url = 'https://deepsars.uis.edu.co/trs/aiModels/';
               var request = new XMLHttpRequest();
               request.open('POST', url);
-              request.onreadystatechange = function() {
+              request.onreadystatechange = function () {
                 if (
                   request.readyState === XMLHttpRequest.DONE &&
                   request.status === 200
@@ -283,7 +285,7 @@ export const DeepSARSAiExtension = {
           options: {},
         },
         show_current_segmentation: {
-          commandFn: function() {
+          commandFn: function () {
             const dicomUIDs = getDicomUIDs();
             var segmentationModule = cornerstoneTools.getModule('segmentation');
             var segmentationSeries = segmentationModule.state.series;

@@ -2,14 +2,19 @@ import OHIF from '@ohif/core';
 import cornerstone from 'cornerstone-core';
 import { tempMeasurements } from './mocks/MeasurementsMock';
 import studyMetadataManager from '../../platform/core/src/utils/studyMetadataManager.js';
+import { makeTransaction } from './utils'
 
 export const saveMeasurements = () => {
+  var tempArray = [];
   const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
+  localMeasurementAPI.filter((toolType) => { toolType });
   console.log('The following tool anotations are going to be saved');
   console.log(localMeasurementAPI.tools);
+  makeTransaction('roiAnnotations', 'write',)
 };
 
-export const retrieveAllMeasurements = () => {
+export const retrieveAllMeasurements = (series) => {
+  console.log("Series =>", series);
   var tempMeasurements = [];
   const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
 

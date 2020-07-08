@@ -120,6 +120,7 @@ export default {
     BUTTON_RX,
     BUTTON_HEAT_MAP_2D,
     BUTTON_RELOAD,
+    BUTTON_MEASUREMENT
   ],
   defaultContext: 'VIEWER',
 };
