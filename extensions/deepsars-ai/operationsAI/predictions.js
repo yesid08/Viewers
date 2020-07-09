@@ -41,9 +41,8 @@ export const predecir = (
       } else {
         var pathology = response.data.class;
         var probability = response.data.probability.toFixed(2) * 100 + '%';
-        BUTTONS.BUTTON_CT_SLICE_PATHOLOGY.label = pathology;
-        BUTTONS.BUTTON_CT_SLICE_PROBABILITY.label = probability;
-        console.log('----', BUTTONS.BUTTON_CT_SLICE_PROBABILITY.label);
+        BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY.label = pathology;
+        BUTTONS.BUTTON_CT_VOLUME_PROBABILITY.label = probability;
         UINotificationService.show({
           title: 'Predicción exitosa',
           message:
