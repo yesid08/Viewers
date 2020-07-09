@@ -20,9 +20,6 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
     definitions: {
       predecirVolumenCt: {
         commandFn: () => {
-          console.log(BUTTONS.BUTTON_CT_SLICE_PROBABILITY.label);
-          BUTTONS.BUTTON_CT_SLICE_PROBABILITY.label = '60%';
-          console.log(BUTTONS.BUTTON_CT_SLICE_PROBABILITY.label);
           predictions.predecir(
             BUTTONS,
             UINotificationService,
