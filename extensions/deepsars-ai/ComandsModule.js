@@ -35,7 +35,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         options: {},
       },
       predecirSliceCt: {
-        commandFn: function() {
+        commandFn: function () {
           const dicomUIDs = getDicomUIDs();
           var requestPrediction = {
             microservice: 'orthanc',
@@ -61,7 +61,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
             message: 'Este proceso tomara unos segundos.',
           });
           var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function() {
+          xhttp.onreadystatechange = function () {
             if (xhttp.readyState == 4) {
               if (xhttp.status == 200) {
                 var response = JSON.parse(xhttp.response);
@@ -107,7 +107,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         options: {},
       },
       predecirSliceRx: {
-        commandFn: function() {
+        commandFn: function () {
           const dicomUIDs = getDicomUIDs();
           var requestPrediction = {
             microservice: 'orthanc',
@@ -133,7 +133,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
             message: 'Este proceso tomara unos segundos.',
           });
           var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function() {
+          xhttp.onreadystatechange = function () {
             if (xhttp.readyState == 4) {
               if (xhttp.status == 200) {
                 var response = JSON.parse(xhttp.response);
@@ -180,7 +180,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         options: {},
       },
       load_measurement: {
-        commandFn: retrieveAllMeasurements,
+        commandFn: () => { retrieveAllMeasurements(getDicomUIDs().StudyInstanceUID); },
         storeContexts: [],
         options: {},
       },
@@ -190,14 +190,14 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         options: {},
       },
       reload: {
-        commandFn: function() {
+        commandFn: function () {
           location.reload();
         },
         storeContexts: [],
         options: {},
       },
       load_heat_map: {
-        commandFn: function() {
+        commandFn: function () {
           const allDicomUIDs = getAllInstancesUIDs();
           const targetUIDs = allDicomUIDs.filter(dicomUID => {
             return (
@@ -237,7 +237,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
             var url = 'https://deepsars.uis.edu.co/trs/aiModels/';
             var request = new XMLHttpRequest();
             request.open('POST', url);
-            request.onreadystatechange = function() {
+            request.onreadystatechange = function () {
               if (
                 request.readyState === XMLHttpRequest.DONE &&
                 request.status === 200
@@ -258,7 +258,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         options: {},
       },
       show_current_segmentation: {
-        commandFn: function() {
+        commandFn: function () {
           const dicomUIDs = getDicomUIDs();
           var segmentationModule = cornerstoneTools.getModule('segmentation');
           var segmentationSeries = segmentationModule.state.series;
