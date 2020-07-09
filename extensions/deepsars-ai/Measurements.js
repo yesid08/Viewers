@@ -26,16 +26,21 @@ export const saveMeasurements = () => {
 
 export const retrieveAllMeasurements = (study) => {
   const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
+  const currentMeasurements = localMeasurementAPI.tools.RectangleRoi.concat(localMeasurementAPI.tools.EllipticalRoi);
   console.log("Sacando anotaciones del estudio =>", study);
+  console.log("ANOTACIONES ACTUALES", currentMeasurements);
   makeTransaction('roiAnnotations', 'readList', { StudyInstanceUID: study })
     .then((response) => {
       console.log('Respuesta=>', response.data);
-      response.data.forEach(measurement =>
-        localMeasurementAPI.addMeasurement(
-          measurement.toolType,
-          measurement
-        )
-      );
+      response.data.forEach(measurement => {
+        if (!currentMeasurements.some((e) => { return (e._roiId === measurement._roiId) })) {
+          localMeasurementAPI.addMeasurement(
+            measurement.toolType,
+            measurement
+          )
+        }
+      });
+      console.log(OHIF.measurements.MeasurementApi.Instance);
       // Sync Measurements -------------------//
       localMeasurementAPI.syncMeasurementsAndToolData();
       cornerstone.getEnabledElements().forEach(enabledElement => {
