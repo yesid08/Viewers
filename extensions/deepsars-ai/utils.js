@@ -10,6 +10,19 @@ import OHIF from '@ohif/core';
   6) commit the changes and have fun!
 */
 
+export const makeContract = (dicomData, file_type, file_mod, file_view) => {
+  var contract = {
+    microservice: 'orthanc',
+    task: 'predict_pathology',
+    file_ID: dicomData,
+    file_type: file_type,
+    file_mod: file_mod,
+    file_view: file_view,
+  };
+
+  return contract;
+};
+
 export const getDicomUIDs = () => {
   const defaultEnabledElement = cornerstone.getEnabledElements()[0];
   const image = defaultEnabledElement.image;
@@ -31,7 +44,6 @@ export const getAllInstancesUIDs = () => {
 };
 
 export const makeTransaction = (route, operation, data) => {
-
   const requestPayload = {
     count: 0,
     data: data,
@@ -45,10 +57,9 @@ export const makeTransaction = (route, operation, data) => {
 
   const promisePetition = new Promise((resolve, reject) => {
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
+    xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
-          console.log(xhttp.response);
           resolve(JSON.parse(xhttp.response));
         } else {
           reject('Sin conexión');
@@ -65,5 +76,4 @@ export const makeTransaction = (route, operation, data) => {
   });
 
   return promisePetition;
-
-}
+};
