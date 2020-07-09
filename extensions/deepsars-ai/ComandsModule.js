@@ -66,13 +66,22 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
       },
       load_measurement: {
         commandFn: () => {
+          UINotificationService.show({
+            title: 'Recuperando marcaciones',
+          });
+
           retrieveAllMeasurements(getDicomUIDs().StudyInstanceUID);
         },
         storeContexts: [],
         options: {},
       },
       save_measurement: {
-        commandFn: saveMeasurements,
+        commandFn: () => {
+          UINotificationService.show({
+            title: 'Guardando marcaciones',
+          });
+          saveMeasurements();
+        },
         storeContexts: [],
         options: {},
       },
