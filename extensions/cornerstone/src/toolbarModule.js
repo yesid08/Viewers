@@ -71,7 +71,7 @@ const definitions = [
     commandName: 'setToolActive',
     commandOptions: { toolName: 'Pan' },
   },
-  {
+  /*   {
     id: 'Length',
     label: 'Length',
     icon: 'measure-temp',
@@ -105,7 +105,7 @@ const definitions = [
     //
     type: TOOLBAR_BUTTON_TYPES.COMMAND,
     commandName: 'resetViewport',
-  },
+  }, */
   {
     id: 'Cine',
     label: 'CINE',
@@ -206,7 +206,7 @@ const definitions = [
         type: TOOLBAR_BUTTON_TYPES.COMMAND,
         commandName: 'clearAnnotations',
       },
-      {
+      /*  {
         id: 'Bidirectional',
         label: 'Bidirectional',
         icon: 'measure-target',
@@ -214,7 +214,7 @@ const definitions = [
         type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
         commandName: 'setToolActive',
         commandOptions: { toolName: 'Bidirectional' },
-      },
+      }, */
       {
         id: 'Download',
         label: 'Download',
