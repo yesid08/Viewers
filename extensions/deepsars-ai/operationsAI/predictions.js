@@ -35,6 +35,8 @@ export const predecir = (
 
   promisePetition
     .then(response => {
+      console.log(response);
+      console.log(response.data.hasOwnProperty('error'));
       if (response.data.hasOwnProperty('error')) {
         UINotificationService.show({
           title: 'Error de Predicción',
@@ -57,6 +59,7 @@ export const predecir = (
       }
     })
     .catch(rst => {
+      console.log(rst);
       UINotificationService.show({
         type: 'error',
         title: 'Error',

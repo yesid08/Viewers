@@ -113,14 +113,66 @@ const BUTTON_SHOW_SEGMENTATION = {
   icon: 'dot-circle',
   commandName: 'show_current_segmentation',
 };
+
+const TOOLBAR_BUTTON_TYPES = {
+  COMMAND: 'command',
+  SET_TOOL_ACTIVE: 'setToolActive',
+  BUILT_IN: 'builtIn',
+};
+
+const BUTTON_SEGMENTATION = {
+  id: 'deepsars_seg',
+  label: 'Segmentación',
+  icon: 'ellipse-circle',
+  buttons: [
+    {
+      id: 'Brush',
+      label: 'Brush',
+      icon: 'brush',
+      //
+      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
+      commandName: 'segmentate_roi',
+      commandOptions: { toolName: 'Brush' },
+    },
+    {
+      id: 'SphericalBrush',
+      label: 'Esfera',
+      icon: 'sphere',
+      //
+      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
+      commandName: 'segmentate_roi',
+      commandOptions: { toolName: 'SphericalBrush' },
+    },
+    {
+      id: 'CorrectionScissors',
+      label: 'Recorte',
+      icon: 'scissors',
+      //
+      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
+      commandName: 'segmentate_roi',
+      commandOptions: { toolName: 'CorrectionScissors' },
+    },
+    {
+      id: 'BrushEraser',
+      label: 'Borrar',
+      icon: 'trash',
+      //
+      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
+      commandName: 'setToolActive',
+      commandOptions: { toolName: 'BrushEraser' },
+    },
+  ],
+};
+
 export default {
   definitions: [
+    BUTTON_SEGMENTATION,
     BUTTON_CT_VOLUME,
     BUTTON_CT_SLICE,
     BUTTON_RX,
     BUTTON_HEAT_MAP_2D,
     BUTTON_RELOAD,
-    BUTTON_MEASUREMENT
+    BUTTON_MEASUREMENT,
   ],
   defaultContext: 'VIEWER',
 };

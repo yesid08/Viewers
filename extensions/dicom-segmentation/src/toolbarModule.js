@@ -5,7 +5,7 @@ const TOOLBAR_BUTTON_TYPES = {
 };
 
 const definitions = [
-  {
+  /* {
     id: 'SegDropdown',
     label: 'Segmentation',
     icon: 'ellipse-circle',
@@ -47,7 +47,7 @@ const definitions = [
         commandOptions: { toolName: 'BrushEraser' },
       },
     ],
-  },
+  }, */
 ];
 
 export default {

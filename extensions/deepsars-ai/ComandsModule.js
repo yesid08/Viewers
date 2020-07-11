@@ -121,6 +121,16 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         storeContexts: [],
         options: {},
       },
+      segmentate_roi: {
+        commandFn: ({ toolName }) => {
+          if (!toolName) {
+            console.warn('No toolname provided to setToolActive command');
+          }
+          console.log('the tool ' + toolName + ' is being used');
+          console.log(cornerstoneTools);
+          cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+        },
+      },
     },
 
     defaultContext: ['VIEWER'],
