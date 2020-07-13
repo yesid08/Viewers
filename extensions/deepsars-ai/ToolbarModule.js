@@ -15,6 +15,12 @@ export const BUTTON_CT_VOLUME_PROBABILITY = {
   label: 'Precisión',
   icon: 'measure-target',
 };
+const BUTTON_CT_AXIAL_HEAT_MAP_3D = {
+  id: 'ct_axial_heat_map_3d',
+  label: 'Mapa de calor',
+  icon: 'sun',
+  commandName: 'load_ct_axial_heat_map',
+};
 const BUTTON_CT_VOLUME = {
   id: 'Volumen-CT',
   label: 'Volumen-CT',
@@ -23,6 +29,7 @@ const BUTTON_CT_VOLUME = {
     BUTTON_CT_VOLUME_PREDICT,
     BUTTON_CT_VOLUME_PATHOLOGY,
     BUTTON_CT_VOLUME_PROBABILITY,
+    BUTTON_CT_AXIAL_HEAT_MAP_3D,
   ],
 };
 const BUTTON_CT_SLICE_PREDICT = {
@@ -69,11 +76,22 @@ export const BUTTON_RX_PROBABILITY = {
   label: 'Precisión',
   icon: 'measure-target',
 };
+const BUTTON_RX_FRONTAL_HEAT_MAP_3D = {
+  id: 'rx_frontal_heat_map_3d',
+  label: 'Mapa de calor',
+  icon: 'sun',
+  commandName: 'load_rx_frontal_heat_map',
+};
 const BUTTON_RX = {
   id: 'Slice-RX',
   label: 'Slice-RX',
   icon: 'brain',
-  buttons: [BUTTON_RX_PREDICT, BUTTON_RX_PATHOLOGY, BUTTON_RX_PROBABILITY],
+  buttons: [
+    BUTTON_RX_PREDICT,
+    BUTTON_RX_PATHOLOGY,
+    BUTTON_RX_PROBABILITY,
+    BUTTON_RX_FRONTAL_HEAT_MAP_3D,
+  ],
 };
 const BUTTON_MEASUREMENT_SAVE = {
   id: 'saveMeasurement',
@@ -95,12 +113,7 @@ const BUTTON_MEASUREMENT = {
   icon: 'list',
   buttons: [BUTTON_MEASUREMENT_SAVE, BUTTON_MEASUREMENT_LOAD],
 };
-const BUTTON_HEAT_MAP_2D = {
-  id: 'heat_map_2d',
-  label: 'Mapa de calor',
-  icon: 'sun',
-  commandName: 'load_heat_map',
-};
+
 const BUTTON_RELOAD = {
   id: 'reload',
   label: 'Recargar',
@@ -170,7 +183,6 @@ export default {
     BUTTON_CT_VOLUME,
     BUTTON_CT_SLICE,
     BUTTON_RX,
-    BUTTON_HEAT_MAP_2D,
     BUTTON_RELOAD,
     BUTTON_MEASUREMENT,
   ],
