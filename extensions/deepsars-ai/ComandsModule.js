@@ -4,6 +4,7 @@ import cornerstoneTools from 'cornerstone-tools';
 import * as BUTTONS from './ToolbarModule';
 import * as predictions from './operationsAI/predictions';
 import * as heatmaps from './operationsAI/heatmaps';
+import * as analyzeRoi from './operationsAI/analyzeRoi';
 
 const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
   const { UINotificationService } = servicesManager.services;
@@ -79,9 +80,23 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         storeContexts: [],
         options: {},
       },
-      load_ct_axial_heat_map: {
+      load_ct_axial_heat_map_volumen: {
         commandFn: () => {
-          heatmaps.ctAxialheatMap(UINotificationService);
+          heatmaps.ctAxialheatMapVolumen(UINotificationService);
+        },
+        storeContexts: [],
+        options: {},
+      },
+      load_ct_axial_heat_map_slice: {
+        commandFn: () => {
+          heatmaps.ctAxialheatMapSlice(UINotificationService);
+        },
+        storeContexts: [],
+        options: {},
+      },
+      analyze_ct_axial_slice: {
+        commandFn: () => {
+          analyzeRoi.ctAxialAnalyzeSlice(UINotificationService);
         },
         storeContexts: [],
         options: {},

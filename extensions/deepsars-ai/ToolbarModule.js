@@ -19,7 +19,7 @@ const BUTTON_CT_AXIAL_HEAT_MAP_3D = {
   id: 'ct_axial_heat_map_3d',
   label: 'Mapa de calor',
   icon: 'sun',
-  commandName: 'load_ct_axial_heat_map',
+  commandName: 'load_ct_axial_heat_map_volumen',
 };
 const BUTTON_CT_VOLUME = {
   id: 'Volumen-CT',
@@ -49,6 +49,18 @@ export const BUTTON_CT_SLICE_PROBABILITY = {
   label: 'Precisión',
   icon: 'measure-target',
 };
+const BUTTON_CT_AXIAL_HEAT_MAP_2D = {
+  id: 'ct_axial_heat_map_2d',
+  label: 'Mapa de calor',
+  icon: 'sun',
+  commandName: 'load_ct_axial_heat_map_slice',
+};
+const BUTTON_CT_AXIAL_ANALYZE = {
+  id: 'ct_axial_slice_analyze',
+  label: 'zonas de interés',
+  icon: 'search',
+  commandName: 'analyze_ct_axial_slice',
+};
 const BUTTON_CT_SLICE = {
   id: 'Slice-CT',
   label: 'Slice-CT',
@@ -57,6 +69,8 @@ const BUTTON_CT_SLICE = {
     BUTTON_CT_SLICE_PREDICT,
     BUTTON_CT_SLICE_PATHOLOGY,
     BUTTON_CT_SLICE_PROBABILITY,
+    BUTTON_CT_AXIAL_HEAT_MAP_2D,
+    BUTTON_CT_AXIAL_ANALYZE,
   ],
 };
 const BUTTON_RX_PREDICT = {
