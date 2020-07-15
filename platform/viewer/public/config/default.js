@@ -2,7 +2,7 @@
 
 window.config = {
   // default: '/'
-  routerBasename: '/',
+  routerBasename: '/ohif/',
   whiteLabeling: {
     /* Optional: Should return a React component to be rendered in the "Logo" section of the application's Top Navigation bar */
     createLogoComponentFn: function(React) {
@@ -10,11 +10,11 @@ window.config = {
         target: '_self',
         rel: 'noopener noreferrer',
         className: 'header-brand',
-        href: '/',
+        href: '/ohif/',
         style: {
           display: 'block',
           textIndent: '-9999px',
-          background: 'url(/assets/DS.png)',
+          background: 'url(/ohif/assets/DS.png)',
           backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
           width: '200px',
