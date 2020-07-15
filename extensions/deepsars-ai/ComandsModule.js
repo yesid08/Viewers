@@ -112,6 +112,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         commandFn: function() {
           const dicomUIDs = getDicomUIDs();
           var segmentationModule = cornerstoneTools.getModule('segmentation');
+          console.log(segmentationModule);
           var segmentationSeries = segmentationModule.state.series;
           var wadorsKey = Object.keys(segmentationSeries).find(wadors => {
             return wadors.split('/').slice(-7)[0] == dicomUIDs.StudyInstanceUID;
@@ -137,8 +138,12 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
           }
           console.log('the tool ' + toolName + ' is being used');
           console.log(cornerstoneTools);
+          var segmentationModule = cornerstoneTools.getModule('segmentation');
+          console.log(segmentationModule);
           cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
         },
+        storeContexts: [],
+        options: {},
       },
     },
 
