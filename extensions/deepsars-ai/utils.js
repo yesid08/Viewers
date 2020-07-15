@@ -61,7 +61,7 @@ export const makeTransaction = (route, operation, data) => {
     xhttp.open('POST', `/trs/${route}/`, true);
     xhttp.setRequestHeader(
       'Authorization',
-      '75bN8S6k4UQvwhUJVjCfVuxAmjz3dDJfyaddN548kRc6Wf+aBUPkhYPvqT/o3B4L0GyD/2GovVWr/ZnZB8BoqLSBgiNsCLmxYNgZV2at8xIIqzDXuMgibd8lOho79usmH5oPtj1GYboJguYVML97SQB/j1oEJUmOek6/8Afa6cIsL+EK5RhHGoUTqL70KjIoydVIggmko9mqe3PBTMLsM9DSn4QBSpg7JmcYnVPOu761/YYoLpXABkfbmQ+eSljV15l5Lc37AkTUWMKNpX5bmNYzNu9R+jABLEiHF7rdcO6yyWq3/feAyigYaQUY5O/jykou6lndEUvW3dPjaAlR15gtRWzqk7d4viZD02pq9pbbmDfamyKYFdPI6+nsQQ6sx0BZWg89P/3aZeHjvMIleyYZ1XxMzFxA4hiG1zEnpyVbpqqV7r50hSkTiq2UTQmjyWNnC+/uCkuupLmdtqIclNgtNmcMsbbnGx/XFviYXfpevR34LXbBsHSIDatKW1VyKttbAa4pXD0M2IZgNwTh1UEatk1Ob8qMil9vsU2ji0XDNz6a29Lle1hKABf2DrJYWrtPX+AKccpQfrnAiQuL+Q=='
+      window.localStorage.getItem('token')
     );
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send(JSON.stringify(requestPayload));
