@@ -4,24 +4,75 @@ import OHIF from '@ohif/core';
 import cornerstone from 'cornerstone-core';
 import cornerstoneTools from 'cornerstone-tools';
 
-const createMeasurement = (coordenate, aClass, probability) => {
-  console.log(cornerstoneTools);
-  var annotation = exampleMeasurement;
+const createMeasurementFromRoi = (coordenate, aClass, probability) => {
+  var aDescription = `${aClass} : ${probability}`;
+  console.log('================================================');
   console.log('coordinates', coordenate);
   console.log('class', aClass);
   console.log('probability', probability);
-  //FRCNN
-  annotation.handles.start.x = parseInt(coordenate[0]);
-  annotation.handles.start.y = parseInt(coordenate[1]);
-  annotation.handles.end.x = parseInt(coordenate[2]);
-  annotation.handles.end.y = parseInt(coordenate[3]);
-  annotation.description = `${aClass} : ${probability}`;
-  //DICOM
+  console.log('description', aDescription);
+  console.log('================================================');
+  const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
+  const currentMeasurements = localMeasurementAPI.tools.RectangleRoi.concat(
+    localMeasurementAPI.tools.EllipticalRoi
+  );
   var dicomUIDs = utils.getDicomUIDs();
-  annotation.StudyInstanceUID = dicomUIDs.StudyInstanceUID;
-  annotation.SeriesInstanceUID = dicomUIDs.SeriesInstanceUID;
-  annotation.SOPInstanceUID = dicomUIDs.SOPInstanceUID;
-  annotation.imagePath = `${annotation.StudyInstanceUID}_${annotation.SeriesInstanceUID}_${annotation.SOPInstanceUID}_${annotation.frameIndex}`;
+  var annotation = {
+    visible: true,
+    active: false,
+    invalidated: false,
+    StudyInstanceUID: dicomUIDs.StudyInstanceUID,
+    SeriesInstanceUID: dicomUIDs.SeriesInstanceUID,
+    SOPInstanceUID: dicomUIDs.SOPInstanceUID,
+    frameIndex: 0,
+    imagePath: `${dicomUIDs.StudyInstanceUID}_${dicomUIDs.SeriesInstanceUID}_${dicomUIDs.SOPInstanceUID}_0`,
+    lesionNamingNumber: currentMeasurements.length + 1,
+    measurementNumber: currentMeasurements.length + 1,
+    userId: null,
+    toolType: 'RectangleRoi',
+    description: aDescription,
+    handles: {
+      start: {
+        x: parseInt(coordenate[0]),
+        y: parseInt(coordenate[1]),
+        highlight: true,
+        active: false,
+      },
+      end: {
+        x: parseInt(coordenate[2]),
+        y: parseInt(coordenate[3]),
+        highlight: true,
+        active: false,
+      },
+      initialRotation: 0,
+      textBox: {
+        active: false,
+        hasMoved: false,
+        movesIndependently: false,
+        drawnIndependently: true,
+        allowedOutsideImage: true,
+        hasBoundingBox: true,
+        x: 256,
+        y: 248,
+        boundingBox: { width: 293.9375, height: 45, left: 230, top: 295.125 },
+      },
+    },
+    //PatientID: '13504175',
+
+    //_id: OHIF.measurements.,
+    timepointId: 'TimepointId',
+    unit: 'HU',
+    location: 'Lung',
+    cachedStats: {
+      area: 0,
+      count: 0,
+      mean: 0,
+      variance: 0,
+      stdDev: 0,
+      min: 0,
+      max: 0,
+    },
+  };
   return annotation;
 };
 
@@ -51,32 +102,25 @@ export const ctAxialAnalyzeSlice = UINotificationService => {
           message: 'Por favor intente de nuevo',
         });
       } else {
-        console.log(response);
         if (response.data.coordenates.length > 0) {
           UINotificationService.show({
             title: 'Zonas de interés detectadas',
             message:
               'Recuerda abrir el panel "measurements" para más información',
           });
-          var annotations = [];
+          var localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
           for (var i = 0; i < response.data.coordenates.length; i++) {
             var coordenate = response.data.coordenates[i];
             var probability = response.data.probabilities[i];
             var aClass = response.data.classes[i];
-            var annotation = createMeasurement(coordenate, aClass, probability);
-            console.log(annotation);
-            //add to annotations
-            annotations.push(annotation);
-            annotation = undefined;
-          }
-          const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
-          console.log(annotations);
-          annotations.forEach(measurement => {
-            localMeasurementAPI.addMeasurement(
-              measurement.toolType,
-              measurement
+            var annotation = createMeasurementFromRoi(
+              coordenate,
+              aClass,
+              probability
             );
-          });
+            //add to annotations
+            localMeasurementAPI.addMeasurement(annotation.toolType, annotation);
+          }
           // Sync Measurements -------------------//
           localMeasurementAPI.syncMeasurementsAndToolData();
           cornerstone.getEnabledElements().forEach(enabledElement => {
@@ -84,6 +128,7 @@ export const ctAxialAnalyzeSlice = UINotificationService => {
           });
           // Let others know that the measurements are updated
           localMeasurementAPI.onMeasurementsUpdated();
+          console.log(localMeasurementAPI);
         } else {
           console.log('there are NOT annotations');
           UINotificationService.show({

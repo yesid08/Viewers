@@ -35,7 +35,7 @@ export var exampleMeasurement = {
   unit: 'HU',
   location: 'Lung',
   description: '',
-  /* cachedStats: {
+  cachedStats: {
     area: 2219.52,
     count: 3072,
     mean: -565.6041666666666,
@@ -43,5 +43,5 @@ export var exampleMeasurement = {
     stdDev: 370.3863712653279,
     min: -1250,
     max: 258,
-  }, */
+  },
 };
