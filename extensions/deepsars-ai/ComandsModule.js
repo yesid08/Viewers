@@ -5,6 +5,7 @@ import * as BUTTONS from './ToolbarModule';
 import * as predictions from './operationsAI/predictions';
 import * as heatmaps from './operationsAI/heatmaps';
 import * as analyzeRoi from './operationsAI/analyzeRoi';
+import cornerstone from 'cornerstone-core';
 
 const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
   const { UINotificationService } = servicesManager.services;
@@ -141,6 +142,34 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
           var segmentationModule = cornerstoneTools.getModule('segmentation');
           console.log(segmentationModule);
           cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+        },
+        storeContexts: [],
+        options: {},
+      },
+      aumentar: {
+        commandFn: () => {
+          var imageId = cornerstone.getEnabledElements()[0].image.imageId;
+          var segmentationModule = cornerstoneTools.getModule('segmentation');
+          var indice =
+            segmentationModule.state.series[imageId].labelmaps3D[0]
+              .activeSegmentIndex;
+          segmentationModule.state.series[
+            imageId
+          ].labelmaps3D[0].activeSegmentIndex = indice + 1;
+        },
+        storeContexts: [],
+        options: {},
+      },
+      disminuir: {
+        commandFn: () => {
+          var imageId = cornerstone.getEnabledElements()[0].image.imageId;
+          var segmentationModule = cornerstoneTools.getModule('segmentation');
+          var indice =
+            segmentationModule.state.series[imageId].labelmaps3D[0]
+              .activeSegmentIndex;
+          segmentationModule.state.series[
+            imageId
+          ].labelmaps3D[0].activeSegmentIndex = indice - 1;
         },
         storeContexts: [],
         options: {},
