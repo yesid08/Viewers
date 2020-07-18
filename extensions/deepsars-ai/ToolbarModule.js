@@ -153,43 +153,29 @@ const BUTTON_SEGMENTATION = {
   icon: 'ellipse-circle',
   buttons: [
     {
-      id: 'Brush',
-      label: 'Brush',
-      icon: 'brush',
-      //
-      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
-      commandName: 'segmentate_roi',
-      commandOptions: { toolName: 'Brush' },
-    },
-    {
-      id: 'SphericalBrush',
-      label: 'Esfera',
-      icon: 'sphere',
-      //
-      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
-      commandName: 'segmentate_roi',
-      commandOptions: { toolName: 'SphericalBrush' },
-    },
-    {
-      id: 'CorrectionScissors',
-      label: 'Recorte',
+      id: 'CorrectionScissors 1',
+      label: 'Clase 1',
       icon: 'scissors',
       //
       type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
       commandName: 'segmentate_roi',
-      commandOptions: { toolName: 'CorrectionScissors' },
+      commandOptions: { toolName: 'CorrectionScissors', activeSegmentIndex: 2 },
     },
     {
-      id: 'aumentar',
-      label: 'Aumentar',
-      icon: 'angle-double-up',
-      commandName: 'aumentar',
+      id: 'CorrectionScissors 2',
+      label: 'Clase 2',
+      icon: 'scissors',
+      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
+      commandName: 'segmentate_roi',
+      commandOptions: { toolName: 'CorrectionScissors', activeSegmentIndex: 3 },
     },
     {
-      id: 'Disminuir',
-      label: 'Disminuir',
-      icon: 'angle-double-down',
-      commandName: 'disminuir',
+      id: 'CorrectionScissors 3',
+      label: 'Clase 3',
+      icon: 'scissors',
+      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
+      commandName: 'segmentate_roi',
+      commandOptions: { toolName: 'CorrectionScissors', activeSegmentIndex: 4 },
     },
     {
       id: 'BrushEraser',
