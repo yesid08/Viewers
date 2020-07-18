@@ -180,6 +180,18 @@ const BUTTON_SEGMENTATION = {
       commandOptions: { toolName: 'CorrectionScissors' },
     },
     {
+      id: 'aumentar',
+      label: 'Aumentar',
+      icon: 'angle-double-up',
+      commandName: 'aumentar',
+    },
+    {
+      id: 'Disminuir',
+      label: 'Disminuir',
+      icon: 'angle-double-down',
+      commandName: 'disminuir',
+    },
+    {
       id: 'BrushEraser',
       label: 'Borrar',
       icon: 'trash',
@@ -199,6 +211,7 @@ export default {
     BUTTON_RX,
     BUTTON_RELOAD,
     BUTTON_MEASUREMENT,
+    BUTTON_SHOW_SEGMENTATION,
   ],
   defaultContext: 'VIEWER',
 };
