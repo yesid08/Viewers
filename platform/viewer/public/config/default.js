@@ -35,6 +35,9 @@ window.config = {
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
+        requestOptions: {
+          auth: window.localStorage.getItem('token'),
+        },
       },
     ],
   },
