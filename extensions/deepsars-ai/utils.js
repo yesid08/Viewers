@@ -39,7 +39,7 @@ export const makeTransaction = (route, operation, data) => {
     count: 0,
     data: data,
     date: String(new Date().getTime()),
-    enterprise: 1,
+    enterprise: 2,
     ips: [window.localStorage.getItem('saraid')],
     operation: operation,
     route: route,
