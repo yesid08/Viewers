@@ -6,9 +6,10 @@ import * as predictions from './operationsAI/predictions';
 import * as heatmaps from './operationsAI/heatmaps';
 import * as analyzeRoi from './operationsAI/analyzeRoi';
 import cornerstone from 'cornerstone-core';
+import CornerstoneViewportDownloadForm from '../cornerstone/src/CornerstoneViewportDownloadForm';
 
 const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
-  const { UINotificationService } = servicesManager.services;
+  const { UINotificationService, UIModalService } = servicesManager.services;
   return {
     definitions: {
       predecirVolumenCt: {
@@ -159,30 +160,16 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         storeContexts: [],
         options: {},
       },
-      aumentar: {
+      createSegmentation: {
         commandFn: () => {
-          var imageId = cornerstone.getEnabledElements()[0].image.imageId;
-          var segmentationModule = cornerstoneTools.getModule('segmentation');
-          var indice =
-            segmentationModule.state.series[imageId].labelmaps3D[0]
-              .activeSegmentIndex;
-          segmentationModule.state.series[
-            imageId
-          ].labelmaps3D[0].activeSegmentIndex = indice + 1;
-        },
-        storeContexts: [],
-        options: {},
-      },
-      disminuir: {
-        commandFn: () => {
-          var imageId = cornerstone.getEnabledElements()[0].image.imageId;
-          var segmentationModule = cornerstoneTools.getModule('segmentation');
-          var indice =
-            segmentationModule.state.series[imageId].labelmaps3D[0]
-              .activeSegmentIndex;
-          segmentationModule.state.series[
-            imageId
-          ].labelmaps3D[0].activeSegmentIndex = indice - 1;
+          const title = 'Crear segmentacion';
+          UIModalService.show({
+            content: CornerstoneViewportDownloadForm,
+            title,
+            contentProps: {
+              onClose: UIModalService.hide,
+            },
+          });
         },
         storeContexts: [],
         options: {},

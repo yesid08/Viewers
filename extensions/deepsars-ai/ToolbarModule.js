@@ -153,6 +153,12 @@ const BUTTON_SEGMENTATION = {
   icon: 'ellipse-circle',
   buttons: [
     {
+      id: 'createSegmentation',
+      label: 'Crear Segmentación',
+      icon: 'scissors',
+      commandName: 'createSegmentation',
+    },
+    {
       id: 'CorrectionScissors 1',
       label: 'Clase 1',
       icon: 'scissors',
