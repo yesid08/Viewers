@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { retrieveAllMeasurements, saveMeasurements } from './Measurements';
 import { getDicomUIDs } from './utils';
 import cornerstoneTools from 'cornerstone-tools';
@@ -6,9 +7,9 @@ import * as predictions from './operationsAI/predictions';
 import * as heatmaps from './operationsAI/heatmaps';
 import * as analyzeRoi from './operationsAI/analyzeRoi';
 import cornerstone from 'cornerstone-core';
-import CornerstoneViewportDownloadForm from '../cornerstone/src/CornerstoneViewportDownloadForm';
+import DeppsarsViewportSegmentation from '../cornerstone/src/DeepsarsViewportSegmentation';
 
-const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
+const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
   return {
     definitions: {
@@ -128,6 +129,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
               segmentationSeries[wadorsKey].labelmaps3D[0].labelmaps2D;
             console.log(segmentationMaskDataArray);
           }
+          console.log(cornerstone.getEnabledElements()[0]);
         },
         storeContexts: [],
         options: {},
@@ -164,7 +166,7 @@ const deepsarsCommandsModule = ({ servicesManager, commandsManager }) => {
         commandFn: () => {
           const title = 'Crear segmentacion';
           UIModalService.show({
-            content: CornerstoneViewportDownloadForm,
+            content: DeppsarsViewportSegmentation,
             title,
             contentProps: {
               onClose: UIModalService.hide,
