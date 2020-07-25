@@ -1,5 +1,6 @@
 import cornerstone from 'cornerstone-core';
 import OHIF from '@ohif/core';
+import cornerstoneTools from 'cornerstone-tools';
 
 export const makeContract = (dicomData, file_type, file_mod, file_view) => {
   var contract = {
@@ -68,4 +69,26 @@ export const makeTransaction = (route, operation, data) => {
   });
 
   return promisePetition;
+};
+
+export const segmentate_roi = (toolName, activeSegmentIndex) => {
+  console.log(toolName, activeSegmentIndex);
+  var element = cornerstone.getEnabledElements()[0].element;
+  var segmentationModule = cornerstoneTools.getModule('segmentation');
+  const {
+    labelmap2D,
+    labelmap3D,
+    currentImageIdIndex,
+    activeLabelmapIndex,
+  } = segmentationModule.getters.labelmap2D(element);
+
+  console.log(
+    toolName,
+    labelmap2D,
+    labelmap3D,
+    currentImageIdIndex,
+    activeLabelmapIndex
+  );
+  cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+  segmentationModule.setters.activeSegmentIndex(element, activeSegmentIndex);
 };

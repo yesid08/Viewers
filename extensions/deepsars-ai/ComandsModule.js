@@ -136,9 +136,9 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       segmentate_roi: {
         commandFn: ({ toolName, activeSegmentIndex }) => {
+          console.log(toolName, activeSegmentIndex);
           var element = cornerstone.getEnabledElements()[0].element;
           var segmentationModule = cornerstoneTools.getModule('segmentation');
-          console.log(segmentationModule);
           const {
             labelmap2D,
             labelmap3D,
@@ -164,7 +164,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       createSegmentation: {
         commandFn: () => {
-          const title = 'Crear segmentacion';
+          const title = 'Establecer segmentacion';
+
           UIModalService.show({
             content: DeepsarsSegmentationForm,
             title,

@@ -150,49 +150,9 @@ const TOOLBAR_BUTTON_TYPES = {
 const BUTTON_SEGMENTATION = {
   id: 'deepsars_seg',
   label: 'Segmentación',
-  icon: 'ellipse-circle',
-  buttons: [
-    {
-      id: 'createSegmentation',
-      label: 'Crear Segmentación',
-      icon: 'scissors',
-      commandName: 'createSegmentation',
-    },
-    {
-      id: 'CorrectionScissors 1',
-      label: 'Clase 1',
-      icon: 'scissors',
-      //
-      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
-      commandName: 'segmentate_roi',
-      commandOptions: { toolName: 'CorrectionScissors', activeSegmentIndex: 2 },
-    },
-    {
-      id: 'CorrectionScissors 2',
-      label: 'Clase 2',
-      icon: 'scissors',
-      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
-      commandName: 'segmentate_roi',
-      commandOptions: { toolName: 'CorrectionScissors', activeSegmentIndex: 3 },
-    },
-    {
-      id: 'CorrectionScissors 3',
-      label: 'Clase 3',
-      icon: 'scissors',
-      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
-      commandName: 'segmentate_roi',
-      commandOptions: { toolName: 'CorrectionScissors', activeSegmentIndex: 4 },
-    },
-    {
-      id: 'BrushEraser',
-      label: 'Borrar',
-      icon: 'trash',
-      //
-      type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
-      commandName: 'setToolActive',
-      commandOptions: { toolName: 'BrushEraser' },
-    },
-  ],
+  icon: 'palette',
+  type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
+  commandName: 'createSegmentation',
 };
 
 export default {

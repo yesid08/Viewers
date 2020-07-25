@@ -1,52 +1,85 @@
+/* eslint-disable no-console */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { TextInput } from '@ohif/ui';
+import { Select } from '@ohif/ui';
+import * as utils from './utils';
 import './DeepSarsSegmentationFormStyles.styl';
 
 const DeepsarsSegmentationForm = ({ onClose }) => {
-  const [SegmentationName, setSegmentationName] = useState('');
-  const [SegmentationIndex, setSegmentationIndex] = useState('');
-  const [error, setError] = useState({
-    SegmentationIndex: false,
-    SegmentationName: false,
-  });
+  const SEGMENTATION_OPTIONS = [
+    {
+      value: '',
+      key: '',
+    },
+    {
+      value: '1',
+      key: 'Segmentación_1',
+    },
+    {
+      value: '2',
+      key: 'Segmentación_2',
+    },
+    {
+      value: '3',
+      key: 'Segmentación_3',
+    },
+    {
+      value: '4',
+      key: 'Segmentación_4',
+    },
+    {
+      value: '5',
+      key: 'Segmentación_5',
+    },
+  ];
 
-  const error_messages = {
-    SegmentationName: 'Este campo no debe estar vacio.',
-  };
+  const TOOL_OPTIONS = [
+    {
+      value: '',
+      key: '',
+    },
+    {
+      value: 'CorrectionScissors',
+      key: 'Tijeras',
+    },
+    {
+      value: 'Brush',
+      key: 'Pincel',
+    },
+    {
+      value: 'BrushEraser',
+      key: 'Borrador',
+    },
+  ];
 
-  const renderErrorHandler = errorType => {
-    if (!error[errorType]) {
-      return null;
-    }
+  const [Segmentation, setSegmentation] = useState('');
+  const [Tool, setTool] = useState('');
 
-    return <div className="input-error">{error_messages[errorType]}</div>;
+  const onSave = () => {
+    console.log(Tool, parseInt(Segmentation));
+    utils.segmentate_roi(Tool, parseInt(Segmentation));
+    onClose();
   };
 
   return (
     <div>
       <div className="title">
-        {'Por favor indique el nombre e indice de la segmentación'}
+        {'Seleccione el tipo de segmentación y la herramienta a usar'}
       </div>
 
-      <div className="name">
-        <TextInput
-          type="text"
-          value={SegmentationName}
-          onChange={event => setSegmentationName(event.target.value)}
-          label={'Nombre de la segmentación'}
-          id="SegmentationName"
+      <div>
+        <Select
+          onChange={event => setSegmentation(event.target.value)}
+          options={SEGMENTATION_OPTIONS}
+          label={'Segmentación'}
         />
       </div>
-      {renderErrorHandler('SegmentationName')}
 
-      <div className="index">
-        <TextInput
-          type="number"
-          value={SegmentationIndex}
-          onChange={event => setSegmentationIndex(event.target.value)}
-          label={'Indice de la segmentación'}
-          id="SegmentationIndex"
+      <div>
+        <Select
+          onChange={event => setTool(event.target.value)}
+          options={TOOL_OPTIONS}
+          label={'Herramienta'}
         />
       </div>
 
@@ -57,7 +90,9 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
           </button>
         </div>
         <div className="action-save">
-          <button className="btn btn-primary">{'Guardar'}</button>
+          <button className="btn btn-primary" onClick={onSave}>
+            {'Guardar'}
+          </button>
         </div>
       </div>
     </div>
