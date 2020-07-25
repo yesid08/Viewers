@@ -1,6 +1,8 @@
 import ToolbarModule from './ToolbarModule';
 import deepsarsCommandsModule from './ComandsModule';
 import init from './init';
+import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
+
 export const DeepSARSAiExtension = {
   id: 'DeepSars extension',
   preRegistration({ servicesManager, configuration = {} }) {
@@ -13,3 +15,5 @@ export const DeepSARSAiExtension = {
     return deepsarsCommandsModule({ servicesManager, commandsManager });
   },
 };
+
+export { DeepsarsSegmentationForm };

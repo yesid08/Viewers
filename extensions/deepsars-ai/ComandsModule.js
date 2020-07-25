@@ -7,7 +7,7 @@ import * as predictions from './operationsAI/predictions';
 import * as heatmaps from './operationsAI/heatmaps';
 import * as analyzeRoi from './operationsAI/analyzeRoi';
 import cornerstone from 'cornerstone-core';
-import DeppsarsViewportSegmentation from '../cornerstone/src/DeepsarsViewportSegmentation';
+import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
 
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -166,7 +166,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         commandFn: () => {
           const title = 'Crear segmentacion';
           UIModalService.show({
-            content: DeppsarsViewportSegmentation,
+            content: DeepsarsSegmentationForm,
             title,
             contentProps: {
               onClose: UIModalService.hide,
