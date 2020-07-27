@@ -13,23 +13,27 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
     },
     {
       value: '1',
-      key: 'Segmentación_1',
+      key: 'ground glass',
     },
     {
       value: '2',
-      key: 'Segmentación_2',
+      key: 'consolidation',
     },
     {
       value: '3',
-      key: 'Segmentación_3',
+      key: 'interstitial infiltration',
     },
     {
       value: '4',
-      key: 'Segmentación_4',
+      key: 'Arbol en gemacion',
     },
     {
       value: '5',
-      key: 'Segmentación_5',
+      key: 'pleural effusion',
+    },
+    {
+      value: '6',
+      key: 'others',
     },
   ];
 

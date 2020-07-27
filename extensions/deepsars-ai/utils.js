@@ -89,6 +89,7 @@ export const segmentate_roi = (toolName, activeSegmentIndex) => {
     currentImageIdIndex,
     activeLabelmapIndex
   );
+  console.log(segmentationModule);
   cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
   segmentationModule.setters.activeSegmentIndex(element, activeSegmentIndex);
 };
