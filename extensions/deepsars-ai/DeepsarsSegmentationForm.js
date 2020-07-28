@@ -8,8 +8,8 @@ import './DeepSarsSegmentationFormStyles.styl';
 const DeepsarsSegmentationForm = ({ onClose }) => {
   const SEGMENTATION_OPTIONS = [
     {
-      value: 'Seleccionar',
-      key: ' - ',
+      value: ' - ',
+      key: '-Seleccionar-',
     },
     {
       value: '169',
@@ -39,8 +39,8 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
 
   const TOOL_OPTIONS = [
     {
-      value: 'Seleccionar',
-      key: ' - ',
+      value: ' - ',
+      key: '-Seleccionar-',
     },
     {
       value: 'CorrectionScissors',
