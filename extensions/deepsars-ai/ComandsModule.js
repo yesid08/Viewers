@@ -111,6 +111,13 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
+      analyze_rx_frontal_slice: {
+        commandFn: () => {
+          analyzeRoi.rxFrontalAnalyzeSlice(UINotificationService);
+        },
+        storeContexts: [],
+        options: {},
+      },
       show_current_segmentation: {
         commandFn: function() {
           const dicomUIDs = getDicomUIDs();

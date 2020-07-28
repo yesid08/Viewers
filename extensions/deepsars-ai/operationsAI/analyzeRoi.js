@@ -5,7 +5,8 @@ import cornerstone from 'cornerstone-core';
 import cornerstoneTools from 'cornerstone-tools';
 
 const createMeasurementFromRoi = (coordenate, aClass, probability) => {
-  var aDescription = `${aClass} : ${probability}`;
+  probability = parseFloat(probability).toFixed(3);
+  var aDescription = `${aClass} : ${probability}%`;
   console.log('================================================');
   console.log('coordinates', coordenate);
   console.log('class', aClass);
@@ -82,6 +83,78 @@ export const ctAxialAnalyzeSlice = UINotificationService => {
     microservice: 'models',
     file_mod: 'ct',
     file_view: 'axial',
+    task: 'analyze_zones',
+    file_type: 'slice',
+    file_ID: dicomData.SOPInstanceUID,
+  };
+  var promisePetition = utils.makeTransaction('aiModels', 'read', studyData);
+
+  UINotificationService.show({
+    title: 'Prediciendo zonas de interés',
+    message: 'Este proceso tomara unos segundos.',
+  });
+
+  promisePetition
+    .then(response => {
+      if (response.data.hasOwnProperty('error')) {
+        UINotificationService.show({
+          title: 'Error de Predicción',
+          type: 'warning',
+          message: 'Por favor intente de nuevo',
+        });
+      } else {
+        if (response.data.coordenates.length > 0) {
+          UINotificationService.show({
+            title: 'Zonas de interés detectadas',
+            message:
+              'Recuerda abrir el panel "measurements" para más información',
+          });
+          var localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
+          for (var i = 0; i < response.data.coordenates.length; i++) {
+            var coordenate = response.data.coordenates[i];
+            var probability = response.data.probabilities[i];
+            var aClass = response.data.classes[i];
+            var annotation = createMeasurementFromRoi(
+              coordenate,
+              aClass,
+              probability
+            );
+            //add to annotations
+            localMeasurementAPI.addMeasurement(annotation.toolType, annotation);
+          }
+          // Sync Measurements -------------------//
+          localMeasurementAPI.syncMeasurementsAndToolData();
+          cornerstone.getEnabledElements().forEach(enabledElement => {
+            cornerstone.updateImage(enabledElement.element);
+          });
+          // Let others know that the measurements are updated
+          localMeasurementAPI.onMeasurementsUpdated();
+          console.log(localMeasurementAPI);
+        } else {
+          console.log('there are NOT annotations');
+          UINotificationService.show({
+            title: 'No hay zonas de interés',
+            message: 'El modelo IA no detectó zonas de interés.',
+          });
+        }
+      }
+    })
+    .catch(rst => {
+      UINotificationService.show({
+        type: 'error',
+        title: 'Error',
+        message: 'Sin conexión.',
+      });
+      console.log(rst);
+    });
+};
+
+export const rxFrontalAnalyzeSlice = UINotificationService => {
+  var dicomData = utils.getDicomUIDs();
+  var studyData = {
+    microservice: 'models',
+    file_mod: 'rx',
+    file_view: 'frontal',
     task: 'analyze_zones',
     file_type: 'slice',
     file_ID: dicomData.SOPInstanceUID,

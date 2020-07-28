@@ -96,6 +96,12 @@ const BUTTON_RX_FRONTAL_HEAT_MAP_3D = {
   icon: 'sun',
   commandName: 'load_rx_frontal_heat_map',
 };
+const BUTTON_RX_FRONTAL_ANALYZE = {
+  id: 'ct_axial_slice_analyze',
+  label: 'zonas de interés',
+  icon: 'search',
+  commandName: 'analyze_rx_frontal_slice',
+};
 const BUTTON_RX = {
   id: 'Slice-RX',
   label: 'Slice-RX',
@@ -104,6 +110,7 @@ const BUTTON_RX = {
     BUTTON_RX_PREDICT,
     BUTTON_RX_PATHOLOGY,
     BUTTON_RX_PROBABILITY,
+    BUTTON_RX_FRONTAL_ANALYZE,
     BUTTON_RX_FRONTAL_HEAT_MAP_3D,
   ],
 };
