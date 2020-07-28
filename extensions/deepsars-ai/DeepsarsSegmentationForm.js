@@ -32,7 +32,7 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
       key: 'pleural effusion',
     },
     {
-      value: '6',
+      value: '263',
       key: 'others',
     },
   ];
