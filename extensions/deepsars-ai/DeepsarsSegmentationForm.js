@@ -6,11 +6,10 @@ import * as utils from './utils';
 import './DeepSarsSegmentationFormStyles.styl';
 
 const DeepsarsSegmentationForm = ({ onClose }) => {
+  const [Segmentation, setSegmentation] = useState('169');
+  const [Tool, setTool] = useState('CorrectionScissors');
+
   const SEGMENTATION_OPTIONS = [
-    {
-      value: ' - ',
-      key: '-Seleccionar-',
-    },
     {
       value: '169',
       key: 'ground glass',
@@ -39,10 +38,6 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
 
   const TOOL_OPTIONS = [
     {
-      value: ' - ',
-      key: '-Seleccionar-',
-    },
-    {
       value: 'CorrectionScissors',
       key: 'Tijeras',
     },
@@ -55,9 +50,6 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
       key: 'Borrador',
     },
   ];
-
-  const [Segmentation, setSegmentation] = useState('');
-  const [Tool, setTool] = useState('');
 
   const onSave = () => {
     console.log(Tool, parseInt(Segmentation));
@@ -73,6 +65,7 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
 
       <div>
         <Select
+          value={Segmentation}
           onChange={event => setSegmentation(event.target.value)}
           options={SEGMENTATION_OPTIONS}
           label={'Segmentación'}
