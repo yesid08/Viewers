@@ -72,24 +72,10 @@ export const makeTransaction = (route, operation, data) => {
 };
 
 export const segmentate_roi = (toolName, activeSegmentIndex) => {
-  console.log(toolName, activeSegmentIndex);
+  console.log('ToolName and ActiveSegment Index', toolName, activeSegmentIndex);
   var element = cornerstone.getEnabledElements()[0].element;
   var segmentationModule = cornerstoneTools.getModule('segmentation');
-  const {
-    labelmap2D,
-    labelmap3D,
-    currentImageIdIndex,
-    activeLabelmapIndex,
-  } = segmentationModule.getters.labelmap2D(element);
-
-  console.log(
-    toolName,
-    labelmap2D,
-    labelmap3D,
-    currentImageIdIndex,
-    activeLabelmapIndex
-  );
-  console.log(segmentationModule);
+  console.log('Segmentation Module', segmentationModule);
   cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
   segmentationModule.setters.activeSegmentIndex(element, activeSegmentIndex);
 };
