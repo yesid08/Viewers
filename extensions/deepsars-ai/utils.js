@@ -71,7 +71,11 @@ export const makeTransaction = (route, operation, data) => {
   return promisePetition;
 };
 
-export const segmentate_roi = (toolName, activeSegmentIndex) => {
+export const segmentate_roi = (
+  toolName,
+  activeSegmentIndex,
+  eraseWithRightClick
+) => {
   console.log('ToolName and ActiveSegment Index', toolName, activeSegmentIndex);
   var elements = cornerstone.getEnabledElements();
   elements.forEach(anElement => {

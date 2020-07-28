@@ -8,6 +8,7 @@ import './DeepSarsSegmentationFormStyles.styl';
 const DeepsarsSegmentationForm = ({ onClose }) => {
   const [Segmentation, setSegmentation] = useState('169');
   const [Tool, setTool] = useState('CorrectionScissors');
+  const [eraserChecked, setEraserCheck] = useState(false);
 
   const SEGMENTATION_OPTIONS = [
     {
@@ -53,7 +54,7 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
 
   const onSave = () => {
     console.log(Tool, parseInt(Segmentation));
-    utils.segmentate_roi(Tool, parseInt(Segmentation));
+    utils.segmentate_roi(Tool, parseInt(Segmentation), eraserChecked);
     onClose();
   };
 
@@ -78,6 +79,12 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
           options={TOOL_OPTIONS}
           label={'Herramienta'}
         />
+        <input
+          type="checkbox"
+          checked={eraserChecked}
+          onChange={event => setEraserCheck(!eraserChecked)}
+        />
+        {'Borrar Con click Derecho ?'}
       </div>
 
       <div className="actions">
