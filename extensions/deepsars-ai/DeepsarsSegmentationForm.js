@@ -9,26 +9,26 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
   const SEGMENTATION_OPTIONS = [
     {
       value: '',
-      key: '',
+      key: ' - ',
     },
     {
-      value: '1',
+      value: '169',
       key: 'ground glass',
     },
     {
-      value: '2',
+      value: '1043',
       key: 'consolidation',
     },
     {
-      value: '3',
+      value: '419',
       key: 'interstitial infiltration',
     },
     {
-      value: '4',
+      value: '248',
       key: 'Arbol en gemacion',
     },
     {
-      value: '5',
+      value: '367',
       key: 'pleural effusion',
     },
     {
@@ -40,7 +40,7 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
   const TOOL_OPTIONS = [
     {
       value: '',
-      key: '',
+      key: ' - ',
     },
     {
       value: 'CorrectionScissors',
