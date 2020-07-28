@@ -50,7 +50,7 @@ export const makeTransaction = (route, operation, data) => {
   const promisePetition = new Promise((resolve, reject) => {
     var xhttp = new XMLHttpRequest();
     xhttp.timeout = 1000 * 120;
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           resolve(JSON.parse(xhttp.response));
@@ -71,11 +71,20 @@ export const makeTransaction = (route, operation, data) => {
   return promisePetition;
 };
 
-export const segmentate_roi = (toolName, activeSegmentIndex) => {
+export const segmentate_roi = (toolName, activeSegmentIndex, eraseWithRightClick) => {
   console.log('ToolName and ActiveSegment Index', toolName, activeSegmentIndex);
   var element = cornerstone.getEnabledElements()[0].element;
   var segmentationModule = cornerstoneTools.getModule('segmentation');
   console.log('Segmentation Module', segmentationModule);
   cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+  if (eraseWithRightClick && toolName != 'BrushEraser') {
+    cornerstoneTools.setToolActive('BrushEraser', { mouseButtonMask: 2 });
+  }
+  if (toolName == 'BrushEraser') {
+    cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+  }
+  else {
+    cornerstoneTools.setToolDisabled('BrushEraser', { mouseButtonMask: 2 });
+  }
   segmentationModule.setters.activeSegmentIndex(element, activeSegmentIndex);
 };
