@@ -50,7 +50,7 @@ export const makeTransaction = (route, operation, data) => {
   const promisePetition = new Promise((resolve, reject) => {
     var xhttp = new XMLHttpRequest();
     xhttp.timeout = 1000 * 120;
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           resolve(JSON.parse(xhttp.response));
@@ -87,5 +87,11 @@ export const segmentate_roi = (
     segmentationModule.setters.activeSegmentIndex(element, activeSegmentIndex);
     console.log('Segmentation Module', segmentationModule);
     cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+    if (eraseWithRightClick && toolName != 'BrushEraser') {
+      cornerstoneTools.setToolActive('BrushEraser', { mouseButtonMask: 2 });
+    }
+    else if (toolName == 'BrushEraser') {
+      cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 2 });
+    }
   });
 };
