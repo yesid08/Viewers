@@ -90,7 +90,7 @@ export const segmentate_roi = (
     if (eraseWithRightClick && toolName != 'BrushEraser') {
       cornerstoneTools.setToolActive('BrushEraser', { mouseButtonMask: 2 });
     }
-    else if (toolName == 'BrushEraser') {
+    else {
       cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 2 });
     }
   });
