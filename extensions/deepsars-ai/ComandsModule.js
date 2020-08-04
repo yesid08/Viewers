@@ -8,6 +8,8 @@ import * as heatmaps from './operationsAI/heatmaps';
 import * as analyzeRoi from './operationsAI/analyzeRoi';
 import cornerstone from 'cornerstone-core';
 import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
+import * as coding from './segmentationModule/encoder';
+import * as decoding from './segmentationModule/decoder';
 
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -120,23 +122,20 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       show_current_segmentation: {
         commandFn: function() {
-          const dicomUIDs = getDicomUIDs();
           var segmentationModule = cornerstoneTools.getModule('segmentation');
-          var segmentationSeries = segmentationModule.state.series;
-          var wadorsKey = Object.keys(segmentationSeries).find(wadors => {
-            return wadors.split('/').slice(-7)[0] == dicomUIDs.StudyInstanceUID;
-          });
-          if (!wadorsKey) {
-            console.log('There are no segmentations to show');
-          } else {
-            var segmentationSeriesMetadata =
-              segmentationSeries[wadorsKey].labelmaps3D[0].metadata;
-            console.log(segmentationSeriesMetadata);
-            var segmentationMaskDataArray =
-              segmentationSeries[wadorsKey].labelmaps3D[0].labelmaps2D;
-            console.log(segmentationMaskDataArray);
-          }
-          console.log(cornerstone.getEnabledElements()[0]);
+          var segmentacion =
+            segmentationModule.state.series[
+              'wadors:https://deepsars.uis.edu.co/orthanc/dicom-web/studies/1.2.392.200036.9116.2.6.1.3268.2046851292.1549955395.633027/series/1.2.392.200036.9116.2.6.1.3268.2046851292.1549955593.47897/instances/1.2.392.200036.9116.2.6.1.3268.2046851292.1549955595.631343/frames/1'
+            ].labelmaps3D[0].labelmaps2D;
+          var segmentacionCodificada = coding.encodingSegmentations(
+            segmentacion,
+            512,
+            512
+          );
+          console.log('------', segmentacionCodificada);
+          var original = decoding.decodingSegmentations(segmentacionCodificada);
+          console.log('******', original);
+          console.log('maricadas', segmentacion);
         },
         storeContexts: [],
         options: {},
