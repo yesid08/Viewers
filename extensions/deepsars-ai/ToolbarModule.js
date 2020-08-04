@@ -104,7 +104,7 @@ const BUTTON_RX_FRONTAL_ANALYZE = {
 };
 const BUTTON_RX = {
   id: 'Slice-RX',
-  label: 'RX-hallazgos',
+  label: 'Slice-RX',
   icon: 'brain',
   buttons: [
     BUTTON_RX_PREDICT,
@@ -154,12 +154,36 @@ const TOOLBAR_BUTTON_TYPES = {
   BUILT_IN: 'builtIn',
 };
 
+const BUTTON_CREAR_SEGMENTATION = {
+  id: 'Crear',
+  label: 'Crear',
+  icon: 'palette',
+  commandName: 'createSegmentation',
+};
+
+const BUTTON_SAVE_SEGMENTATION = {
+  id: 'Guardar',
+  label: 'Guardar',
+  icon: 'database',
+  commandName: 'createSegmentation',
+};
+
+const BUTTON_RECOVER_SEGMENTATION = {
+  id: 'Recuperar',
+  label: 'Recuperar',
+  icon: 'info',
+  commandName: 'createSegmentation',
+};
 const BUTTON_SEGMENTATION = {
   id: 'deepsars_seg',
   label: 'Segmentación',
   icon: 'palette',
   type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
-  commandName: 'createSegmentation',
+  buttons: [
+    BUTTON_CREAR_SEGMENTATION,
+    BUTTON_SAVE_SEGMENTATION,
+    BUTTON_RECOVER_SEGMENTATION,
+  ],
 };
 
 export default {
