@@ -48,7 +48,6 @@ export const makeTransaction = (route, operation, data) => {
     route: route,
     _v: 3,
   };
-  console.log(requestPayload);
 
   const promisePetition = new Promise((resolve, reject) => {
     var xhttp = new XMLHttpRequest();
