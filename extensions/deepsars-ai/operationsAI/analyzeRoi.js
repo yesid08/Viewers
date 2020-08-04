@@ -5,7 +5,7 @@ import cornerstone from 'cornerstone-core';
 import cornerstoneTools from 'cornerstone-tools';
 
 const createMeasurementFromRoi = (coordenate, aClass, probability) => {
-  probability = 100 * parseFloat(probability).toFixed(3);
+  probability = parseFloat(probability * 100).toFixed(3);
   var aDescription = `${aClass} : ${probability}%`;
   console.log('================================================');
   console.log('coordinates', coordenate);
