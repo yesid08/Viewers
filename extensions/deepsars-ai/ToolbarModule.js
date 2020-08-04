@@ -104,7 +104,7 @@ const BUTTON_RX_FRONTAL_ANALYZE = {
 };
 const BUTTON_RX = {
   id: 'Slice-RX',
-  label: 'Slice-RX',
+  label: 'RX-hallazgos',
   icon: 'brain',
   buttons: [
     BUTTON_RX_PREDICT,
