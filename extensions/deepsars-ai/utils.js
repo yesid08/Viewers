@@ -36,21 +36,24 @@ export const getAllInstancesUIDs = () => {
 };
 
 export const makeTransaction = (route, operation, data) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const enterpriseParam = urlParams.get('_e');
   const requestPayload = {
     count: 0,
     data: data,
     date: String(new Date().getTime()),
-    enterprise: 2,
+    enterprise: enterpriseParam == undefined ? 2 : enterpriseParam,
     ips: [window.localStorage.getItem('saraid')],
     operation: operation,
     route: route,
     _v: 3,
   };
+  console.log(requestPayload);
 
   const promisePetition = new Promise((resolve, reject) => {
     var xhttp = new XMLHttpRequest();
     xhttp.timeout = 1000 * 120;
-    xhttp.onreadystatechange = function () {
+    xhttp.onreadystatechange = function() {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           resolve(JSON.parse(xhttp.response));
@@ -89,8 +92,7 @@ export const segmentate_roi = (
     cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
     if (eraseWithRightClick && toolName != 'BrushEraser') {
       cornerstoneTools.setToolActive('BrushEraser', { mouseButtonMask: 2 });
-    }
-    else {
+    } else {
       cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 2 });
     }
   });
