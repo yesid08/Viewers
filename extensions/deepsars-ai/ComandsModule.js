@@ -196,6 +196,11 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       saveSegmentation: {
         commandFn: () => {
+          UINotificationService.show({
+            title: 'En Desarrollo',
+            message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
+            type: 'warning',
+          });
           var segmentationModule = cornerstoneTools.getModule('segmentation');
           /* var claves = Object.keys(segmentationModule.state.series);
           var ids = utils.getDicomUIDs();
@@ -229,6 +234,11 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       recoverSegmentation: {
         commandFn: async () => {
+          UINotificationService.show({
+            title: 'En Desarrollo',
+            message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
+            type: 'warning',
+          });
           console.log('Recover segmentation');
           /* var segmentationModule = cornerstoneTools.getModule('segmentation');
           var element = cornerstone.getEnabledElements()[0].element;
