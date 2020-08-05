@@ -10,6 +10,7 @@ import cornerstone from 'cornerstone-core';
 import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
 import * as coding from './segmentationModule/encoder';
 import * as decoding from './segmentationModule/decoder';
+import * as utils from './utils';
 
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -128,19 +129,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       show_current_segmentation: {
         commandFn: function() {
           var segmentationModule = cornerstoneTools.getModule('segmentation');
-          var segmentacion =
-            segmentationModule.state.series[
-              'wadors:https://deepsars.uis.edu.co/orthanc/dicom-web/studies/1.2.392.200036.9116.2.6.1.3268.2046851292.1549955395.633027/series/1.2.392.200036.9116.2.6.1.3268.2046851292.1549955593.47897/instances/1.2.392.200036.9116.2.6.1.3268.2046851292.1549955595.631343/frames/1'
-            ].labelmaps3D[0].labelmaps2D;
-          var segmentacionCodificada = coding.encodingSegmentations(
-            segmentacion,
-            512,
-            512
-          );
-          console.log('------', segmentacionCodificada);
-          var original = decoding.decodingSegmentations(segmentacionCodificada);
-          console.log('******', original);
-          console.log('maricadas', segmentacion);
+          console.log(segmentationModule);
         },
         storeContexts: [],
         options: {},
@@ -191,11 +180,19 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       saveSegmentation: {
         commandFn: () => {
           var segmentationModule = cornerstoneTools.getModule('segmentation');
-          var claves = Object.keys(segmentationModule.state.series);
+          /* var claves = Object.keys(segmentationModule.state.series);
+          var ids = utils.getDicomUIDs();
+          var waddors = undefined;
+          claves.forEach(data => {
+            var information = data.split('/');
+            if (information[6] === ids.StudyInstanceUID) {
+              waddors = data;
+            }
+          });
+          console.log(waddors);
 
           var segmentation =
-            segmentationModule.state.series[claves[0]].labelmaps3D[0]
-              .labelmaps2D;
+            segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D;
           var columns = cornerstone.getEnabledElements()[0].image.columns;
           var rows = cornerstone.getEnabledElements()[0].image.rows;
           console.log(segmentation, columns, rows);
@@ -204,14 +201,38 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             columns,
             rows
           );
+          encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
+          encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
+          encodingSegmentation.clave = waddors;
           console.log(encodingSegmentation);
+          utils.makeTransaction('segmentations', 'write', encodingSegmentation); */
         },
         storeContexts: [],
         options: {},
       },
       recoverSegmentation: {
-        commandFn: () => {
+        commandFn: async () => {
           console.log('Recover segmentation');
+          /* var segmentationModule = cornerstoneTools.getModule('segmentation');
+          var element = cornerstone.getEnabledElements()[0].element;
+          segmentationModule.getters.labelmap2D(element);
+          var ids = utils.getDicomUIDs();
+          console.log(ids);
+          var petition = {
+            StudyInstanceUID: ids.StudyInstanceUID,
+            SeriesInstanceUID: ids.SeriesInstanceUID,
+          };
+          var result = await utils.makeTransaction(
+            'segmentations',
+            'read',
+            petition
+          );
+          console.log(result);
+          var segmentation = decoding.decodingSegmentations(result.data);
+          console.log(segmentation);
+          segmentationModule.state.series[
+            result.data.clave
+          ].labelmaps3D[0].labelmaps2D = segmentation; */
         },
         storeContexts: [],
         options: {},
