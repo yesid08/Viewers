@@ -74,6 +74,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
           UINotificationService.show({
             title: 'En Desarrollo',
             message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
+            type: 'warning',
           });
         },
         storeContexts: [],
