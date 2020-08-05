@@ -96,9 +96,14 @@ export const predictMultiplePathologies = (
           message: 'Por favor intente de nuevo',
         });
       } else {
+        var textResponse = '';
+        for (let [aClass, probability] of Object.entries(response)) {
+          probability = parseFloat(probability * 100).toFixed(2);
+          textResponse += `${aClass} : ${probability} \n`;
+        }
         UINotificationService.show({
           title: 'Predicción exitosa',
-          message: 'Revisa el console log para la respuesta.',
+          message: textResponse,
         });
       }
     })
