@@ -105,8 +105,8 @@ const BUTTON_RX_FRONTAL_ANALYZE = {
   commandName: 'analyze_rx_frontal_slice',
 };
 const BUTTON_RX = {
-  id: 'Slice-RX',
-  label: 'Slice-RX',
+  id: 'Hallazgos-RX',
+  label: 'Hallazgos-RX',
   icon: 'brain',
   buttons: [
     BUTTON_RX_PREDICT,
