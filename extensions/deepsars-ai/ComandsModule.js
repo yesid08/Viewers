@@ -188,6 +188,34 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
+      saveSegmentation: {
+        commandFn: () => {
+          var segmentationModule = cornerstoneTools.getModule('segmentation');
+          var claves = Object.keys(segmentationModule.state.series);
+
+          var segmentation =
+            segmentationModule.state.series[claves[0]].labelmaps3D[0]
+              .labelmaps2D;
+          var columns = cornerstone.getEnabledElements()[0].image.columns;
+          var rows = cornerstone.getEnabledElements()[0].image.rows;
+          console.log(segmentation, columns, rows);
+          var encodingSegmentation = coding.encodingSegmentations(
+            segmentation,
+            columns,
+            rows
+          );
+          console.log(encodingSegmentation);
+        },
+        storeContexts: [],
+        options: {},
+      },
+      recoverSegmentation: {
+        commandFn: () => {
+          console.log('Recover segmentation');
+        },
+        storeContexts: [],
+        options: {},
+      },
     },
 
     defaultContext: ['VIEWER'],

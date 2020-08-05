@@ -199,14 +199,14 @@ const BUTTON_SAVE_SEGMENTATION = {
   id: 'Guardar',
   label: 'Guardar',
   icon: 'database',
-  commandName: 'createSegmentation',
+  commandName: 'saveSegmentation',
 };
 
 const BUTTON_RECOVER_SEGMENTATION = {
   id: 'Recuperar',
   label: 'Recuperar',
   icon: 'info',
-  commandName: 'createSegmentation',
+  commandName: 'recoverSegmentation',
 };
 const BUTTON_SEGMENTATION = {
   id: 'deepsars_seg',
