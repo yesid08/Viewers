@@ -58,3 +58,56 @@ export const predecir = (
       });
     });
 };
+
+export const predictMultiplePathologies = (
+  UINotificationService,
+  file_type,
+  file_view,
+  file_mod
+) => {
+  var dicomData = utils.getDicomUIDs();
+  var contract = {
+    microservice: 'orthanc',
+    task: 'predict_pathologies',
+    file_ID:
+      file_type === 'slice'
+        ? dicomData.SOPInstanceUID
+        : dicomData.SeriesInstanceUID,
+    file_type: file_type,
+    file_mod: file_mod,
+    file_view: file_view,
+  };
+
+  UINotificationService.show({
+    title: 'Realizando predicción',
+    message: 'Este proceso tomara unos segundos.',
+  });
+
+  var promisePetition = utils.makeTransaction('aiModels', 'read', contract);
+
+  promisePetition
+    .then(response => {
+      console.log(response);
+      console.log(response.data.hasOwnProperty('error'));
+      if (response.data.hasOwnProperty('error')) {
+        UINotificationService.show({
+          title: 'Error de Predicción',
+          type: 'warning',
+          message: 'Por favor intente de nuevo',
+        });
+      } else {
+        UINotificationService.show({
+          title: 'Predicción exitosa',
+          message: 'Revisa el console log para la respuesta.',
+        });
+      }
+    })
+    .catch(rst => {
+      console.log(rst);
+      UINotificationService.show({
+        type: 'error',
+        title: 'Error',
+        message: 'Sin conexión.',
+      });
+    });
+};

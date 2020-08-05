@@ -51,14 +51,30 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       predecirSliceRx: {
         commandFn: () => {
-          predictions.predecir(
+          predictions.predictMultiplePathologies(
+            UINotificationService,
+            'slice',
+            'frontal',
+            'rx'
+          );
+          /* predictions.predecir(
             BUTTONS.BUTTON_RX_PATHOLOGY,
             BUTTONS.BUTTON_RX_PROBABILITY,
             UINotificationService,
             'slice',
             'rx',
             'frontal'
-          );
+          ); */
+        },
+        storeContexts: [],
+        options: {},
+      },
+      predecirRxCovid: {
+        commandFn: () => {
+          UINotificationService.show({
+            title: 'En Desarrollo',
+            message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
+          });
         },
         storeContexts: [],
         options: {},
