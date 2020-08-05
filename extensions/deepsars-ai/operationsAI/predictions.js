@@ -22,6 +22,7 @@ export const predecir = (
   UINotificationService.show({
     title: 'Realizando predicción',
     message: 'Este proceso tomara unos segundos.',
+    duration: 1000 * 2,
   });
 
   promisePetition
@@ -46,6 +47,8 @@ export const predecir = (
             pathology +
             ' con una confianza de ' +
             probability,
+          duration: 1000 * 15,
+          type: 'success',
         });
       }
     })
@@ -81,6 +84,7 @@ export const predictMultiplePathologies = (
   UINotificationService.show({
     title: 'Realizando predicción',
     message: 'Este proceso tomara unos segundos.',
+    duration: 1000 * 2,
   });
 
   var promisePetition = utils.makeTransaction('aiModels', 'read', contract);
@@ -97,13 +101,16 @@ export const predictMultiplePathologies = (
         });
       } else {
         var textResponse = '';
-        for (let [aClass, probability] of Object.entries(response)) {
+        for (let [aClass, probability] of Object.entries(response.data)) {
           probability = parseFloat(probability * 100).toFixed(2);
-          textResponse += `${aClass} : ${probability} \n`;
+          textResponse = textResponse + `${aClass} : ${probability}% \n`;
         }
+        console.log(textResponse);
         UINotificationService.show({
           title: 'Predicción exitosa',
           message: textResponse,
+          duration: 1000 * 15,
+          type: 'success',
         });
       }
     })
