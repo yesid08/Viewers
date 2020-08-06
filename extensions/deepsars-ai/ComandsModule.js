@@ -11,6 +11,7 @@ import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
 import * as coding from './segmentationModule/encoder';
 import * as decoding from './segmentationModule/decoder';
 import * as utils from './utils';
+import { states } from './Estados/estadosHerramientas';
 
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -196,70 +197,80 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       saveSegmentation: {
         commandFn: () => {
-          UINotificationService.show({
-            title: 'En Desarrollo',
-            message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
-            type: 'warning',
-          });
-          var segmentationModule = cornerstoneTools.getModule('segmentation');
-          /* var claves = Object.keys(segmentationModule.state.series);
-          var ids = utils.getDicomUIDs();
-          var waddors = undefined;
-          claves.forEach(data => {
-            var information = data.split('/');
-            if (information[6] === ids.StudyInstanceUID) {
-              waddors = data;
-            }
-          });
-          console.log(waddors);
+          if (states[0].isActive == false) {
+            UINotificationService.show({
+              title: states[0].name,
+              message: states[0].message,
+              type: states[0].state,
+            });
+          } else {
+            var segmentationModule = cornerstoneTools.getModule('segmentation');
+            var claves = Object.keys(segmentationModule.state.series);
+            var ids = utils.getDicomUIDs();
+            var waddors = undefined;
+            claves.forEach(data => {
+              var information = data.split('/');
+              if (information[6] === ids.StudyInstanceUID) {
+                waddors = data;
+              }
+            });
+            console.log(waddors);
 
-          var segmentation =
-            segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D;
-          var columns = cornerstone.getEnabledElements()[0].image.columns;
-          var rows = cornerstone.getEnabledElements()[0].image.rows;
-          console.log(segmentation, columns, rows);
-          var encodingSegmentation = coding.encodingSegmentations(
-            segmentation,
-            columns,
-            rows
-          );
-          encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
-          encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
-          encodingSegmentation.clave = waddors;
-          console.log(encodingSegmentation);
-          utils.makeTransaction('segmentations', 'write', encodingSegmentation); */
+            var segmentation =
+              segmentationModule.state.series[waddors].labelmaps3D[0]
+                .labelmaps2D;
+            var columns = cornerstone.getEnabledElements()[0].image.columns;
+            var rows = cornerstone.getEnabledElements()[0].image.rows;
+            console.log(segmentation, columns, rows);
+            var encodingSegmentation = coding.encodingSegmentations(
+              segmentation,
+              columns,
+              rows
+            );
+            encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
+            encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
+            encodingSegmentation.clave = waddors;
+            console.log(encodingSegmentation);
+            utils.makeTransaction(
+              'segmentations',
+              'write',
+              encodingSegmentation
+            );
+          }
         },
         storeContexts: [],
         options: {},
       },
       recoverSegmentation: {
         commandFn: async () => {
-          UINotificationService.show({
-            title: 'En Desarrollo',
-            message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
-            type: 'warning',
-          });
-          console.log('Recover segmentation');
-          /* var segmentationModule = cornerstoneTools.getModule('segmentation');
-          var element = cornerstone.getEnabledElements()[0].element;
-          segmentationModule.getters.labelmap2D(element);
-          var ids = utils.getDicomUIDs();
-          console.log(ids);
-          var petition = {
-            StudyInstanceUID: ids.StudyInstanceUID,
-            SeriesInstanceUID: ids.SeriesInstanceUID,
-          };
-          var result = await utils.makeTransaction(
-            'segmentations',
-            'read',
-            petition
-          );
-          console.log(result);
-          var segmentation = decoding.decodingSegmentations(result.data);
-          console.log(segmentation);
-          segmentationModule.state.series[
-            result.data.clave
-          ].labelmaps3D[0].labelmaps2D = segmentation; */
+          if (states[0].isActive == false) {
+            UINotificationService.show({
+              title: states[0].name,
+              message: states[0].message,
+              type: states[0].state,
+            });
+          } else {
+            var segmentationModule = cornerstoneTools.getModule('segmentation');
+            var element = cornerstone.getEnabledElements()[0].element;
+            segmentationModule.getters.labelmap2D(element);
+            var ids = utils.getDicomUIDs();
+            console.log(ids);
+            var petition = {
+              StudyInstanceUID: ids.StudyInstanceUID,
+              SeriesInstanceUID: ids.SeriesInstanceUID,
+            };
+            var result = await utils.makeTransaction(
+              'segmentations',
+              'read',
+              petition
+            );
+            console.log(result);
+            var segmentation = decoding.decodingSegmentations(result.data);
+            console.log(segmentation);
+            segmentationModule.state.series[
+              result.data.clave
+            ].labelmaps3D[0].labelmaps2D = segmentation;
+          }
         },
         storeContexts: [],
         options: {},
