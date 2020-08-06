@@ -19,19 +19,19 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
     definitions: {
       predecirVolumenCt: {
         commandFn: () => {
-          UINotificationService.show({
+          /* UINotificationService.show({
             title: 'No disponible',
             message: 'Esta funcionalidad se encuentra en mantenimiento.',
             type: 'warning',
-          });
-          /* predictions.predecir(
+          }); */
+          predictions.predecir(
             BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY,
             BUTTONS.BUTTON_CT_VOLUME_PROBABILITY,
             UINotificationService,
             'volumen',
             'ct',
             'axial'
-          ); */
+          );
         },
         storeContexts: [],
         options: {},
