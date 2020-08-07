@@ -117,11 +117,6 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             pathology: BUTTONS.BUTTON_RX_COVID_PATHOLOGY,
             probability: BUTTONS.BUTTON_RX_COVID_PROBABILITY,
           };
-          services.notification.show({
-            title: 'En Desarrollo',
-            message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
-            type: 'warning',
-          });
           predictions.predictAPathology(buttons, services, payloadData);
         },
         storeContexts: [],
