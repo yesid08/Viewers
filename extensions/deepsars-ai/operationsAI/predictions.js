@@ -6,7 +6,9 @@ export const predecir = (
   UINotificationService,
   file_type,
   file_view,
-  file_mod
+  file_mod,
+  task_class,
+  task_mode
 ) => {
   var dicomData = utils.getDicomUIDs();
   var studyData = utils.makeContract(
@@ -15,7 +17,9 @@ export const predecir = (
       : dicomData.SeriesInstanceUID,
     file_type,
     file_view,
-    file_mod
+    file_mod,
+    task_class,
+    task_mode
   );
   var promisePetition = utils.makeTransaction('aiModels', 'read', studyData);
 
@@ -66,7 +70,9 @@ export const predictMultiplePathologies = (
   UINotificationService,
   file_type,
   file_view,
-  file_mod
+  file_mod,
+  task_class,
+  task_mode
 ) => {
   var dicomData = utils.getDicomUIDs();
   var contract = {
@@ -79,6 +85,8 @@ export const predictMultiplePathologies = (
     file_type: file_type,
     file_mod: file_mod,
     file_view: file_view,
+    task_class: task_class,
+    task_mode: task_mode,
   };
 
   UINotificationService.show({

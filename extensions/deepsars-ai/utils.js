@@ -2,7 +2,14 @@ import cornerstone from 'cornerstone-core';
 import OHIF from '@ohif/core';
 import cornerstoneTools from 'cornerstone-tools';
 
-export const makeContract = (dicomData, file_type, file_mod, file_view) => {
+export const makeContract = (
+  dicomData,
+  file_type,
+  file_mod,
+  file_view,
+  task_class,
+  task_mode
+) => {
   var contract = {
     microservice: 'orthanc',
     task: 'predict_pathology',
@@ -10,6 +17,8 @@ export const makeContract = (dicomData, file_type, file_mod, file_view) => {
     file_type: file_type,
     file_mod: file_mod,
     file_view: file_view,
+    task_class: task_class,
+    task_mode: task_mode,
   };
 
   return contract;

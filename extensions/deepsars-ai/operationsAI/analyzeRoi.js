@@ -85,6 +85,8 @@ export const ctAxialAnalyzeSlice = UINotificationService => {
     file_view: 'axial',
     task: 'analyze_zones',
     file_type: 'slice',
+    task_class: 'detect',
+    task_mode: 'covid',
     file_ID: dicomData.SOPInstanceUID,
   };
   var promisePetition = utils.makeTransaction('aiModels', 'read', studyData);
@@ -157,6 +159,8 @@ export const rxFrontalAnalyzeSlice = UINotificationService => {
     file_view: 'frontal',
     task: 'analyze_zones',
     file_type: 'slice',
+    task_class: 'detect',
+    task_mode: 'covid',
     file_ID: dicomData.SOPInstanceUID,
   };
   var promisePetition = utils.makeTransaction('aiModels', 'read', studyData);

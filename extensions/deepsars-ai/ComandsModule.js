@@ -30,7 +30,9 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             UINotificationService,
             'volumen',
             'ct',
-            'axial'
+            'axial',
+            'classify',
+            'covid'
           );
         },
         storeContexts: [],
@@ -44,7 +46,9 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             UINotificationService,
             'slice',
             'ct',
-            'axial'
+            'axial',
+            'classify',
+            'covid'
           );
         },
         storeContexts: [],
@@ -56,7 +60,9 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             UINotificationService,
             'slice',
             'frontal',
-            'rx'
+            'rx',
+            'classify',
+            'diseases'
           );
           /* predictions.predecir(
             BUTTONS.BUTTON_RX_PATHOLOGY,

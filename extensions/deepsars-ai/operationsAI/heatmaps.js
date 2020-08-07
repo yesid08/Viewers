@@ -9,6 +9,8 @@ export const ctAxialheatMapVolumen = UINotificationService => {
     task: 'diagnose',
     file_type: 'volumen',
     file_ID: dicomData.SeriesInstanceUID,
+    task_class: 'classify',
+    task_mode: 'covid',
   };
   var promisePetition = utils.makeTransaction('aiModels', 'read', studyData);
 
@@ -50,6 +52,8 @@ export const ctAxialheatMapSlice = UINotificationService => {
     task: 'prepare',
     file_type: 'slice',
     file_ID: dicomData.SeriesInstanceUID,
+    task_class: 'classify',
+    task_mode: 'covid',
   };
   var promisePetition = utils.makeTransaction('aiModels', 'read', studyData);
 
@@ -90,6 +94,8 @@ export const rxFrontalheatMap = UINotificationService => {
     file_view: 'frontal',
     task: 'diagnose',
     file_type: 'slice',
+    task_class: 'classify',
+    task_mode: 'diseases',
     file_ID: dicomData.SOPInstanceUID,
   };
   var promisePetition = utils.makeTransaction('aiModels', 'read', studyData);
