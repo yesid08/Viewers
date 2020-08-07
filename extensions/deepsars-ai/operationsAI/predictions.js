@@ -1,27 +1,11 @@
 import * as utils from '../utils';
 
-export const predecir = (
-  BUTTON_PATHOLOGY,
-  BUTTON_PROBABILITY,
-  UINotificationService,
-  file_type,
-  file_view,
-  file_mod,
-  task_class,
-  task_mode
-) => {
-  var dicomData = utils.getDicomUIDs();
-  var studyData = utils.makeContract(
-    file_type === 'slice'
-      ? dicomData.SOPInstanceUID
-      : dicomData.SeriesInstanceUID,
-    file_type,
-    file_view,
-    file_mod,
-    task_class,
-    task_mode
-  );
-  var promisePetition = utils.makeTransaction('aiModels', 'read', studyData);
+export const predictAPathology = (buttons, services, payloadData) => {
+  const BUTTON_PATHOLOGY = buttons.pathology;
+  const BUTTON_PROBABILITY = buttons.probability;
+  const UINotificationService = services.notification;
+
+  var promisePetition = utils.makeTransaction('aiModels', 'read', payloadData);
 
   UINotificationService.show({
     title: 'Realizando predicción',
@@ -66,28 +50,8 @@ export const predecir = (
     });
 };
 
-export const predictMultiplePathologies = (
-  UINotificationService,
-  file_type,
-  file_view,
-  file_mod,
-  task_class,
-  task_mode
-) => {
-  var dicomData = utils.getDicomUIDs();
-  var contract = {
-    microservice: 'orthanc',
-    task: 'predict_pathologies',
-    file_ID:
-      file_type === 'slice'
-        ? dicomData.SOPInstanceUID
-        : dicomData.SeriesInstanceUID,
-    file_type: file_type,
-    file_mod: file_mod,
-    file_view: file_view,
-    task_class: task_class,
-    task_mode: task_mode,
-  };
+export const predictMultiplePathologies = (services, payloadData) => {
+  const UINotificationService = services.notification;
 
   UINotificationService.show({
     title: 'Realizando predicción',
@@ -95,7 +59,7 @@ export const predictMultiplePathologies = (
     duration: 1000 * 2,
   });
 
-  var promisePetition = utils.makeTransaction('aiModels', 'read', contract);
+  var promisePetition = utils.makeTransaction('aiModels', 'read', payloadData);
 
   promisePetition
     .then(response => {

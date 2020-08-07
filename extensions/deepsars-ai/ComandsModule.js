@@ -17,72 +17,112 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
   return {
     definitions: {
-      predecirVolumenCt: {
+      predictAxialCovidVolumeCt: {
         commandFn: () => {
           /* UINotificationService.show({
             title: 'No disponible',
             message: 'Esta funcionalidad se encuentra en mantenimiento.',
             type: 'warning',
           }); */
-          predictions.predecir(
-            BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY,
-            BUTTONS.BUTTON_CT_VOLUME_PROBABILITY,
-            UINotificationService,
-            'volumen',
-            'ct',
-            'axial',
-            'classify',
-            'covid'
-          );
+          var dicomData = utils.getDicomUIDs();
+          const payloadData = {
+            microservice: 'orthanc',
+            task: 'predict_pathology',
+            file_ID: dicomData.SeriesInstanceUID,
+            file_type: 'volumen',
+            file_mod: 'ct',
+            file_view: 'axial',
+            task_class: 'classify',
+            task_mode: 'covid',
+          };
+          const buttons = {
+            pathology: BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY,
+            probability: BUTTONS.BUTTON_CT_VOLUME_PROBABILITY,
+          };
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          predictions.predictAPathology(buttons, services, payloadData);
         },
         storeContexts: [],
         options: {},
       },
-      predecirSliceCt: {
+      predictAxialCovidSliceCt: {
         commandFn: () => {
-          predictions.predecir(
-            BUTTONS.BUTTON_CT_SLICE_PATHOLOGY,
-            BUTTONS.BUTTON_CT_SLICE_PROBABILITY,
-            UINotificationService,
-            'slice',
-            'ct',
-            'axial',
-            'classify',
-            'covid'
-          );
+          var dicomData = utils.getDicomUIDs();
+          const payloadData = {
+            microservice: 'orthanc',
+            task: 'predict_pathology',
+            file_ID: dicomData.SOPInstanceUID,
+            file_type: 'slice',
+            file_mod: 'ct',
+            file_view: 'axial',
+            task_class: 'classify',
+            task_mode: 'covid',
+          };
+          const buttons = {
+            pathology: BUTTONS.BUTTON_CT_SLICE_PATHOLOGY,
+            probability: BUTTONS.BUTTON_CT_SLICE_PROBABILITY,
+          };
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          predictions.predictAPathology(buttons, services, payloadData);
         },
         storeContexts: [],
         options: {},
       },
-      predecirSliceRx: {
+      predictFrontalMultilabelRx: {
         commandFn: () => {
-          predictions.predictMultiplePathologies(
-            UINotificationService,
-            'slice',
-            'frontal',
-            'rx',
-            'classify',
-            'diseases'
-          );
-          /* predictions.predecir(
-            BUTTONS.BUTTON_RX_PATHOLOGY,
-            BUTTONS.BUTTON_RX_PROBABILITY,
-            UINotificationService,
-            'slice',
-            'rx',
-            'frontal'
-          ); */
+          var dicomData = utils.getDicomUIDs();
+          const payloadData = {
+            microservice: 'orthanc',
+            task: 'predict_pathologies',
+            file_ID: dicomData.SOPInstanceUID,
+            file_type: 'slice',
+            file_mod: 'rx',
+            file_view: 'frontal',
+            task_class: 'classify',
+            task_mode: 'diseases',
+          };
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          predictions.predictMultiplePathologies(services, payloadData);
         },
         storeContexts: [],
         options: {},
       },
-      predecirRxCovid: {
+      predictFrontalCovidRx: {
         commandFn: () => {
-          UINotificationService.show({
+          var dicomData = utils.getDicomUIDs();
+          const payloadData = {
+            microservice: 'orthanc',
+            task: 'predict_pathology',
+            file_ID: dicomData.SOPInstanceUID,
+            file_type: 'slice',
+            file_mod: 'rx',
+            file_view: 'frontal',
+            task_class: 'classify',
+            task_mode: 'covid',
+          };
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          const buttons = {
+            pathology: BUTTONS.BUTTON_RX_COVID_PATHOLOGY,
+            probability: BUTTONS.BUTTON_RX_COVID_PROBABILITY,
+          };
+          services.notification.show({
             title: 'En Desarrollo',
             message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
             type: 'warning',
           });
+          predictions.predictAPathology(buttons, services, payloadData);
         },
         storeContexts: [],
         options: {},
@@ -115,37 +155,135 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      load_ct_axial_heat_map_volumen: {
+      heatmapAxialCovidVolumeCt: {
         commandFn: () => {
-          heatmaps.ctAxialheatMapVolumen(UINotificationService);
+          var dicomData = utils.getDicomUIDs();
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          var payloadData = {
+            microservice: 'models',
+            file_mod: 'ct',
+            file_view: 'axial',
+            task: 'diagnose',
+            file_type: 'volumen',
+            file_ID: dicomData.SeriesInstanceUID,
+            task_class: 'classify',
+            task_mode: 'covid',
+          };
+          heatmaps.calculateHeatmap(services, payloadData);
         },
         storeContexts: [],
         options: {},
       },
-      load_ct_axial_heat_map_slice: {
+      heatmapAxialCovidSliceCt: {
         commandFn: () => {
-          heatmaps.ctAxialheatMapSlice(UINotificationService);
+          var dicomData = utils.getDicomUIDs();
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          var payloadData = {
+            microservice: 'models',
+            file_mod: 'ct',
+            file_view: 'axial',
+            task: 'prepare',
+            file_type: 'slice',
+            file_ID: dicomData.SeriesInstanceUID,
+            task_class: 'classify',
+            task_mode: 'covid',
+          };
+          heatmaps.calculateHeatmap(services, payloadData);
         },
         storeContexts: [],
         options: {},
       },
-      analyze_ct_axial_slice: {
+      heatmapFrontalMultilabelRx: {
         commandFn: () => {
-          analyzeRoi.ctAxialAnalyzeSlice(UINotificationService);
+          var dicomData = utils.getDicomUIDs();
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          var payloadData = {
+            microservice: 'models',
+            file_mod: 'rx',
+            file_view: 'frontal',
+            task: 'diagnose',
+            file_type: 'slice',
+            task_class: 'classify',
+            task_mode: 'diseases',
+            file_ID: dicomData.SOPInstanceUID,
+          };
+          heatmaps.calculateHeatmap(services, payloadData);
         },
         storeContexts: [],
         options: {},
       },
-      load_rx_frontal_heat_map: {
+      heatmapFrontalCovidRx: {
         commandFn: () => {
-          heatmaps.rxFrontalheatMap(UINotificationService);
+          var dicomData = utils.getDicomUIDs();
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          var payloadData = {
+            microservice: 'models',
+            file_mod: 'rx',
+            file_view: 'frontal',
+            task: 'diagnose',
+            file_type: 'slice',
+            task_class: 'classify',
+            task_mode: 'covid',
+            file_ID: dicomData.SOPInstanceUID,
+          };
+          heatmaps.calculateHeatmap(services, payloadData);
         },
         storeContexts: [],
         options: {},
       },
-      analyze_rx_frontal_slice: {
+      analyzeAxialSliceCt: {
         commandFn: () => {
-          analyzeRoi.rxFrontalAnalyzeSlice(UINotificationService);
+          var dicomData = utils.getDicomUIDs();
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          var payloadData = {
+            microservice: 'models',
+            file_mod: 'ct',
+            file_view: 'axial',
+            task: 'analyze_zones',
+            file_type: 'slice',
+            task_class: 'detect',
+            task_mode: 'covid',
+            file_ID: dicomData.SOPInstanceUID,
+          };
+          analyzeRoi.analyzeSlice(services, payloadData);
+        },
+        storeContexts: [],
+        options: {},
+      },
+
+      analyzeFrontalSliceRx: {
+        commandFn: () => {
+          var dicomData = utils.getDicomUIDs();
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          var payloadData = {
+            microservice: 'models',
+            file_mod: 'rx',
+            file_view: 'frontal',
+            task: 'analyze_zones',
+            file_type: 'slice',
+            task_class: 'detect',
+            task_mode: 'covid',
+            file_ID: dicomData.SOPInstanceUID,
+          };
+          analyzeRoi.analyzeSlice(services, payloadData);
         },
         storeContexts: [],
         options: {},

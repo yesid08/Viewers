@@ -3,7 +3,7 @@ const BUTTON_CT_VOLUME_PREDICT = {
   label: 'Predecir',
   icon: 'play',
   type: 'command',
-  commandName: 'predecirVolumenCt',
+  commandName: 'predictAxialCovidVolumeCt',
 };
 export const BUTTON_CT_VOLUME_PATHOLOGY = {
   id: 'pathologyVolumen',
@@ -19,7 +19,7 @@ const BUTTON_CT_AXIAL_HEAT_MAP_3D = {
   id: 'ct_axial_heat_map_3d',
   label: 'Mapa de calor',
   icon: 'sun',
-  commandName: 'load_ct_axial_heat_map_volumen',
+  commandName: 'heatmapAxialCovidVolumeCt',
 };
 const BUTTON_CT_VOLUME = {
   id: 'Volumen-CT',
@@ -37,7 +37,7 @@ const BUTTON_CT_SLICE_PREDICT = {
   label: 'Predecir',
   icon: 'play',
   type: 'command',
-  commandName: 'predecirSliceCt',
+  commandName: 'predictAxialCovidSliceCt',
 };
 export const BUTTON_CT_SLICE_PATHOLOGY = {
   id: 'pathologySlice',
@@ -53,13 +53,13 @@ const BUTTON_CT_AXIAL_HEAT_MAP_2D = {
   id: 'ct_axial_heat_map_2d',
   label: 'Mapa de calor',
   icon: 'sun',
-  commandName: 'load_ct_axial_heat_map_slice',
+  commandName: 'heatmapAxialCovidSliceCt',
 };
 const BUTTON_CT_AXIAL_ANALYZE = {
   id: 'ct_axial_slice_analyze',
   label: 'zonas de interés',
   icon: 'search',
-  commandName: 'analyze_ct_axial_slice',
+  commandName: 'analyzeAxialSliceCt',
 };
 const BUTTON_CT_SLICE = {
   id: 'Slice-CT',
@@ -78,7 +78,7 @@ const BUTTON_RX_PREDICT = {
   label: 'Predecir',
   icon: 'play',
   type: 'command',
-  commandName: 'predecirSliceRx',
+  commandName: 'predictFrontalMultilabelRx',
 };
 
 export const BUTTON_RX_PATHOLOGY = {
@@ -96,13 +96,13 @@ const BUTTON_RX_FRONTAL_HEAT_MAP_3D = {
   id: 'rx_frontal_heat_map_3d',
   label: 'Mapa de calor',
   icon: 'sun',
-  commandName: 'load_rx_frontal_heat_map',
+  commandName: 'heatmapFrontalMultilabelRx',
 };
 const BUTTON_RX_FRONTAL_ANALYZE = {
   id: 'ct_axial_slice_analyze',
   label: 'zonas de interés',
   icon: 'search',
-  commandName: 'analyze_rx_frontal_slice',
+  commandName: 'analyzeFrontalSliceRx',
 };
 const BUTTON_RX = {
   id: 'Hallazgos-RX',
@@ -122,16 +122,24 @@ const BUTTON_RX_COVID_PREDICT = {
   label: 'Predecir',
   icon: 'play',
   type: 'command',
-  commandName: 'predecirRxCovid',
+  commandName: 'predictFrontalCovidRx',
 };
 
-const BUTTON_RX_COVID_PATHOLOGY = {
+const BUTTON_RX_COVID_HEATMAP = {
+  id: 'deepsars-rx-covid-heatmap',
+  label: 'mapa de calor',
+  icon: 'sun',
+  type: 'command',
+  commandName: 'heatmapFrontalCovidRx',
+};
+
+export const BUTTON_RX_COVID_PATHOLOGY = {
   id: 'deepsars-rx-covid-pathology',
   label: 'Patología',
   icon: 'lung',
 };
 
-const BUTTON_RX_COVID_PROBABILITY = {
+export const BUTTON_RX_COVID_PROBABILITY = {
   id: 'deepsars-rx-covid-probability',
   label: 'Precisión',
   icon: 'measure-target',
@@ -145,6 +153,7 @@ const BUTTON_RX_COVID = {
     BUTTON_RX_COVID_PREDICT,
     BUTTON_RX_COVID_PATHOLOGY,
     BUTTON_RX_COVID_PROBABILITY,
+    BUTTON_RX_COVID_HEATMAP,
   ],
 };
 
