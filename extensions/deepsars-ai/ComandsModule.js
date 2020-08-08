@@ -122,7 +122,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      load_measurement: {
+      loadMeasurement: {
         commandFn: () => {
           UINotificationService.show({
             title: 'Recuperando marcaciones',
@@ -136,7 +136,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      save_measurement: {
+      saveMeasurement: {
         commandFn: () => {
           UINotificationService.show({
             title: 'Guardando marcaciones',
