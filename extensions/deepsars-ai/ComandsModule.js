@@ -122,7 +122,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      loadMeasurement: {
+      load_measurement: {
         commandFn: () => {
           UINotificationService.show({
             title: 'Recuperando marcaciones',
@@ -133,7 +133,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      saveMeasurement: {
+      save_measurement: {
         commandFn: () => {
           UINotificationService.show({
             title: 'Guardando marcaciones',
@@ -283,7 +283,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      showCurrentSegmentation: {
+      show_current_segmentation: {
         commandFn: function() {
           var segmentationModule = cornerstoneTools.getModule('segmentation');
           console.log(segmentationModule);
@@ -361,20 +361,28 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             var columns = cornerstone.getEnabledElements()[0].image.columns;
             var rows = cornerstone.getEnabledElements()[0].image.rows;
             console.log(segmentation, columns, rows);
-            var encodingSegmentation = coding.encodingSegmentations(
+            const promesa = coding.encodingSegmentations(
               segmentation,
               columns,
               rows
             );
-            encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
-            encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
-            encodingSegmentation.clave = waddors;
-            console.log(encodingSegmentation);
-            utils.makeTransaction(
-              'segmentations',
-              'write',
-              encodingSegmentation
-            );
+
+            promesa.then(res => {
+              var encodingSegmentation = res;
+              encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
+              encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
+              encodingSegmentation.clave = waddors;
+              console.log(encodingSegmentation);
+              utils.makeTransaction(
+                'segmentations',
+                'write',
+                encodingSegmentation
+              );
+              UINotificationService.show({
+                title: 'Operacion exitosa',
+                message: 'Segmentaciones guardadas.',
+              });
+            });
           }
         },
         storeContexts: [],
@@ -398,17 +406,30 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               StudyInstanceUID: ids.StudyInstanceUID,
               SeriesInstanceUID: ids.SeriesInstanceUID,
             };
-            var result = await utils.makeTransaction(
-              'segmentations',
-              'read',
-              petition
-            );
-            console.log(result);
-            var segmentation = decoding.decodingSegmentations(result.data);
-            console.log(segmentation);
-            segmentationModule.state.series[
-              result.data.clave
-            ].labelmaps3D[0].labelmaps2D = segmentation;
+
+            try {
+              var result = await utils.makeTransaction(
+                'segmentations',
+                'read',
+                petition
+              );
+              console.log(result);
+              var segmentation = decoding.decodingSegmentations(result.data);
+              console.log(segmentation);
+              segmentationModule.state.series[
+                result.data.clave
+              ].labelmaps3D[0].labelmaps2D = segmentation;
+
+              UINotificationService.show({
+                title: 'Operacion exitosa',
+                message: 'Segmentaciones recuperadas.',
+              });
+            } catch (error) {
+              UINotificationService.show({
+                title: 'Error',
+                message: 'No hay segmentaciones guardadas para este estudio.',
+              });
+            }
           }
         },
         storeContexts: [],
