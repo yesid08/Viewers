@@ -162,14 +162,14 @@ const BUTTON_MEASUREMENT_SAVE = {
   label: 'Guardar Marcaciones',
   icon: 'database',
   type: 'command',
-  commandName: 'save_measurement',
+  commandName: 'saveMeasurement',
 };
 const BUTTON_MEASUREMENT_LOAD = {
   id: 'loadMeasurement',
   label: 'Cargar Marcaciones',
   icon: 'inline-edit',
   type: 'command',
-  commandName: 'load_measurement',
+  commandName: 'loadMeasurement',
 };
 const BUTTON_MEASUREMENT = {
   id: 'measurement',
@@ -188,7 +188,7 @@ const BUTTON_SHOW_SEGMENTATION = {
   id: 'segmentation',
   label: 'Mostrar segmentaciones',
   icon: 'dot-circle',
-  commandName: 'show_current_segmentation',
+  commandName: 'showCurrentSegmentation',
 };
 
 const TOOLBAR_BUTTON_TYPES = {
