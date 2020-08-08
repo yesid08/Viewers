@@ -127,8 +127,11 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
           UINotificationService.show({
             title: 'Recuperando marcaciones',
           });
-
-          retrieveAllMeasurements(getDicomUIDs().StudyInstanceUID);
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          retrieveAllMeasurements(getDicomUIDs().StudyInstanceUID, services);
         },
         storeContexts: [],
         options: {},
@@ -138,7 +141,11 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
           UINotificationService.show({
             title: 'Guardando marcaciones',
           });
-          saveMeasurements();
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          saveMeasurements(services);
         },
         storeContexts: [],
         options: {},
