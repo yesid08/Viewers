@@ -161,59 +161,62 @@ function getAllIndexes(arr, val) {
 }
 
 export const encodingSegmentations = (annotData, rows, columns) => {
-  let shape_img = [rows, columns];
-  let codedAnnotData = {
-    shape: [],
-    slicesData: [],
-  };
-
-  // Recorriendo arreglo que contiene objetos por corte segmentado.
-  var slice_count = 0;
-  for (const sliceData of annotData) {
-    if (sliceData == undefined) {
-      codedAnnotData.slicesData.push(null);
-      slice_count++;
-      continue;
-    }
-    const pixelValues = Object.values(sliceData.pixelData);
-    // Objeto donde se guarda las etiquetas y las segmentaciones codificadas.
-    let dataSlice = {
-      slice: slice_count,
-      segmentsOnLabelmap: sliceData.segmentsOnLabelmap,
-      segmentsData: [],
+  const promesa = new Promise((resolve, reject) => {
+    let shape_img = [rows, columns];
+    let codedAnnotData = {
+      shape: [],
+      slicesData: [],
     };
-    // Recorriendo arreglo de etiquetas presentes en cada corte.
-    for (const label of sliceData.segmentsOnLabelmap) {
-      if (label === 0) {
+
+    // Recorriendo arreglo que contiene objetos por corte segmentado.
+    var slice_count = 0;
+    for (const sliceData of annotData) {
+      if (sliceData == undefined) {
+        codedAnnotData.slicesData.push(null);
+        slice_count++;
         continue;
       }
-      let pixelValuesRemoveSeg = Object.assign([], pixelValues);
-      let foundedIdxPerLabel = [];
-      let idxPerLabel = [];
-      idxPerLabel = getAllIndexes(pixelValues, label);
-      for (let numSegPerLabel = 0; numSegPerLabel < 20; numSegPerLabel++) {
-        let result = findAndCodeContour(
-          dataSlice,
-          pixelValuesRemoveSeg,
-          label,
-          shape_img
-        );
-        dataSlice = Object.assign({}, result[0]);
-        let idx_segmentation = result[1];
-        pixelValuesRemoveSeg = Object.assign([], result[2]);
-        foundedIdxPerLabel = foundedIdxPerLabel.concat(idx_segmentation);
-        let noFoundedIdxPerLabel = [];
-        noFoundedIdxPerLabel = idxPerLabel.filter(
-          x => foundedIdxPerLabel.indexOf(x) === -1
-        );
-        if (noFoundedIdxPerLabel.length === 0) {
-          break;
+      const pixelValues = Object.values(sliceData.pixelData);
+      // Objeto donde se guarda las etiquetas y las segmentaciones codificadas.
+      let dataSlice = {
+        slice: slice_count,
+        segmentsOnLabelmap: sliceData.segmentsOnLabelmap,
+        segmentsData: [],
+      };
+      // Recorriendo arreglo de etiquetas presentes en cada corte.
+      for (const label of sliceData.segmentsOnLabelmap) {
+        if (label === 0) {
+          continue;
+        }
+        let pixelValuesRemoveSeg = Object.assign([], pixelValues);
+        let foundedIdxPerLabel = [];
+        let idxPerLabel = [];
+        idxPerLabel = getAllIndexes(pixelValues, label);
+        for (let numSegPerLabel = 0; numSegPerLabel < 20; numSegPerLabel++) {
+          let result = findAndCodeContour(
+            dataSlice,
+            pixelValuesRemoveSeg,
+            label,
+            shape_img
+          );
+          dataSlice = Object.assign({}, result[0]);
+          let idx_segmentation = result[1];
+          pixelValuesRemoveSeg = Object.assign([], result[2]);
+          foundedIdxPerLabel = foundedIdxPerLabel.concat(idx_segmentation);
+          let noFoundedIdxPerLabel = [];
+          noFoundedIdxPerLabel = idxPerLabel.filter(
+            x => foundedIdxPerLabel.indexOf(x) === -1
+          );
+          if (noFoundedIdxPerLabel.length === 0) {
+            break;
+          }
         }
       }
+      codedAnnotData.slicesData.push(dataSlice);
+      slice_count++;
     }
-    codedAnnotData.slicesData.push(dataSlice);
-    slice_count++;
-  }
-  codedAnnotData.shape = [shape_img[0], shape_img[1], slice_count];
-  return codedAnnotData;
+    codedAnnotData.shape = [shape_img[0], shape_img[1], slice_count];
+    resolve(codedAnnotData);
+  });
+  return promesa;
 };

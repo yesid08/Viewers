@@ -1,7 +1,7 @@
 export const states = [
   {
     name: 'Segmentations',
-    isActive: false,
+    isActive: true,
     state: 'warning',
     message: 'Esta funcionalidad se encuentra en fase de desarrollo.',
   },
