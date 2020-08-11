@@ -14,13 +14,11 @@ export const saveMeasurements = services => {
   if (currentMeasurements.length !== 0) {
     currentMeasurements.forEach(measurement => {
       measurement.viewport = undefined;
-      measurement._isLast = false;
       if (measurement._roiId) {
         console.log('Skipped the assignation of roiId');
       } else {
         measurement._roiId = measurement._id;
       }
-      delete measurement._id;
       makeTransaction('roiAnnotations', 'write', measurement)
         .then(response => {
           console.log('Respuesta=>', response);
@@ -67,6 +65,20 @@ export const retrieveAllMeasurements = (study, services) => {
         if (!alreadyExist) {
           localMeasurementAPI.addMeasurement(annotation.toolType, annotation);
         }
+      });
+      services.notification.show({
+        title: 'Anotaciones cargadas',
+        message:
+          'Se han cargado las anotaciones, por favor revise el panel derecho para más información.',
+        type: 'success',
+        duration: 5 * 1000,
+      });
+    } else {
+      services.notification.show({
+        title: 'Sin anotaciones',
+        message: 'El estudio actual no cuenta con anotaciones guardadas.',
+        type: 'success',
+        duration: 5 * 1000,
       });
     }
   });
