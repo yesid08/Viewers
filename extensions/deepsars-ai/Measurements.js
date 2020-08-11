@@ -58,15 +58,17 @@ export const retrieveAllMeasurements = (study, services) => {
   annotationsPromise.then(response => {
     const annotations = response.data;
     console.log(annotations);
-    annotations.forEach(annotation => {
-      console.log(annotation);
-      const alreadyExist = currentMeasurements.some(measurement => {
-        return measurement._roiId === annotation._roiId;
+    if (annotations != undefined) {
+      annotations.forEach(annotation => {
+        console.log(annotation);
+        const alreadyExist = currentMeasurements.some(measurement => {
+          return measurement._roiId === annotation._roiId;
+        });
+        if (!alreadyExist) {
+          localMeasurementAPI.addMeasurement(annotation.toolType, annotation);
+        }
       });
-      if (!alreadyExist) {
-        localMeasurementAPI.addMeasurement(annotation.toolType, annotation);
-      }
-    });
+    }
   });
   annotationsPromise.catch(error => {
     console.error(error);
