@@ -48,70 +48,25 @@ export const retrieveAllMeasurements = (study, services) => {
   const currentMeasurements = localMeasurementAPI.tools.RectangleRoi.concat(
     localMeasurementAPI.tools.EllipticalRoi
   );
-  const allTools = localMeasurementAPI.toolGroups.allTools;
   console.log('Sacando anotaciones del estudio =>', study);
   console.log('ANOTACIONES ACTUALES', currentMeasurements);
-  makeTransaction('roiAnnotations', 'readList', { StudyInstanceUID: study })
-    .then(response => {
-      console.log('Respuesta=>', response.data);
-      console.log('currentMeasurements', currentMeasurements);
-      if (response.data != undefined) {
-        const roiAnnotations = response.data;
-        response.data.forEach((measurement, index) => {
-          if (
-            !currentMeasurements.some(e => {
-              return e._roiId === measurement._roiId;
-            })
-          ) {
-            console.log(
-              'the meassurement e, doesnt exist in current measurements',
-              measurement
-            );
-            measurement.lesionNamingNumber = localMeasurementAPI.calculateLesionNamingNumber(
-              currentMeasurements
-            );
-            measurement.measurementNumber = localMeasurementAPI.calculateMeasurementNumber(
-              measurement
-            );
-            measurement._id = measurement.roiId;
-            console.log(measurement);
-            localMeasurementAPI.addMeasurement(
-              measurement.toolType,
-              measurement
-            );
-            console.log(localMeasurementAPI);
-            console.log(roiAnnotations);
-            console.log(
-              'measurement description after add',
-              measurement.description
-            );
-          }
-        });
-        // Sync Measurements -------------------//
-        localMeasurementAPI.syncMeasurementsAndToolData();
-        cornerstone.getEnabledElements().forEach(enabledElement => {
-          cornerstone.updateImage(enabledElement.element);
-        });
-        // Let others know that the measurements are updated
-        localMeasurementAPI.onMeasurementsUpdated();
-        services.notification.show({
-          title: 'Anotaciones cargadas',
-          message:
-            'Recuerde abrir el panel derecho para obtener más información.',
-          type: 'success',
-          duration: 1000 * 5,
-        });
-      } else {
-        services.notification.show({
-          title: 'Anotaciones cargadas',
-          message: 'Actualmente, este estudio no posee anotaciones guardadas.',
-          type: 'success',
-          duration: 1000 * 5,
-        });
+  const annotationsPromise = makeTransaction('roiAnnotations', 'readList', {
+    StudyInstanceUID: study,
+  });
+  annotationsPromise.then(response => {
+    const annotations = response.data;
+    console.log(annotations);
+    annotations.forEach(annotation => {
+      console.log(annotation);
+      const alreadyExist = currentMeasurements.some(measurement => {
+        return measurement._roiId === annotation._roiId;
+      });
+      if (!alreadyExist) {
+        localMeasurementAPI.addMeasurement(annotation.toolType, annotation);
       }
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.log('Error=>', error);
     });
+  });
+  annotationsPromise.catch(error => {
+    console.error(error);
+  });
 };
