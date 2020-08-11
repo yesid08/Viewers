@@ -13,6 +13,8 @@ export const saveMeasurements = services => {
 
   if (currentMeasurements.length !== 0) {
     currentMeasurements.forEach(measurement => {
+      measurement.viewport = undefined;
+      measurement._isLast = false;
       if (measurement._roiId) {
         console.log('Skipped the assignation of roiId');
       } else {
