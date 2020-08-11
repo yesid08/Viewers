@@ -159,14 +159,14 @@ const BUTTON_RX_COVID = {
 
 const BUTTON_MEASUREMENT_SAVE = {
   id: 'saveMeasurement',
-  label: 'Guardar Marcaciones',
+  label: 'Guardar',
   icon: 'database',
   type: 'command',
   commandName: 'saveMeasurement',
 };
 const BUTTON_MEASUREMENT_LOAD = {
   id: 'loadMeasurement',
-  label: 'Cargar Marcaciones',
+  label: 'Recuperar',
   icon: 'inline-edit',
   type: 'command',
   commandName: 'loadMeasurement',
