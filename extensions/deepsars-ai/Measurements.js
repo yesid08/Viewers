@@ -1,6 +1,6 @@
 import OHIF from '@ohif/core';
 import cornerstone from 'cornerstone-core';
-import { makeTransaction } from './utils';
+import { makeTransaction, guid } from './utils';
 
 export const saveMeasurements = services => {
   const localMeasurementAPI = OHIF.measurements.MeasurementApi.Instance;
@@ -12,12 +12,14 @@ export const saveMeasurements = services => {
   );
 
   if (currentMeasurements.length !== 0) {
-    currentMeasurements.forEach(measurement => {
+    currentMeasurements.forEach((measurement, index) => {
       measurement.viewport = undefined;
+      measurement.lesionNamingNumber = currentMeasurements.length + index + 1;
+      measurement.measurementNumber = currentMeasurements.length + index + 1;
       if (measurement._roiId) {
         console.log('Skipped the assignation of roiId');
       } else {
-        measurement._roiId = measurement._id;
+        measurement._roiId = guid();
       }
       makeTransaction('roiAnnotations', 'write', measurement)
         .then(response => {
@@ -48,6 +50,10 @@ export const retrieveAllMeasurements = (study, services) => {
   const currentMeasurements = localMeasurementAPI.tools.RectangleRoi.concat(
     localMeasurementAPI.tools.EllipticalRoi
   );
+  currentMeasurements.forEach((measurement, index) => {
+    measurement.lesionNamingNumber = index + 1;
+    measurement.measurementNumber = index + 1;
+  });
   console.log('Sacando anotaciones del estudio =>', study);
   console.log('ANOTACIONES ACTUALES', currentMeasurements);
   const annotationsPromise = makeTransaction('roiAnnotations', 'readList', {
@@ -57,7 +63,9 @@ export const retrieveAllMeasurements = (study, services) => {
     const annotations = response.data;
     console.log(annotations);
     if (annotations != undefined) {
-      annotations.forEach(annotation => {
+      annotations.forEach((annotation, index) => {
+        annotation.lesionNamingNumber = currentMeasurements.length + index + 1;
+        annotation.measurementNumber = currentMeasurements.length + index + 1;
         console.log(annotation);
         const alreadyExist = currentMeasurements.some(measurement => {
           return measurement._roiId === annotation._roiId;
