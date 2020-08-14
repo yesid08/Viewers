@@ -5,12 +5,12 @@ import { Select } from '@ohif/ui';
 import * as utils from './utils';
 import './DeepSarsSegmentationFormStyles.styl';
 
-const DeepsarsSegmentationForm = ({ onClose }) => {
+const DeepsarsSegmentationForm = ({ onClose, SEGMENTATION_OPTIONS }) => {
   const [Segmentation, setSegmentation] = useState('169');
   const [Tool, setTool] = useState('CorrectionScissors');
   const [eraserChecked, setEraserCheck] = useState(false);
 
-  const SEGMENTATION_OPTIONS = [
+  /* const SEGMENTATION_OPTIONS = [
     {
       value: '169',
       key: 'ground glass',
@@ -35,7 +35,7 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
       value: '263',
       key: 'others',
     },
-  ];
+  ]; */
 
   const TOOL_OPTIONS = [
     {
@@ -105,6 +105,7 @@ const DeepsarsSegmentationForm = ({ onClose }) => {
 
 DeepsarsSegmentationForm.propTypes = {
   onClose: PropTypes.func,
+  SEGMENTATION_OPTIONS: PropTypes.array,
 };
 
 export default DeepsarsSegmentationForm;

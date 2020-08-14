@@ -328,14 +328,20 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       createSegmentation: {
         commandFn: () => {
+          var result = utils.makeTransaction('systemConfig', 'read', {
+            type: 'ohifConfig',
+          });
           const title = 'Establecer segmentacion';
-
-          UIModalService.show({
-            content: DeepsarsSegmentationForm,
-            title,
-            contentProps: {
-              onClose: UIModalService.hide,
-            },
+          result.then(params => {
+            console.log(params.data.value);
+            UIModalService.show({
+              content: DeepsarsSegmentationForm,
+              title,
+              contentProps: {
+                onClose: UIModalService.hide,
+                SEGMENTATION_OPTIONS: params.data.value,
+              },
+            });
           });
         },
         storeContexts: [],
@@ -368,6 +374,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             var columns = cornerstone.getEnabledElements()[0].image.columns;
             var rows = cornerstone.getEnabledElements()[0].image.rows;
             console.log(segmentation, columns, rows);
+            console.log(JSON.stringify(segmentation));
             const promesa = coding.encodingSegmentations(
               segmentation,
               columns,
@@ -417,21 +424,23 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             try {
               var result = await utils.makeTransaction(
                 'segmentations',
-                'read',
+                'readList',
                 petition
               );
-              console.log(result);
-              var segmentation = decoding.decodingSegmentations(result.data);
-              console.log(segmentation);
-              segmentationModule.state.series[
-                result.data.clave
-              ].labelmaps3D[0].labelmaps2D = segmentation;
-
+              console.log(result.data.length, result);
+              result.data.forEach(seg => {
+                var segmentation = decoding.decodingSegmentations(seg);
+                console.log(segmentation);
+                segmentationModule.state.series[
+                  seg.clave
+                ].labelmaps3D[0].labelmaps2D = segmentation;
+              });
               UINotificationService.show({
                 title: 'Operacion exitosa',
                 message: 'Segmentaciones recuperadas.',
               });
             } catch (error) {
+              console.log(error);
               UINotificationService.show({
                 title: 'Error',
                 message: 'No hay segmentaciones guardadas para este estudio.',
