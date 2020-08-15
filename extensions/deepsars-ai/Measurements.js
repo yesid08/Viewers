@@ -72,6 +72,13 @@ export const retrieveAllMeasurements = (study, services) => {
           localMeasurementAPI.addMeasurement(annotation.toolType, annotation);
         }
       });
+      // Sync Measurements -------------------//
+      localMeasurementAPI.syncMeasurementsAndToolData();
+      cornerstone.getEnabledElements().forEach(enabledElement => {
+        cornerstone.updateImage(enabledElement.element);
+      });
+      // Let others know that the measurements are updated
+      localMeasurementAPI.onMeasurementsUpdated();
       services.notification.show({
         title: 'Anotaciones cargadas',
         message:
