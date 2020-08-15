@@ -24,7 +24,7 @@ export const getAllInstancesUIDs = () => {
 
 export const makeTransaction = (route, operation, data) => {
   const urlParams = new URLSearchParams(window.location.search);
-  const enterpriseParam = urlParams.get('_e');
+  const enterpriseParam = urlParams.get('entidad');
   const requestPayload = {
     count: 0,
     data: data,
