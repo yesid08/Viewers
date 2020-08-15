@@ -2,11 +2,13 @@ import ToolbarModule from './ToolbarModule';
 import deepsarsCommandsModule from './ComandsModule';
 import init from './init';
 import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
+import { ohifConf } from './configuration';
 
 export const DeepSARSAiExtension = {
   id: 'DeepSars extension',
-  preRegistration({ servicesManager, configuration = {} }) {
+  async preRegistration({ servicesManager, configuration = {} }) {
     init({ servicesManager, configuration });
+    console.log('*****', ohifConf, '*****');
   },
   getToolbarModule() {
     return ToolbarModule;
@@ -16,4 +18,4 @@ export const DeepSARSAiExtension = {
   },
 };
 
-export { DeepsarsSegmentationForm };
+export { DeepsarsSegmentationForm, ohifConf };

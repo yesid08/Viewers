@@ -12,6 +12,7 @@ import * as coding from './segmentationModule/encoder';
 import * as decoding from './segmentationModule/decoder';
 import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
+import { ohifConf } from './index';
 
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -328,18 +329,16 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       createSegmentation: {
         commandFn: () => {
-          var result = utils.makeTransaction('systemConfig', 'read', {
-            type: 'ohifConfig',
-          });
+          console.log('algo', ohifConf, 'algo');
           const title = 'Establecer segmentacion';
-          result.then(params => {
-            console.log(params.data.value);
+          ohifConf.then(configuration => {
+            console.log(configuration.segmentationClasses);
             UIModalService.show({
               content: DeepsarsSegmentationForm,
               title,
               contentProps: {
                 onClose: UIModalService.hide,
-                SEGMENTATION_OPTIONS: params.data.value,
+                SEGMENTATION_OPTIONS: configuration.segmentationClasses,
               },
             });
           });
