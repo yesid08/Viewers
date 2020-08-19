@@ -50,48 +50,27 @@ export const predictAPathology = (buttons, services, payloadData) => {
     });
 };
 
-export const predictMultiplePathologies = (services, payloadData) => {
-  const UINotificationService = services.notification;
-
-  UINotificationService.show({
-    title: 'Realizando predicción',
-    message: 'Este proceso tomara unos segundos.',
-    duration: 1000 * 2,
-  });
-
+export const predictMultiplePathologies = payloadData => {
   var promisePetition = utils.makeTransaction('aiModels', 'read', payloadData);
-
-  promisePetition
-    .then(response => {
-      console.log(response);
-      console.log(response.data.hasOwnProperty('error'));
-      if (response.data.hasOwnProperty('error')) {
-        UINotificationService.show({
-          title: 'Error de Predicción',
-          type: 'warning',
-          message: 'Por favor intente de nuevo',
-        });
-      } else {
-        var textResponse = '';
-        for (let [aClass, probability] of Object.entries(response.data)) {
-          probability = parseFloat(probability * 100).toFixed(2);
-          textResponse = textResponse + `${aClass} : ${probability}% \n`;
+  const promisePrediction = new Promise((resolve, reject) => {
+    promisePetition
+      .then(response => {
+        console.log(response);
+        console.log(response.data.hasOwnProperty('error'));
+        if (response.data.hasOwnProperty('error')) {
+          resolve({ error: response.data.error });
+        } else {
+          var pathologies = {};
+          for (let [aClass, probability] of Object.entries(response.data)) {
+            pathologies[aClass] = parseFloat(probability * 100).toFixed(2);
+          }
+          resolve(pathologies);
         }
-        console.log(textResponse);
-        UINotificationService.show({
-          title: 'Predicción exitosa',
-          message: textResponse,
-          duration: 1000 * 15,
-          type: 'success',
-        });
-      }
-    })
-    .catch(rst => {
-      console.log(rst);
-      UINotificationService.show({
-        type: 'error',
-        title: 'Error',
-        message: 'Sin conexión.',
+      })
+      .catch(rst => {
+        console.log(rst);
+        resolve({ error: 'There is no connection', result: rst });
       });
-    });
+  });
+  return promisePrediction;
 };

@@ -1,24 +1,16 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
+import PropTypes from 'prop-types';
 
-class RxDiseasesModal extends React.Component {
-  render() {
-    return (
-      <Plot
-        width="100%"
-        data={[
-          {
-            x: [1, 2, 3],
-            y: [2, 6, 3],
-            type: 'scatter',
-            mode: 'lines+markers',
-            marker: { color: 'red' },
-          },
-          { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] },
-        ]}
-        layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
-      />
-    );
-  }
-}
+const RxDiseasesModal = ({ chartData }) => {
+  return (
+    <div>
+      <Plot data={chartData} layout={{ title: 'OHIF PLOT' }} />
+    </div>
+  );
+};
+
+RxDiseasesModal.propTypes = {
+  chartData: PropTypes.array,
+};
 export default RxDiseasesModal;

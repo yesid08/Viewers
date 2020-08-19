@@ -8,12 +8,12 @@ import * as heatmaps from './operationsAI/heatmaps';
 import * as analyzeRoi from './operationsAI/analyzeRoi';
 import cornerstone from 'cornerstone-core';
 import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
-import rxDiseasesModal from './RxDiseasesModal';
 import * as coding from './segmentationModule/encoder';
 import * as decoding from './segmentationModule/decoder';
 import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
+import RxDiseasesModal from './RxDiseasesModal';
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
   return {
@@ -76,7 +76,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         options: {},
       },
       predictFrontalMultilabelRx: {
-        commandFn: () => {
+        commandFn: async () => {
+          const title = 'Hallazgos encontrados';
           var dicomData = utils.getDicomUIDs();
           const payloadData = {
             microservice: 'orthanc',
@@ -92,7 +93,41 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             notification: UINotificationService,
             modal: UIModalService,
           };
-          predictions.predictMultiplePathologies(services, payloadData);
+          services.notification.show({
+            title: 'Prediciendo hallazgos RX',
+            message:
+              'Por favor espere un momento, mientras se calculan los hallazgos RX de la imágen.',
+            type: 'info',
+            description: 'Hubo un problema prediciendo el modelo RX-Hallazgos',
+          });
+          const pathologiesData = await predictions.predictMultiplePathologies(
+            payloadData
+          );
+          if (pathologiesData.hasOwnProperty('error')) {
+            services.notification.show({
+              title: 'Error',
+              message: 'Sin conexión',
+              type: 'error',
+              description:
+                'Hubo un problema prediciendo el modelo RX-Hallazgos',
+            });
+          } else {
+            console.log(pathologiesData);
+            const data = [
+              {
+                type: 'bar',
+                x: Object.keys(pathologiesData),
+                y: Object.values(pathologiesData),
+              },
+            ];
+            UIModalService.show({
+              content: RxDiseasesModal,
+              title,
+              contentProps: {
+                chartData: data,
+              },
+            });
+          }
         },
         storeContexts: [],
         options: {},
@@ -296,13 +331,6 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
           const title = 'My first chart in plotly';
           var segmentationModule = cornerstoneTools.getModule('segmentation');
           console.log(segmentationModule);
-          UIModalService.show({
-            content: rxDiseasesModal,
-            title,
-            contentProps: {
-              onClose: UIModalService.hide,
-            },
-          });
         },
         storeContexts: [],
         options: {},
