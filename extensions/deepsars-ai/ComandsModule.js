@@ -410,6 +410,11 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             var rows = cornerstone.getEnabledElements()[0].image.rows;
             console.log(segmentation, columns, rows);
             console.log(JSON.stringify(segmentation));
+            if (segmentation._segId == undefined) {
+              console.log('nuevo  seg id');
+              segmentation._segId = utils.guid();
+            }
+            const _segId = segmentation._segId;
             const promesa = coding.encodingSegmentations(
               segmentation,
               columns,
@@ -421,6 +426,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
               encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
               encodingSegmentation.clave = waddors;
+              encodingSegmentation._segId = _segId;
               console.log(encodingSegmentation);
               utils.makeTransaction(
                 'segmentations',
@@ -464,8 +470,10 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               );
               console.log(result.data.length, result);
               result.data.forEach(seg => {
+                const _segId = seg._segId;
                 var segmentation = decoding.decodingSegmentations(seg);
-                console.log(segmentation);
+                segmentation._segId = _segId;
+                console.log('+++', segmentation);
                 segmentationModule.state.series[
                   seg.clave
                 ].labelmaps3D[0].labelmaps2D = segmentation;
