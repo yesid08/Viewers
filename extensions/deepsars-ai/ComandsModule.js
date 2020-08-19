@@ -8,12 +8,12 @@ import * as heatmaps from './operationsAI/heatmaps';
 import * as analyzeRoi from './operationsAI/analyzeRoi';
 import cornerstone from 'cornerstone-core';
 import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
+import rxDiseasesModal from './RxDiseasesModal';
 import * as coding from './segmentationModule/encoder';
 import * as decoding from './segmentationModule/decoder';
 import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
-
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
   return {
@@ -291,10 +291,18 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      show_current_segmentation: {
+      showCurrentSegmentation: {
         commandFn: function() {
+          const title = 'My first chart in plotly';
           var segmentationModule = cornerstoneTools.getModule('segmentation');
           console.log(segmentationModule);
+          UIModalService.show({
+            content: rxDiseasesModal,
+            title,
+            contentProps: {
+              onClose: UIModalService.hide,
+            },
+          });
         },
         storeContexts: [],
         options: {},
