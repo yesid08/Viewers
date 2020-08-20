@@ -27,6 +27,7 @@ const AnalizeRoiModal = ({ modality, ohifConf, services }) => {
       file_ID: dicomData.SOPInstanceUID,
     };
     analyzeRoi.analyzeSlice(services, payloadData);
+    services.modal.hide();
   };
 
   return (
@@ -52,6 +53,7 @@ const AnalizeRoiModal = ({ modality, ohifConf, services }) => {
           min={0}
           max={100}
           step={1}
+          value={50}
           showPercentage={true}
           label={'Confianza de predicción'}
         />
