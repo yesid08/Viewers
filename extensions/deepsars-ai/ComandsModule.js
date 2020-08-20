@@ -14,6 +14,7 @@ import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
 import RxDiseasesModal from './RxDiseasesModal';
+import AnalizeRoiModal from './Modals/AnalyzeRoiModal';
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
   return {
@@ -283,22 +284,22 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       analyzeAxialSliceCt: {
         commandFn: () => {
-          var dicomData = utils.getDicomUIDs();
+          const title = 'Regiones de interés';
           const services = {
             notification: UINotificationService,
             modal: UIModalService,
           };
-          var payloadData = {
-            microservice: 'models',
-            file_mod: 'ct',
-            file_view: 'axial',
-            task: 'analyze_zones',
-            file_type: 'slice',
-            task_class: 'detect',
-            task_mode: 'covid',
-            file_ID: dicomData.SOPInstanceUID,
-          };
-          analyzeRoi.analyzeSlice(services, payloadData);
+          ohifConf.then(configuration => {
+            services.modal.show({
+              content: AnalizeRoiModal,
+              title,
+              contentProps: {
+                modality: 'ct',
+                ohifConf: configuration,
+                services: services,
+              },
+            });
+          });
         },
         storeContexts: [],
         options: {},
@@ -306,29 +307,28 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
 
       analyzeFrontalSliceRx: {
         commandFn: () => {
-          var dicomData = utils.getDicomUIDs();
+          const title = 'Regiones de interés';
           const services = {
             notification: UINotificationService,
             modal: UIModalService,
           };
-          var payloadData = {
-            microservice: 'models',
-            file_mod: 'rx',
-            file_view: 'frontal',
-            task: 'analyze_zones',
-            file_type: 'slice',
-            task_class: 'detect',
-            task_mode: 'covid',
-            file_ID: dicomData.SOPInstanceUID,
-          };
-          analyzeRoi.analyzeSlice(services, payloadData);
+          ohifConf.then(configuration => {
+            services.modal.show({
+              content: AnalizeRoiModal,
+              title,
+              contentProps: {
+                modality: 'rx',
+                ohifConf: configuration,
+                services: services,
+              },
+            });
+          });
         },
         storeContexts: [],
         options: {},
       },
       showCurrentSegmentation: {
         commandFn: function() {
-          const title = 'My first chart in plotly';
           var segmentationModule = cornerstoneTools.getModule('segmentation');
           console.log(segmentationModule);
         },

@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Select, State, Range } from '@ohif/ui';
-import * as utils from './../utils';
-import * as analyzeRoi from './../operationsAI/analyzeRoi';
+import { Select, Range } from '@ohif/ui';
+import * as utils from '../utils';
+import * as analyzeRoi from '../operationsAI/analyzeRoi';
 
 const AnalizeRoiModal = ({ modality, ohifConf, services }) => {
   const viewsArray = ohifConf.views[modality];
