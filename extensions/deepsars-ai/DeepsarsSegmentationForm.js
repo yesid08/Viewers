@@ -5,37 +5,14 @@ import { Select } from '@ohif/ui';
 import * as utils from './utils';
 import './DeepSarsSegmentationFormStyles.styl';
 
-const DeepsarsSegmentationForm = ({ onClose, SEGMENTATION_OPTIONS }) => {
+const DeepsarsSegmentationForm = ({
+  onClose,
+  SEGMENTATION_OPTIONS,
+  UINotificationService,
+}) => {
   const [Segmentation, setSegmentation] = useState('169');
   const [Tool, setTool] = useState('CorrectionScissors');
   const [eraserChecked, setEraserCheck] = useState(false);
-
-  /* const SEGMENTATION_OPTIONS = [
-    {
-      value: '169',
-      key: 'ground glass',
-    },
-    {
-      value: '1043',
-      key: 'consolidation',
-    },
-    {
-      value: '419',
-      key: 'interstitial infiltration',
-    },
-    {
-      value: '248',
-      key: 'Arbol en gemacion',
-    },
-    {
-      value: '367',
-      key: 'pleural effusion',
-    },
-    {
-      value: '263',
-      key: 'others',
-    },
-  ]; */
 
   const TOOL_OPTIONS = [
     {
@@ -54,7 +31,12 @@ const DeepsarsSegmentationForm = ({ onClose, SEGMENTATION_OPTIONS }) => {
 
   const onSave = () => {
     console.log(Tool, parseInt(Segmentation));
-    utils.segmentate_roi(Tool, parseInt(Segmentation), eraserChecked);
+    utils.segmentate_roi(
+      Tool,
+      parseInt(Segmentation),
+      eraserChecked,
+      UINotificationService
+    );
     onClose();
   };
 
@@ -106,6 +88,7 @@ const DeepsarsSegmentationForm = ({ onClose, SEGMENTATION_OPTIONS }) => {
 DeepsarsSegmentationForm.propTypes = {
   onClose: PropTypes.func,
   SEGMENTATION_OPTIONS: PropTypes.array,
+  UINotificationService: PropTypes.object,
 };
 
 export default DeepsarsSegmentationForm;

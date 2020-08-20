@@ -1,7 +1,8 @@
 import cornerstone from 'cornerstone-core';
 import OHIF from '@ohif/core';
 import cornerstoneTools from 'cornerstone-tools';
-
+import * as decoding from './segmentationModule/decoder';
+var recover = false;
 export const getDicomUIDs = () => {
   const defaultEnabledElement = cornerstone.getEnabledElements()[0];
   const image = defaultEnabledElement.image;
@@ -60,11 +61,45 @@ export const makeTransaction = (route, operation, data) => {
   return promisePetition;
 };
 
-export const segmentate_roi = (
+export const segmentate_roi = async (
   toolName,
   activeSegmentIndex,
-  eraseWithRightClick
+  eraseWithRightClick,
+  UINotificationService
 ) => {
+  if (recover == false) {
+    var segmentationModule = cornerstoneTools.getModule('segmentation');
+    var element = cornerstone.getEnabledElements()[0].element;
+    segmentationModule.getters.labelmap2D(element);
+    var ids = getDicomUIDs();
+    var petition = {
+      StudyInstanceUID: ids.StudyInstanceUID,
+      SeriesInstanceUID: ids.SeriesInstanceUID,
+    };
+
+    try {
+      var result = await makeTransaction('segmentations', 'readList', petition);
+      result.data.forEach(seg => {
+        var _segId = seg._segId;
+        console.log(_segId);
+        var segmentation = decoding.decodingSegmentations(seg);
+        segmentation._segId = _segId;
+        segmentationModule.state.series[
+          seg.clave
+        ].labelmaps3D[0].labelmaps2D = segmentation;
+      });
+      UINotificationService.show({
+        title: 'Operacion exitosa',
+        message: 'Segmentaciones recuperadas.',
+      });
+      recover = true;
+    } catch (error) {
+      UINotificationService.show({
+        title: 'Error al recuperar',
+        message: 'Por favor intente de nuevo.',
+      });
+    }
+  }
   console.log('ToolName and ActiveSegment Index', toolName, activeSegmentIndex);
   var elements = cornerstone.getEnabledElements();
   elements.forEach(anElement => {

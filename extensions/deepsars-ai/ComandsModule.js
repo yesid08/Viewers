@@ -375,6 +375,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               contentProps: {
                 onClose: UIModalService.hide,
                 SEGMENTATION_OPTIONS: configuration.segmentationClasses,
+                UINotificationService: UINotificationService,
               },
             });
           });
@@ -401,15 +402,13 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 waddors = data;
               }
             });
-            console.log(waddors);
 
             var segmentation =
               segmentationModule.state.series[waddors].labelmaps3D[0]
                 .labelmaps2D;
+            var _segId = segmentation._segId;
             var columns = cornerstone.getEnabledElements()[0].image.columns;
             var rows = cornerstone.getEnabledElements()[0].image.rows;
-            console.log(segmentation, columns, rows);
-            console.log(JSON.stringify(segmentation));
             const promesa = coding.encodingSegmentations(
               segmentation,
               columns,
@@ -421,16 +420,23 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
               encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
               encodingSegmentation.clave = waddors;
-              console.log(encodingSegmentation);
-              utils.makeTransaction(
-                'segmentations',
-                'write',
-                encodingSegmentation
-              );
-              UINotificationService.show({
-                title: 'Operacion exitosa',
-                message: 'Segmentaciones guardadas.',
-              });
+              encodingSegmentation._segId = _segId;
+              try {
+                utils.makeTransaction(
+                  'segmentations',
+                  'write',
+                  encodingSegmentation
+                );
+                UINotificationService.show({
+                  title: 'Operacion exitosa',
+                  message: 'Segmentaciones guardadas.',
+                });
+              } catch (error) {
+                UINotificationService.show({
+                  title: 'Error al guardar',
+                  message: 'Por favor intente de nuevo.',
+                });
+              }
             });
           }
         },
@@ -464,8 +470,10 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               );
               console.log(result.data.length, result);
               result.data.forEach(seg => {
+                const _segId = seg._segId;
                 var segmentation = decoding.decodingSegmentations(seg);
-                console.log(segmentation);
+                segmentation._segId = _segId;
+                console.log('+++', segmentation);
                 segmentationModule.state.series[
                   seg.clave
                 ].labelmaps3D[0].labelmaps2D = segmentation;
