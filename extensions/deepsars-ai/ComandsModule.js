@@ -375,6 +375,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               contentProps: {
                 onClose: UIModalService.hide,
                 SEGMENTATION_OPTIONS: configuration.segmentationClasses,
+                UINotificationService: UINotificationService,
               },
             });
           });
@@ -401,20 +402,13 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 waddors = data;
               }
             });
-            console.log(waddors);
 
             var segmentation =
               segmentationModule.state.series[waddors].labelmaps3D[0]
                 .labelmaps2D;
+            var _segId = segmentation._segId;
             var columns = cornerstone.getEnabledElements()[0].image.columns;
             var rows = cornerstone.getEnabledElements()[0].image.rows;
-            console.log(segmentation, columns, rows);
-            console.log(JSON.stringify(segmentation));
-            if (segmentation._segId == undefined) {
-              console.log('nuevo  seg id');
-              segmentation._segId = utils.guid();
-            }
-            const _segId = segmentation._segId;
             const promesa = coding.encodingSegmentations(
               segmentation,
               columns,
@@ -427,16 +421,22 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
               encodingSegmentation.clave = waddors;
               encodingSegmentation._segId = _segId;
-              console.log(encodingSegmentation);
-              utils.makeTransaction(
-                'segmentations',
-                'write',
-                encodingSegmentation
-              );
-              UINotificationService.show({
-                title: 'Operacion exitosa',
-                message: 'Segmentaciones guardadas.',
-              });
+              try {
+                utils.makeTransaction(
+                  'segmentations',
+                  'write',
+                  encodingSegmentation
+                );
+                UINotificationService.show({
+                  title: 'Operacion exitosa',
+                  message: 'Segmentaciones guardadas.',
+                });
+              } catch (error) {
+                UINotificationService.show({
+                  title: 'Error al guardar',
+                  message: 'Por favor intente de nuevo.',
+                });
+              }
             });
           }
         },
