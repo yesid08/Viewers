@@ -12,7 +12,7 @@ import * as decoding from './segmentationModule/decoder';
 import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
-import RxDiseasesModal from './Modals/ProbabilityDistributionModal';
+import probabilityDistributionModal from './Modals/ProbabilityDistributionModal';
 import AnalizeRoiModal from './Modals/AnalyzeRoiModal';
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -137,7 +137,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               showlegend: false,
             };
             UIModalService.show({
-              content: RxDiseasesModal,
+              content: probabilityDistributionModal,
               title,
               contentProps: {
                 chartData: data,
