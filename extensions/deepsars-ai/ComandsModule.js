@@ -127,12 +127,20 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             ];
             const layout = {
               title: 'Probabilidad de patologías',
+              plot_bgcolor: '#151A1F',
+              paper_bgcolor: '#151A1F',
+              font: {
+                family: 'Roboto',
+                color: '#ffffff',
+              },
               xaxis: {
                 title: 'Patologías',
                 tickangle: -45,
               },
               yaxis: {
                 title: 'Probabilidad [%]',
+                gridcolor: '#ffffff',
+                domain: [0, 100],
               },
               showlegend: false,
             };
