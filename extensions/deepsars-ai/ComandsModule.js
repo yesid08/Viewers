@@ -5,7 +5,6 @@ import cornerstoneTools from 'cornerstone-tools';
 import * as BUTTONS from './ToolbarModule';
 import * as predictions from './operationsAI/predictions';
 import * as heatmaps from './operationsAI/heatmaps';
-import * as analyzeRoi from './operationsAI/analyzeRoi';
 import cornerstone from 'cornerstone-core';
 import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
 import * as coding from './segmentationModule/encoder';
@@ -300,6 +299,14 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               },
             });
           });
+          ohifConf.catch(error => {
+            services.notification.show({
+              title: 'Error',
+              message: 'No se pudo cargar la configuración de OHIF.',
+              type: 'error',
+            });
+            console.error(error);
+          });
         },
         storeContexts: [],
         options: {},
@@ -322,6 +329,14 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 services: services,
               },
             });
+          });
+          ohifConf.catch(error => {
+            services.notification.show({
+              title: 'Error',
+              message: 'No se pudo cargar la configuración de OHIF.',
+              type: 'error',
+            });
+            console.error(error);
           });
         },
         storeContexts: [],
@@ -365,6 +380,10 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       createSegmentation: {
         commandFn: () => {
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
           console.log('algo', ohifConf, 'algo');
           const title = 'Establecer segmentacion';
           ohifConf.then(configuration => {
@@ -378,6 +397,14 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 UINotificationService: UINotificationService,
               },
             });
+          });
+          ohifConf.catch(error => {
+            services.notification.show({
+              title: 'Error',
+              message: 'No se pudo cargar la configuración de OHIF.',
+              type: 'error',
+            });
+            console.error(error);
           });
         },
         storeContexts: [],
