@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const probabilityDistributionModal = ({ chartData, chartLayout }) => {
   return (
     <div>
-      <Plot data={chartData} layout={chartLayout} />
+      <Plot data={chartData} layout={chartLayout} style={{ width: '100%' }} />
     </div>
   );
 };
