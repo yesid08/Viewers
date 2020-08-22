@@ -12,7 +12,7 @@ import * as decoding from './segmentationModule/decoder';
 import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
-import RxDiseasesModal from './RxDiseasesModal';
+import RxDiseasesModal from './Modals/ProbabilityDistributionModal';
 import AnalizeRoiModal from './Modals/AnalyzeRoiModal';
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -117,6 +117,10 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               {
                 type: 'bar',
                 name: 'Probabilidad de patología',
+                marker: {
+                  color: '#7cb342',
+                },
+                orientation: 'v',
                 x: Object.keys(pathologiesData),
                 y: Object.values(pathologiesData),
               },
