@@ -116,15 +116,28 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             const data = [
               {
                 type: 'bar',
+                name: 'Probabilidad de patología',
                 x: Object.keys(pathologiesData),
                 y: Object.values(pathologiesData),
               },
             ];
+            const layout = {
+              title: 'Probabilidad de patologías',
+              xaxis: {
+                title: 'Patologías',
+                tickangle: -45,
+              },
+              yaxis: {
+                title: 'Probabilidad [%]',
+              },
+              showlegend: false,
+            };
             UIModalService.show({
               content: RxDiseasesModal,
               title,
               contentProps: {
                 chartData: data,
+                chartLayout: layout,
               },
             });
           }
