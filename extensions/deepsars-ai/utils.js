@@ -1,7 +1,7 @@
 import cornerstone from 'cornerstone-core';
 import OHIF from '@ohif/core';
 import cornerstoneTools from 'cornerstone-tools';
-import * as decoding from './segmentationModule/decoder';
+import * as decoding from './segmentationModule/decoderV4';
 var recover = false;
 export const getDicomUIDs = () => {
   const defaultEnabledElement = cornerstone.getEnabledElements()[0];
@@ -67,21 +67,30 @@ export const segmentate_roi = async (
   eraseWithRightClick,
   UINotificationService
 ) => {
-  if (recover == false) {
-    var segmentationModule = cornerstoneTools.getModule('segmentation');
-    var element = cornerstone.getEnabledElements()[0].element;
-    segmentationModule.getters.labelmap2D(element);
-    var ids = getDicomUIDs();
-    var petition = {
-      StudyInstanceUID: ids.StudyInstanceUID,
-      SeriesInstanceUID: ids.SeriesInstanceUID,
-    };
-
+  var segmentationModule = cornerstoneTools.getModule('segmentation');
+  var element = cornerstone.getEnabledElements()[0].element;
+  segmentationModule.getters.labelmap2D(element);
+  var claves = Object.keys(segmentationModule.state.series);
+  var ids = getDicomUIDs();
+  var waddors = undefined;
+  claves.forEach(data => {
+    var information = data.split('/');
+    if (information[6] === ids.StudyInstanceUID) {
+      waddors = data;
+    }
+  });
+  var petition = {
+    StudyInstanceUID: ids.StudyInstanceUID,
+    SeriesInstanceUID: ids.SeriesInstanceUID,
+  };
+  if (
+    segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D[0]
+      .segmentsOnLabelmap == 0
+  ) {
     try {
       var result = await makeTransaction('segmentations', 'readList', petition);
       result.data.forEach(seg => {
         var _segId = seg._segId;
-        console.log(_segId);
         var segmentation = decoding.decodingSegmentations(seg);
         segmentation._segId = _segId;
         segmentationModule.state.series[
@@ -95,8 +104,8 @@ export const segmentate_roi = async (
       recover = true;
     } catch (error) {
       UINotificationService.show({
-        title: 'Error al recuperar',
-        message: 'Por favor intente de nuevo.',
+        title: 'Operación finalizada',
+        message: 'No hay segmentaciones para recuperar.',
       });
     }
   }
