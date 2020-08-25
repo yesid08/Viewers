@@ -90,9 +90,10 @@ export const analyzeSlice = (services, payloadData) => {
       if (response.data.hasOwnProperty('error')) {
         UINotificationService.show({
           title: 'Error de Predicción',
-          type: 'warning',
           message: 'Por favor intente de nuevo',
-          duration: 1000 * 1,
+          type: 'warning',
+          duration: 5 * 1000,
+          position: 'topRight',
         });
       } else {
         if (response.data.coordenates.length > 0) {

@@ -12,8 +12,10 @@ export const calculateHeatmap = (services, payloadData) => {
       if (response.data.hasOwnProperty('error')) {
         UINotificationService.show({
           title: 'Error de Predicción',
-          type: 'warning',
           message: 'Por favor intente de nuevo',
+          type: 'warning',
+          duration: 5 * 1000,
+          position: 'topRight',
         });
       } else {
         UINotificationService.show({

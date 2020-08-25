@@ -1,5 +1,5 @@
 import * as utils from '../utils';
-
+import cornerstone from 'cornerstone-core';
 export const predictAPathology = (buttons, services, payloadData) => {
   const BUTTON_PATHOLOGY = buttons.pathology;
   const BUTTON_PROBABILITY = buttons.probability;
@@ -18,11 +18,32 @@ export const predictAPathology = (buttons, services, payloadData) => {
       console.log(response);
       console.log(response.data.hasOwnProperty('error'));
       if (response.data.hasOwnProperty('error')) {
-        UINotificationService.show({
-          title: 'Error de Predicción',
-          type: 'warning',
-          message: 'Por favor intente de nuevo',
-        });
+        //Handle model with less than 20 slices
+        var uidData = utils.getAllInstancesUIDs();
+        const minInstancesNumber = 20;
+        if (
+          uidData.length < minInstancesNumber &&
+          payloadData.file_type == 'volumen'
+        ) {
+          UINotificationService.hide();
+          UINotificationService.show({
+            title: 'Insuficientes instancias',
+            type: 'warning',
+            duration: 15 * 1000,
+            autoClose: false,
+            position: 'topRight',
+            message:
+              'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+          });
+        } else {
+          UINotificationService.show({
+            title: 'Error de Predicción',
+            type: 'warning',
+            duration: 5 * 1000,
+            position: 'topRight',
+            message: 'Por favor intente de nuevo',
+          });
+        }
       } else {
         var pathology = response.data.class;
         var probability = response.data.probability.toFixed(2) * 100 + '%';
