@@ -7,8 +7,8 @@ import * as predictions from './operationsAI/predictions';
 import * as heatmaps from './operationsAI/heatmaps';
 import cornerstone from 'cornerstone-core';
 import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
-import * as coding from './segmentationModule/encoder';
-import * as decoding from './segmentationModule/decoder';
+import * as coding from './segmentationModule/encoderV4';
+import * as decoding from './segmentationModule/decoderV4';
 import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
@@ -461,35 +461,35 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             var _segId = segmentation._segId;
             var columns = cornerstone.getEnabledElements()[0].image.columns;
             var rows = cornerstone.getEnabledElements()[0].image.rows;
-            const promesa = coding.encodingSegmentations(
+            var encodingSegmentation = coding.encodingSegmentations(
               segmentation,
               columns,
               rows
             );
 
-            promesa.then(res => {
-              var encodingSegmentation = res;
-              encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
-              encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
-              encodingSegmentation.clave = waddors;
-              encodingSegmentation._segId = _segId;
-              try {
-                utils.makeTransaction(
-                  'segmentations',
-                  'write',
-                  encodingSegmentation
-                );
-                UINotificationService.show({
-                  title: 'Operacion exitosa',
-                  message: 'Segmentaciones guardadas.',
-                });
-              } catch (error) {
-                UINotificationService.show({
-                  title: 'Error al guardar',
-                  message: 'Por favor intente de nuevo.',
-                });
-              }
-            });
+            encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
+            encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
+            encodingSegmentation.clave = waddors;
+            encodingSegmentation._segId = _segId;
+
+            console.log('***', encodingSegmentation);
+
+            try {
+              utils.makeTransaction(
+                'segmentations',
+                'write',
+                encodingSegmentation
+              );
+              UINotificationService.show({
+                title: 'Operacion exitosa',
+                message: 'Segmentaciones guardadas.',
+              });
+            } catch (error) {
+              UINotificationService.show({
+                title: 'Error al guardar',
+                message: 'Por favor intente de nuevo.',
+              });
+            }
           }
         },
         storeContexts: [],
