@@ -474,22 +474,24 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
 
             console.log('***', encodingSegmentation);
 
-            try {
-              utils.makeTransaction(
-                'segmentations',
-                'write',
-                encodingSegmentation
-              );
+            const result = utils.makeTransaction(
+              'segmentations',
+              'write',
+              encodingSegmentation
+            );
+            result.then(param => {
               UINotificationService.show({
                 title: 'Operacion exitosa',
                 message: 'Segmentaciones guardadas.',
+              }).catch(param => {
+                UINotificationService.show({
+                  title: 'Error al guardar',
+                  message: 'Por favor intente de nuevo.',
+                });
               });
-            } catch (error) {
-              UINotificationService.show({
-                title: 'Error al guardar',
-                message: 'Por favor intente de nuevo.',
-              });
-            }
+            });
+
+            console.log(result);
           }
         },
         storeContexts: [],
