@@ -36,15 +36,70 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             task_class: 'classify',
             task_mode: 'covid',
           };
-          const buttons = {
-            pathology: BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY,
-            probability: BUTTONS.BUTTON_CT_VOLUME_PROBABILITY,
-          };
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          predictions.predictAPathology(buttons, services, payloadData);
+          UINotificationService.show({
+            title: 'Realizando predicción',
+            message: 'Este proceso tomara unos segundos.',
+            duration: 1000 * 2,
+          });
+          var promisePetition = predictions.predictAPathology(payloadData);
+
+          promisePetition
+            .then(response => {
+              console.log(response);
+              console.log(response.data.hasOwnProperty('error'));
+              if (response.data.hasOwnProperty('error')) {
+                //Handle model with less than 20 slices
+                var uidData = utils.getAllInstancesUIDs();
+                const minInstancesNumber = 20;
+                if (
+                  uidData.length < minInstancesNumber &&
+                  payloadData.file_type == 'volumen'
+                ) {
+                  UINotificationService.hide();
+                  UINotificationService.show({
+                    title: 'Insuficientes instancias',
+                    type: 'warning',
+                    duration: 15 * 1000,
+                    autoClose: false,
+                    position: 'topRight',
+                    message:
+                      'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+                  });
+                } else {
+                  UINotificationService.show({
+                    title: 'Error de Predicción',
+                    type: 'warning',
+                    duration: 5 * 1000,
+                    position: 'topRight',
+                    message: 'Por favor intente de nuevo',
+                  });
+                }
+              } else {
+                var pathology = response.data.class;
+                var probability =
+                  response.data.probability.toFixed(2) * 100 + '%';
+                BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY.label = pathology;
+                BUTTONS.BUTTON_CT_VOLUME_PROBABILITY.label = probability;
+                UINotificationService.show({
+                  title: 'Predicción exitosa',
+                  message:
+                    'La clase predicha fue ' +
+                    pathology +
+                    ' con una confianza de ' +
+                    probability,
+                  duration: 1000 * 15,
+                  type: 'success',
+                });
+              }
+            })
+            .catch(rst => {
+              console.log(rst);
+              UINotificationService.show({
+                type: 'error',
+                title: 'Error',
+                message: 'Sin conexión.',
+              });
+            });
         },
         storeContexts: [],
         options: {},
@@ -62,20 +117,78 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             task_class: 'classify',
             task_mode: 'covid',
           };
-          const buttons = {
-            pathology: BUTTONS.BUTTON_CT_SLICE_PATHOLOGY,
-            probability: BUTTONS.BUTTON_CT_SLICE_PROBABILITY,
-          };
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          predictions.predictAPathology(buttons, services, payloadData);
+
+          UINotificationService.show({
+            title: 'Realizando predicción',
+            message: 'Este proceso tomara unos segundos.',
+            duration: 1000 * 2,
+          });
+
+          var promisePetition = predictions.predictAPathology(payloadData);
+
+          promisePetition
+            .then(response => {
+              console.log(response);
+              console.log(response.data.hasOwnProperty('error'));
+              if (response.data.hasOwnProperty('error')) {
+                //Handle model with less than 20 slices
+                var uidData = utils.getAllInstancesUIDs();
+                const minInstancesNumber = 20;
+                if (
+                  uidData.length < minInstancesNumber &&
+                  payloadData.file_type == 'volumen'
+                ) {
+                  UINotificationService.hide();
+                  UINotificationService.show({
+                    title: 'Insuficientes instancias',
+                    type: 'warning',
+                    duration: 15 * 1000,
+                    autoClose: false,
+                    position: 'topRight',
+                    message:
+                      'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+                  });
+                } else {
+                  UINotificationService.show({
+                    title: 'Error de Predicción',
+                    type: 'warning',
+                    duration: 5 * 1000,
+                    position: 'topRight',
+                    message: 'Por favor intente de nuevo',
+                  });
+                }
+              } else {
+                var pathology = response.data.class;
+                var probability =
+                  response.data.probability.toFixed(2) * 100 + '%';
+                BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY.label = pathology;
+                BUTTONS.BUTTON_CT_VOLUME_PROBABILITY.label = probability;
+                UINotificationService.show({
+                  title: 'Predicción exitosa',
+                  message:
+                    'La clase predicha fue ' +
+                    pathology +
+                    ' con una confianza de ' +
+                    probability,
+                  duration: 1000 * 15,
+                  type: 'success',
+                });
+              }
+            })
+            .catch(rst => {
+              console.log(rst);
+              UINotificationService.show({
+                type: 'error',
+                title: 'Error',
+                message: 'Sin conexión.',
+              });
+            });
         },
         storeContexts: [],
         options: {},
       },
       predictFrontalMultilabelRx: {
+        //guia
         commandFn: async () => {
           const title = 'Hallazgos encontrados';
           var dicomData = utils.getDicomUIDs();
@@ -158,11 +271,14 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         options: {},
       },
       predictFrontalCovidRx: {
-        commandFn: () => {
+        //cuadrar
+        commandFn: async () => {
+          const title = 'Hallazgos encontrados';
+          console.log('algo');
           var dicomData = utils.getDicomUIDs();
           const payloadData = {
             microservice: 'orthanc',
-            task: 'predict_pathology',
+            task: 'predict_pathologies',
             file_ID: dicomData.SOPInstanceUID,
             file_type: 'slice',
             file_mod: 'rx',
@@ -174,11 +290,66 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             notification: UINotificationService,
             modal: UIModalService,
           };
-          const buttons = {
-            pathology: BUTTONS.BUTTON_RX_COVID_PATHOLOGY,
-            probability: BUTTONS.BUTTON_RX_COVID_PROBABILITY,
-          };
-          predictions.predictAPathology(buttons, services, payloadData);
+          services.notification.show({
+            title: 'Prediciendo hallazgos RX',
+            message:
+              'Por favor espere un momento, mientras se calculan los hallazgos RX de la imágen.',
+            type: 'info',
+            description: 'Hubo un problema prediciendo el modelo RX-Hallazgos',
+          });
+          const pathologiesData = await predictions.predictMultiplePathologies(
+            payloadData
+          );
+          if (pathologiesData.hasOwnProperty('error')) {
+            services.notification.show({
+              title: 'Error',
+              message: 'Sin conexión',
+              type: 'error',
+              description:
+                'Hubo un problema prediciendo el modelo RX-Hallazgos',
+            });
+          } else {
+            console.log(pathologiesData);
+            const data = [
+              {
+                type: 'bar',
+                name: 'Probabilidad de patología',
+                marker: {
+                  color: '#7cb342',
+                },
+                orientation: 'v',
+                x: Object.keys(pathologiesData),
+                y: Object.values(pathologiesData),
+              },
+            ];
+            const layout = {
+              title: 'Probabilidad de patologías',
+              plot_bgcolor: '#151A1F',
+              paper_bgcolor: '#151A1F',
+              font: {
+                family: 'Roboto',
+                color: '#ffffff',
+              },
+              xaxis: {
+                title: 'Patologías',
+                tickangle: -45,
+              },
+              yaxis: {
+                title: 'Probabilidad [%]',
+                gridcolor: '#ffffff',
+                domain: [0, 100],
+              },
+              showlegend: false,
+            };
+            UIModalService.show({
+              content: probabilityDistributionModal,
+              title,
+              contentProps: {
+                chartData: data,
+                chartLayout: layout,
+              },
+            });
+          }
         },
         storeContexts: [],
         options: {},
