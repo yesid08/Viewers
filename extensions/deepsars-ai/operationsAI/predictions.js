@@ -12,7 +12,7 @@ export const predictMultiplePathologies = payloadData => {
         console.log(response);
         console.log(response.data.hasOwnProperty('error'));
         if (response.data.hasOwnProperty('error')) {
-          resolve({ error: response.data.error });
+          reject({ error: response.data.error });
         } else {
           var pathologies = {};
           for (let [aClass, probability] of Object.entries(response.data)) {
@@ -23,7 +23,7 @@ export const predictMultiplePathologies = payloadData => {
       })
       .catch(rst => {
         console.log(rst);
-        resolve({ error: 'There is no connection', result: rst });
+        reject({ error: 'There is no connection', result: rst });
       });
   });
   return promisePrediction;
