@@ -55,7 +55,6 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   uidData.length < minInstancesNumber &&
                   payloadData.file_type == 'volumen'
                 ) {
-                  UINotificationService.hide();
                   UINotificationService.show({
                     title: 'Insuficientes instancias',
                     type: 'warning',
@@ -78,8 +77,9 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 var pathology = response.data.class;
                 var probability =
                   response.data.probability.toFixed(2) * 100 + '%';
-                BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY.label = pathology;
-                BUTTONS.BUTTON_CT_VOLUME_PROBABILITY.label = probability;
+                BUTTONS.BUTTON_PATHOLOGY.label = pathology;
+                BUTTONS.BUTTON_PROBABILITY.label = probability;
+
                 UINotificationService.show({
                   title: 'Predicción exitosa',
                   message:
@@ -138,7 +138,6 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   uidData.length < minInstancesNumber &&
                   payloadData.file_type == 'volumen'
                 ) {
-                  UINotificationService.hide();
                   UINotificationService.show({
                     title: 'Insuficientes instancias',
                     type: 'warning',
@@ -161,8 +160,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 var pathology = response.data.class;
                 var probability =
                   response.data.probability.toFixed(2) * 100 + '%';
-                BUTTONS.BUTTON_CT_VOLUME_PATHOLOGY.label = pathology;
-                BUTTONS.BUTTON_CT_VOLUME_PROBABILITY.label = probability;
+                BUTTONS.BUTTON_PATHOLOGY.label = pathology;
+                BUTTONS.BUTTON_PROBABILITY.label = probability;
                 UINotificationService.show({
                   title: 'Predicción exitosa',
                   message:
