@@ -5,16 +5,6 @@ const BUTTON_CT_VOLUME_PREDICT = {
   type: 'command',
   commandName: 'predictAxialCovidVolumeCt',
 };
-export const BUTTON_CT_VOLUME_PATHOLOGY = {
-  id: 'pathologyVolumen',
-  label: 'Patología',
-  icon: 'lung',
-};
-export const BUTTON_CT_VOLUME_PROBABILITY = {
-  id: 'precisionVolumen',
-  label: 'Precisión',
-  icon: 'measure-target',
-};
 const BUTTON_CT_AXIAL_HEAT_MAP_3D = {
   id: 'ct_axial_heat_map_3d',
   label: 'Mapa de calor',
@@ -25,12 +15,7 @@ const BUTTON_CT_VOLUME = {
   id: 'Volumen-CT',
   label: 'Volumen-CT',
   icon: 'brain',
-  buttons: [
-    BUTTON_CT_VOLUME_PREDICT,
-    BUTTON_CT_VOLUME_PATHOLOGY,
-    BUTTON_CT_VOLUME_PROBABILITY,
-    BUTTON_CT_AXIAL_HEAT_MAP_3D,
-  ],
+  buttons: [BUTTON_CT_VOLUME_PREDICT, BUTTON_CT_AXIAL_HEAT_MAP_3D],
 };
 const BUTTON_CT_SLICE_PREDICT = {
   id: 'PredecirSlice',
@@ -38,16 +23,6 @@ const BUTTON_CT_SLICE_PREDICT = {
   icon: 'play',
   type: 'command',
   commandName: 'predictAxialCovidSliceCt',
-};
-export const BUTTON_CT_SLICE_PATHOLOGY = {
-  id: 'pathologySlice',
-  label: 'Patología',
-  icon: 'lung',
-};
-export const BUTTON_CT_SLICE_PROBABILITY = {
-  id: 'precisionSlice',
-  label: 'Precisión',
-  icon: 'measure-target',
 };
 const BUTTON_CT_AXIAL_HEAT_MAP_2D = {
   id: 'ct_axial_heat_map_2d',
@@ -67,10 +42,8 @@ const BUTTON_CT_SLICE = {
   icon: 'brain',
   buttons: [
     BUTTON_CT_SLICE_PREDICT,
-    BUTTON_CT_SLICE_PATHOLOGY,
-    BUTTON_CT_SLICE_PROBABILITY,
-    BUTTON_CT_AXIAL_HEAT_MAP_2D,
     BUTTON_CT_AXIAL_ANALYZE,
+    BUTTON_CT_AXIAL_HEAT_MAP_2D,
   ],
 };
 const BUTTON_RX_PREDICT = {
@@ -79,17 +52,6 @@ const BUTTON_RX_PREDICT = {
   icon: 'play',
   type: 'command',
   commandName: 'predictFrontalMultilabelRx',
-};
-
-export const BUTTON_RX_PATHOLOGY = {
-  id: 'pathologySlice',
-  label: 'Patología',
-  icon: 'lung',
-};
-export const BUTTON_RX_PROBABILITY = {
-  id: 'precisionSlice',
-  label: 'Precisión',
-  icon: 'measure-target',
 };
 
 const BUTTON_RX_FRONTAL_HEAT_MAP_3D = {
@@ -110,8 +72,6 @@ const BUTTON_RX = {
   icon: 'brain',
   buttons: [
     BUTTON_RX_PREDICT,
-    BUTTON_RX_PATHOLOGY,
-    BUTTON_RX_PROBABILITY,
     BUTTON_RX_FRONTAL_ANALYZE,
     BUTTON_RX_FRONTAL_HEAT_MAP_3D,
   ],
@@ -133,28 +93,11 @@ const BUTTON_RX_COVID_HEATMAP = {
   commandName: 'heatmapFrontalCovidRx',
 };
 
-export const BUTTON_RX_COVID_PATHOLOGY = {
-  id: 'deepsars-rx-covid-pathology',
-  label: 'Patología',
-  icon: 'lung',
-};
-
-export const BUTTON_RX_COVID_PROBABILITY = {
-  id: 'deepsars-rx-covid-probability',
-  label: 'Precisión',
-  icon: 'measure-target',
-};
-
 const BUTTON_RX_COVID = {
   id: 'deepsars-rx-covid',
   label: 'RX-Covid',
   icon: 'brain',
-  buttons: [
-    BUTTON_RX_COVID_PREDICT,
-    BUTTON_RX_COVID_PATHOLOGY,
-    BUTTON_RX_COVID_PROBABILITY,
-    BUTTON_RX_COVID_HEATMAP,
-  ],
+  buttons: [BUTTON_RX_COVID_PREDICT, BUTTON_RX_COVID_HEATMAP],
 };
 
 const BUTTON_MEASUREMENT_SAVE = {
@@ -220,7 +163,7 @@ const BUTTON_RECOVER_SEGMENTATION = {
 const BUTTON_SEGMENTATION = {
   id: 'deepsars_seg',
   label: 'Segmentación',
-  icon: 'palette',
+  icon: 'soft-tissue',
   type: TOOLBAR_BUTTON_TYPES.SET_TOOL_ACTIVE,
   buttons: [
     BUTTON_CREAR_SEGMENTATION,
@@ -230,6 +173,17 @@ const BUTTON_SEGMENTATION = {
   ],
 };
 
+export const BUTTON_PATHOLOGY = {
+  id: 'deepsars-pathology',
+  label: 'Patología',
+  icon: 'lung',
+};
+
+export const BUTTON_PROBABILITY = {
+  id: 'deepsars-probability',
+  label: 'Probabilidad',
+  icon: 'measure-target',
+};
 export default {
   definitions: [
     BUTTON_SEGMENTATION,
@@ -239,6 +193,8 @@ export default {
     BUTTON_CT_SLICE,
     BUTTON_RX,
     BUTTON_RX_COVID,
+    BUTTON_PATHOLOGY,
+    BUTTON_PROBABILITY,
   ],
   defaultContext: 'VIEWER',
 };
