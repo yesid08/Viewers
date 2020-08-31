@@ -27,6 +27,7 @@ const AnalizeRoiModal = ({ modality, ohifConf, services }) => {
       file_ID: dicomData.SOPInstanceUID,
     };
     analyzeRoi.analyzeSlice(services, payloadData);
+    services.modal.hide();
   };
 
   return (
