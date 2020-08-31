@@ -83,9 +83,11 @@ export const segmentate_roi = async (
     StudyInstanceUID: ids.StudyInstanceUID,
     SeriesInstanceUID: ids.SeriesInstanceUID,
   };
+  var len =
+    segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D.length;
   if (
-    segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D[0]
-      .segmentsOnLabelmap == 0
+    segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D[len - 1]
+      .segmentsOnLabelmap.length == 0
   ) {
     try {
       var result = await makeTransaction('segmentations', 'readList', petition);
