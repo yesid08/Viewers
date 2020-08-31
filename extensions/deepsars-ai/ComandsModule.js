@@ -118,82 +118,94 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       predictAxialCovidSliceCt: {
         commandFn: () => {
-          var dicomData = utils.getDicomUIDs();
-          const payloadData = {
-            microservice: 'orthanc',
-            task: 'predict_pathology',
-            file_ID: dicomData.SOPInstanceUID,
-            file_type: 'slice',
-            file_mod: 'ct',
-            file_view: 'axial',
-            task_class: 'classify',
-            task_mode: 'covid',
-          };
+          if (utils.isSeriesCT()) {
+            var dicomData = utils.getDicomUIDs();
+            const payloadData = {
+              microservice: 'orthanc',
+              task: 'predict_pathology',
+              file_ID: dicomData.SOPInstanceUID,
+              file_type: 'slice',
+              file_mod: 'ct',
+              file_view: 'axial',
+              task_class: 'classify',
+              task_mode: 'covid',
+            };
 
-          UINotificationService.show({
-            title: 'Realizando predicción',
-            message: 'Este proceso tomara unos segundos.',
-            duration: 1000 * 2,
-          });
+            UINotificationService.show({
+              title: 'Realizando predicción',
+              message: 'Este proceso tomara unos segundos.',
+              duration: 1000 * 2,
+            });
 
-          var promisePetition = predictions.predictAPathology(payloadData);
+            var promisePetition = predictions.predictAPathology(payloadData);
 
-          promisePetition
-            .then(response => {
-              console.log(response);
-              console.log(response.data.hasOwnProperty('error'));
-              if (response.data.hasOwnProperty('error')) {
-                //Handle model with less than 20 slices
-                var uidData = utils.getAllInstancesUIDs();
-                const minInstancesNumber = 20;
-                if (
-                  uidData.length < minInstancesNumber &&
-                  payloadData.file_type == 'volumen'
-                ) {
-                  UINotificationService.show({
-                    title: 'Insuficientes instancias',
-                    type: 'warning',
-                    duration: 15 * 1000,
-                    autoClose: false,
-                    position: 'topRight',
-                    message:
-                      'El modelo requiere más instancias dicom para realizar un diagnóstico.',
-                  });
+            promisePetition
+              .then(response => {
+                console.log(response);
+                console.log(response.data.hasOwnProperty('error'));
+                if (response.data.hasOwnProperty('error')) {
+                  //Handle model with less than 20 slices
+                  var uidData = utils.getAllInstancesUIDs();
+                  const minInstancesNumber = 20;
+                  if (
+                    uidData.length < minInstancesNumber &&
+                    payloadData.file_type == 'volumen'
+                  ) {
+                    UINotificationService.show({
+                      title: 'Insuficientes instancias',
+                      type: 'warning',
+                      duration: 15 * 1000,
+                      autoClose: false,
+                      position: 'topRight',
+                      message:
+                        'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+                    });
+                  } else {
+                    UINotificationService.show({
+                      title: 'Error de Predicción',
+                      type: 'warning',
+                      duration: 5 * 1000,
+                      position: 'topRight',
+                      message: 'Por favor intente de nuevo',
+                    });
+                  }
                 } else {
+                  var pathology = response.data.class;
+                  var probability =
+                    response.data.probability.toFixed(2) * 100 + '%';
+                  BUTTONS.BUTTON_PATHOLOGY.label = pathology;
+                  BUTTONS.BUTTON_PROBABILITY.label = probability;
                   UINotificationService.show({
-                    title: 'Error de Predicción',
-                    type: 'warning',
-                    duration: 5 * 1000,
-                    position: 'topRight',
-                    message: 'Por favor intente de nuevo',
+                    title: 'Predicción exitosa',
+                    message:
+                      'La clase predicha fue ' +
+                      pathology +
+                      ' con una confianza de ' +
+                      probability,
+                    duration: 1000 * 15,
+                    type: 'success',
                   });
                 }
-              } else {
-                var pathology = response.data.class;
-                var probability =
-                  response.data.probability.toFixed(2) * 100 + '%';
-                BUTTONS.BUTTON_PATHOLOGY.label = pathology;
-                BUTTONS.BUTTON_PROBABILITY.label = probability;
+              })
+              .catch(rst => {
+                console.log(rst);
                 UINotificationService.show({
-                  title: 'Predicción exitosa',
-                  message:
-                    'La clase predicha fue ' +
-                    pathology +
-                    ' con una confianza de ' +
-                    probability,
-                  duration: 1000 * 15,
-                  type: 'success',
+                  type: 'error',
+                  title: 'Error',
+                  message: 'Sin conexión.',
                 });
-              }
-            })
-            .catch(rst => {
-              console.log(rst);
-              UINotificationService.show({
-                type: 'error',
-                title: 'Error',
-                message: 'Sin conexión.',
               });
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
             });
+          }
         },
         storeContexts: [],
         options: {},
