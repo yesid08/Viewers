@@ -1,6 +1,7 @@
 import cornerstone from 'cornerstone-core';
 import OHIF from '@ohif/core';
 import cornerstoneTools from 'cornerstone-tools';
+import * as utils from './utils';
 import * as decoding from './segmentationModule/decoderV4';
 var recover = false;
 export const getDicomUIDs = () => {
@@ -12,6 +13,23 @@ export const getDicomUIDs = () => {
     SeriesInstanceUID: imageIdArray.slice(-5)[0],
     SOPInstanceUID: imageIdArray.slice(-3)[0],
   };
+};
+
+export const isSeriesCT = () => {
+  var dicomData = utils.getDicomUIDs();
+  var dicomMetadata = OHIF.utils.studyMetadataManager.get(
+    dicomData.StudyInstanceUID
+  );
+  var studySeries = dicomMetadata._data.series;
+  var currentSeriesMetadata = studySeries.find(
+    currentSerie =>
+      currentSerie.SeriesInstanceUID == dicomData.SeriesInstanceUID
+  );
+  if (currentSeriesMetadata.Modality.toLowerCase() == 'ct') {
+    return true;
+  } else {
+    return false;
+  }
 };
 
 export const getAllInstancesUIDs = () => {
