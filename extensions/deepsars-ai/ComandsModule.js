@@ -564,7 +564,73 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       showCurrentSegmentation: {
         commandFn: function() {
           var segmentationModule = cornerstoneTools.getModule('segmentation');
-          console.log(segmentationModule);
+          var element = cornerstone.getEnabledElements()[0].element;
+          segmentationModule.getters.labelmap2D(element);
+          var claves = Object.keys(segmentationModule.state.series);
+          var ids = getDicomUIDs();
+          var waddors = undefined;
+          claves.forEach(data => {
+            var information = data.split('/');
+            if (information[6] === ids.StudyInstanceUID) {
+              waddors = data;
+            }
+          });
+          var petition = {
+            StudyInstanceUID: ids.StudyInstanceUID,
+            SeriesInstanceUID: ids.SeriesInstanceUID,
+          };
+          var len =
+            segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D
+              .length;
+          if (
+            segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D[
+              len - 1
+            ].segmentsOnLabelmap.length == 0
+          ) {
+            var result = utils.makeTransaction(
+              'segmentations',
+              'readList',
+              petition
+            );
+            result
+              .then(respuesta => {
+                if (respuesta.data == undefined) {
+                  UINotificationService.show({
+                    title: 'Advertencia',
+                    message:
+                      'No hay segmentaciones guardadas para este estudio.',
+                    type: 'warning',
+                  });
+                } else {
+                  respuesta.data.forEach(seg => {
+                    var _segId = seg._segId;
+                    var segmentation = decoding.decodingSegmentations(seg);
+                    segmentation._segId = _segId;
+                    segmentationModule.state.series[
+                      seg.clave
+                    ].labelmaps3D[0].labelmaps2D = segmentation;
+                  });
+                  UINotificationService.show({
+                    title: 'Operacion exitosa',
+                    message: 'Segmentaciones recuperadas.',
+                  });
+                }
+              })
+              .catch(error => {
+                console.log(error);
+                UINotificationService.show({
+                  title: 'Error en la operación',
+                  message: 'Por favor intente de nuevo.',
+                  type: 'error',
+                });
+              });
+          } else {
+            UINotificationService.show({
+              title: 'Operación finalizada',
+              message: 'Este estudio ya contiene segmentaciones.',
+              type: 'warning',
+            });
+          }
         },
         storeContexts: [],
         options: {},
@@ -653,6 +719,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               segmentationModule.state.series[waddors].labelmaps3D[0]
                 .labelmaps2D;
             var _segId = segmentation._segId;
+            console.log(_segId);
             var columns = cornerstone.getEnabledElements()[0].image.columns;
             var rows = cornerstone.getEnabledElements()[0].image.rows;
             var encodingSegmentation = coding.encodingSegmentations(

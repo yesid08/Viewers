@@ -88,47 +88,7 @@ export const segmentate_roi = async (
   var segmentationModule = cornerstoneTools.getModule('segmentation');
   var element = cornerstone.getEnabledElements()[0].element;
   segmentationModule.getters.labelmap2D(element);
-  var claves = Object.keys(segmentationModule.state.series);
-  var ids = getDicomUIDs();
-  var waddors = undefined;
-  claves.forEach(data => {
-    var information = data.split('/');
-    if (information[6] === ids.StudyInstanceUID) {
-      waddors = data;
-    }
-  });
-  var petition = {
-    StudyInstanceUID: ids.StudyInstanceUID,
-    SeriesInstanceUID: ids.SeriesInstanceUID,
-  };
-  var len =
-    segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D.length;
-  if (
-    segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D[len - 1]
-      .segmentsOnLabelmap.length == 0
-  ) {
-    try {
-      var result = await makeTransaction('segmentations', 'readList', petition);
-      result.data.forEach(seg => {
-        var _segId = seg._segId;
-        var segmentation = decoding.decodingSegmentations(seg);
-        segmentation._segId = _segId;
-        segmentationModule.state.series[
-          seg.clave
-        ].labelmaps3D[0].labelmaps2D = segmentation;
-      });
-      UINotificationService.show({
-        title: 'Operacion exitosa',
-        message: 'Segmentaciones recuperadas.',
-      });
-      recover = true;
-    } catch (error) {
-      UINotificationService.show({
-        title: 'Operación finalizada',
-        message: 'No hay segmentaciones para recuperar.',
-      });
-    }
-  }
+
   console.log('ToolName and ActiveSegment Index', toolName, activeSegmentIndex);
   var elements = cornerstone.getEnabledElements();
   elements.forEach(anElement => {
