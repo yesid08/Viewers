@@ -626,7 +626,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               });
           } else {
             UINotificationService.show({
-              title: 'Operación finalizada',
+              title: 'No se puede realizar operación',
               message: 'Este estudio ya contiene segmentaciones.',
               type: 'warning',
             });
@@ -704,55 +704,66 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               type: states[0].state,
             });
           } else {
-            var segmentationModule = cornerstoneTools.getModule('segmentation');
-            var claves = Object.keys(segmentationModule.state.series);
-            var ids = utils.getDicomUIDs();
-            var waddors = undefined;
-            claves.forEach(data => {
-              var information = data.split('/');
-              if (information[6] === ids.StudyInstanceUID) {
-                waddors = data;
-              }
-            });
-
-            var segmentation =
-              segmentationModule.state.series[waddors].labelmaps3D[0]
-                .labelmaps2D;
-            var _segId = segmentation._segId;
-            console.log(_segId);
-            var columns = cornerstone.getEnabledElements()[0].image.columns;
-            var rows = cornerstone.getEnabledElements()[0].image.rows;
-            var encodingSegmentation = coding.encodingSegmentations(
-              segmentation,
-              columns,
-              rows
-            );
-
-            encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
-            encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
-            encodingSegmentation.clave = waddors;
-            encodingSegmentation._segId = _segId;
-
-            console.log('***', encodingSegmentation);
-
-            const result = utils.makeTransaction(
-              'segmentations',
-              'write',
-              encodingSegmentation
-            );
-            result.then(param => {
-              UINotificationService.show({
-                title: 'Operacion exitosa',
-                message: 'Segmentaciones guardadas.',
-              }).catch(param => {
-                UINotificationService.show({
-                  title: 'Error al guardar',
-                  message: 'Por favor intente de nuevo.',
-                });
+            try {
+              var segmentationModule = cornerstoneTools.getModule(
+                'segmentation'
+              );
+              var claves = Object.keys(segmentationModule.state.series);
+              var ids = utils.getDicomUIDs();
+              var waddors = undefined;
+              claves.forEach(data => {
+                var information = data.split('/');
+                if (information[6] === ids.StudyInstanceUID) {
+                  waddors = data;
+                }
               });
-            });
 
-            console.log(result);
+              var segmentation =
+                segmentationModule.state.series[waddors].labelmaps3D[0]
+                  .labelmaps2D;
+              var _segId = segmentation._segId;
+              console.log(_segId);
+              var columns = cornerstone.getEnabledElements()[0].image.columns;
+              var rows = cornerstone.getEnabledElements()[0].image.rows;
+              var encodingSegmentation = coding.encodingSegmentations(
+                segmentation,
+                columns,
+                rows
+              );
+
+              encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
+              encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
+              encodingSegmentation.clave = waddors;
+              encodingSegmentation._segId = _segId;
+
+              console.log('***', encodingSegmentation);
+
+              const result = utils.makeTransaction(
+                'segmentations',
+                'write',
+                encodingSegmentation
+              );
+              result
+                .then(param => {
+                  UINotificationService.show({
+                    title: 'Operacion exitosa',
+                    message: 'Segmentaciones guardadas.',
+                  });
+                })
+                .catch(param => {
+                  UINotificationService.show({
+                    title: 'Error al guardar',
+                    message: 'Por favor intente de nuevo.',
+                    type: 'error',
+                  });
+                });
+            } catch (error) {
+              UINotificationService.show({
+                title: 'Operación invalida',
+                message: 'No hay segmentaciones para guardar.',
+                type: 'warning',
+              });
+            }
           }
         },
         storeContexts: [],
