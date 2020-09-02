@@ -213,80 +213,93 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       predictFrontalMultilabelRx: {
         //guia
         commandFn: async () => {
-          const title = 'Hallazgos encontrados';
-          var dicomData = utils.getDicomUIDs();
-          const payloadData = {
-            microservice: 'orthanc',
-            task: 'predict_pathologies',
-            file_ID: dicomData.SOPInstanceUID,
-            file_type: 'slice',
-            file_mod: 'rx',
-            file_view: 'frontal',
-            task_class: 'classify',
-            task_mode: 'diseases',
-          };
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          services.notification.show({
-            title: 'Prediciendo hallazgos RX',
-            message:
-              'Por favor espere un momento, mientras se calculan los hallazgos RX de la imágen.',
-            type: 'info',
-            description: 'Hubo un problema prediciendo el modelo RX-Hallazgos',
-          });
-          const pathologiesData = await predictions.predictMultiplePathologies(
-            payloadData
-          );
-          if (pathologiesData.hasOwnProperty('error')) {
+          if (!utils.isSeriesCT()) {
+            const title = 'Hallazgos encontrados';
+            var dicomData = utils.getDicomUIDs();
+            const payloadData = {
+              microservice: 'orthanc',
+              task: 'predict_pathologies',
+              file_ID: dicomData.SOPInstanceUID,
+              file_type: 'slice',
+              file_mod: 'rx',
+              file_view: 'frontal',
+              task_class: 'classify',
+              task_mode: 'diseases',
+            };
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
             services.notification.show({
-              title: 'Error',
-              message: 'Sin conexión',
-              type: 'error',
+              title: 'Prediciendo hallazgos RX',
+              message:
+                'Por favor espere un momento, mientras se calculan los hallazgos RX de la imágen.',
+              type: 'info',
               description:
                 'Hubo un problema prediciendo el modelo RX-Hallazgos',
             });
-          } else {
-            console.log(pathologiesData);
-            const data = [
-              {
-                type: 'bar',
-                name: 'Probabilidad de patología',
-                marker: {
-                  color: '#7cb342',
+            const pathologiesData = await predictions.predictMultiplePathologies(
+              payloadData
+            );
+            if (pathologiesData.hasOwnProperty('error')) {
+              services.notification.show({
+                title: 'Error',
+                message: 'Sin conexión',
+                type: 'error',
+                description:
+                  'Hubo un problema prediciendo el modelo RX-Hallazgos',
+              });
+            } else {
+              console.log(pathologiesData);
+              const data = [
+                {
+                  type: 'bar',
+                  name: 'Probabilidad de patología',
+                  marker: {
+                    color: '#7cb342',
+                  },
+                  orientation: 'v',
+                  x: Object.keys(pathologiesData),
+                  y: Object.values(pathologiesData),
                 },
-                orientation: 'v',
-                x: Object.keys(pathologiesData),
-                y: Object.values(pathologiesData),
-              },
-            ];
-            const layout = {
-              title: 'Probabilidad de patologías',
-              plot_bgcolor: '#151A1F',
-              paper_bgcolor: '#151A1F',
-              font: {
-                family: 'Roboto',
-                color: '#ffffff',
-              },
-              xaxis: {
-                title: 'Patologías',
-                tickangle: -45,
-              },
-              yaxis: {
-                title: 'Probabilidad [%]',
-                gridcolor: '#ffffff',
-                domain: [0, 100],
-              },
-              showlegend: false,
-            };
-            UIModalService.show({
-              content: probabilityDistributionModal,
-              title,
-              contentProps: {
-                chartData: data,
-                chartLayout: layout,
-              },
+              ];
+              const layout = {
+                title: 'Probabilidad de patologías',
+                plot_bgcolor: '#151A1F',
+                paper_bgcolor: '#151A1F',
+                font: {
+                  family: 'Roboto',
+                  color: '#ffffff',
+                },
+                xaxis: {
+                  title: 'Patologías',
+                  tickangle: -45,
+                },
+                yaxis: {
+                  title: 'Probabilidad [%]',
+                  gridcolor: '#ffffff',
+                  domain: [0, 100],
+                },
+                showlegend: false,
+              };
+              UIModalService.show({
+                content: probabilityDistributionModal,
+                title,
+                contentProps: {
+                  chartData: data,
+                  chartLayout: layout,
+                },
+              });
+            }
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un RX, se recomienda utilizar este modelo sobre series RX.',
             });
           }
         },
@@ -294,83 +307,95 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         options: {},
       },
       predictFrontalCovidRx: {
-        //cuadrar
         commandFn: async () => {
-          const title = 'Hallazgos encontrados';
-          console.log('algo');
-          var dicomData = utils.getDicomUIDs();
-          const payloadData = {
-            microservice: 'orthanc',
-            task: 'predict_pathologies',
-            file_ID: dicomData.SOPInstanceUID,
-            file_type: 'slice',
-            file_mod: 'rx',
-            file_view: 'frontal',
-            task_class: 'classify',
-            task_mode: 'covid',
-          };
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          services.notification.show({
-            title: 'Prediciendo hallazgos RX',
-            message:
-              'Por favor espere un momento, mientras se calculan los hallazgos RX de la imágen.',
-            type: 'info',
-            description: 'Hubo un problema prediciendo el modelo RX-Hallazgos',
-          });
-          const pathologiesData = await predictions.predictMultiplePathologies(
-            payloadData
-          );
-          if (pathologiesData.hasOwnProperty('error')) {
+          if (!utils.isSeriesCT()) {
+            const title = 'Hallazgos encontrados';
+            console.log('algo');
+            var dicomData = utils.getDicomUIDs();
+            const payloadData = {
+              microservice: 'orthanc',
+              task: 'predict_pathologies',
+              file_ID: dicomData.SOPInstanceUID,
+              file_type: 'slice',
+              file_mod: 'rx',
+              file_view: 'frontal',
+              task_class: 'classify',
+              task_mode: 'covid',
+            };
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
             services.notification.show({
-              title: 'Error',
-              message: 'Sin conexión',
-              type: 'error',
+              title: 'Prediciendo hallazgos RX',
+              message:
+                'Por favor espere un momento, mientras se calculan los hallazgos RX de la imágen.',
+              type: 'info',
               description:
                 'Hubo un problema prediciendo el modelo RX-Hallazgos',
             });
-          } else {
-            console.log(pathologiesData);
-            const data = [
-              {
-                type: 'bar',
-                name: 'Probabilidad de patología',
-                marker: {
-                  color: '#7cb342',
+            const pathologiesData = await predictions.predictMultiplePathologies(
+              payloadData
+            );
+            if (pathologiesData.hasOwnProperty('error')) {
+              services.notification.show({
+                title: 'Error',
+                message: 'Sin conexión',
+                type: 'error',
+                description:
+                  'Hubo un problema prediciendo el modelo RX-Hallazgos',
+              });
+            } else {
+              console.log(pathologiesData);
+              const data = [
+                {
+                  type: 'bar',
+                  name: 'Probabilidad de patología',
+                  marker: {
+                    color: '#7cb342',
+                  },
+                  orientation: 'v',
+                  x: Object.keys(pathologiesData),
+                  y: Object.values(pathologiesData),
                 },
-                orientation: 'v',
-                x: Object.keys(pathologiesData),
-                y: Object.values(pathologiesData),
-              },
-            ];
-            const layout = {
-              title: 'Probabilidad de patologías',
-              plot_bgcolor: '#151A1F',
-              paper_bgcolor: '#151A1F',
-              font: {
-                family: 'Roboto',
-                color: '#ffffff',
-              },
-              xaxis: {
-                title: 'Patologías',
-                tickangle: -45,
-              },
-              yaxis: {
-                title: 'Probabilidad [%]',
-                gridcolor: '#ffffff',
-                domain: [0, 100],
-              },
-              showlegend: false,
-            };
-            UIModalService.show({
-              content: probabilityDistributionModal,
-              title,
-              contentProps: {
-                chartData: data,
-                chartLayout: layout,
-              },
+              ];
+              const layout = {
+                title: 'Probabilidad de patologías',
+                plot_bgcolor: '#151A1F',
+                paper_bgcolor: '#151A1F',
+                font: {
+                  family: 'Roboto',
+                  color: '#ffffff',
+                },
+                xaxis: {
+                  title: 'Patologías',
+                  tickangle: -45,
+                },
+                yaxis: {
+                  title: 'Probabilidad [%]',
+                  gridcolor: '#ffffff',
+                  domain: [0, 100],
+                },
+                showlegend: false,
+              };
+              UIModalService.show({
+                content: probabilityDistributionModal,
+                title,
+                contentProps: {
+                  chartData: data,
+                  chartLayout: layout,
+                },
+              });
+            }
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un RX, se recomienda utilizar este modelo sobre series RX.',
             });
           }
         },
@@ -414,118 +439,178 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       heatmapAxialCovidVolumeCt: {
         commandFn: () => {
-          var dicomData = utils.getDicomUIDs();
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          var payloadData = {
-            microservice: 'models',
-            file_mod: 'ct',
-            file_view: 'axial',
-            task: 'diagnose',
-            file_type: 'volumen',
-            file_ID: dicomData.SeriesInstanceUID,
-            task_class: 'classify',
-            task_mode: 'covid',
-          };
-          heatmaps.calculateHeatmap(services, payloadData);
+          if (utils.isSeriesCT()) {
+            var dicomData = utils.getDicomUIDs();
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            var payloadData = {
+              microservice: 'models',
+              file_mod: 'ct',
+              file_view: 'axial',
+              task: 'diagnose',
+              file_type: 'volumen',
+              file_ID: dicomData.SeriesInstanceUID,
+              task_class: 'classify',
+              task_mode: 'covid',
+            };
+            heatmaps.calculateHeatmap(services, payloadData);
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
+            });
+          }
         },
         storeContexts: [],
         options: {},
       },
       heatmapAxialCovidSliceCt: {
         commandFn: () => {
-          var dicomData = utils.getDicomUIDs();
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          var payloadData = {
-            microservice: 'models',
-            file_mod: 'ct',
-            file_view: 'axial',
-            task: 'prepare',
-            file_type: 'slice',
-            file_ID: dicomData.SeriesInstanceUID,
-            task_class: 'classify',
-            task_mode: 'covid',
-          };
-          heatmaps.calculateHeatmap(services, payloadData);
+          if (utils.isSeriesCT()) {
+            var dicomData = utils.getDicomUIDs();
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            var payloadData = {
+              microservice: 'models',
+              file_mod: 'ct',
+              file_view: 'axial',
+              task: 'prepare',
+              file_type: 'slice',
+              file_ID: dicomData.SeriesInstanceUID,
+              task_class: 'classify',
+              task_mode: 'covid',
+            };
+            heatmaps.calculateHeatmap(services, payloadData);
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
+            });
+          }
         },
         storeContexts: [],
         options: {},
       },
       heatmapFrontalMultilabelRx: {
         commandFn: () => {
-          var dicomData = utils.getDicomUIDs();
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          var payloadData = {
-            microservice: 'models',
-            file_mod: 'rx',
-            file_view: 'frontal',
-            task: 'diagnose',
-            file_type: 'slice',
-            task_class: 'classify',
-            task_mode: 'diseases',
-            file_ID: dicomData.SOPInstanceUID,
-          };
-          heatmaps.calculateHeatmap(services, payloadData);
+          if (!utils.isSeriesCT()) {
+            var dicomData = utils.getDicomUIDs();
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            var payloadData = {
+              microservice: 'models',
+              file_mod: 'rx',
+              file_view: 'frontal',
+              task: 'diagnose',
+              file_type: 'slice',
+              task_class: 'classify',
+              task_mode: 'diseases',
+              file_ID: dicomData.SOPInstanceUID,
+            };
+            heatmaps.calculateHeatmap(services, payloadData);
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un RX, se recomienda utilizar este modelo sobre series RX.',
+            });
+          }
         },
         storeContexts: [],
         options: {},
       },
       heatmapFrontalCovidRx: {
         commandFn: () => {
-          var dicomData = utils.getDicomUIDs();
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          var payloadData = {
-            microservice: 'models',
-            file_mod: 'rx',
-            file_view: 'frontal',
-            task: 'diagnose',
-            file_type: 'slice',
-            task_class: 'classify',
-            task_mode: 'covid',
-            file_ID: dicomData.SOPInstanceUID,
-          };
-          heatmaps.calculateHeatmap(services, payloadData);
+          if (!utils.isSeriesCT()) {
+            var dicomData = utils.getDicomUIDs();
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            var payloadData = {
+              microservice: 'models',
+              file_mod: 'rx',
+              file_view: 'frontal',
+              task: 'diagnose',
+              file_type: 'slice',
+              task_class: 'classify',
+              task_mode: 'covid',
+              file_ID: dicomData.SOPInstanceUID,
+            };
+            heatmaps.calculateHeatmap(services, payloadData);
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un RX, se recomienda utilizar este modelo sobre series RX.',
+            });
+          }
         },
         storeContexts: [],
         options: {},
       },
       analyzeAxialSliceCt: {
         commandFn: () => {
-          const title = 'Regiones de interés';
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          ohifConf.then(configuration => {
-            services.modal.show({
-              content: AnalizeRoiModal,
-              title,
-              contentProps: {
-                modality: 'ct',
-                ohifConf: configuration,
-                services: services,
-              },
+          if (utils.isSeriesCT()) {
+            const title = 'Regiones de interés';
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            ohifConf.then(configuration => {
+              services.modal.show({
+                content: AnalizeRoiModal,
+                title,
+                contentProps: {
+                  modality: 'ct',
+                  ohifConf: configuration,
+                  services: services,
+                },
+              });
             });
-          });
-          ohifConf.catch(error => {
-            services.notification.show({
-              title: 'Error',
-              message: 'No se pudo cargar la configuración de OHIF.',
-              type: 'error',
+            ohifConf.catch(error => {
+              services.notification.show({
+                title: 'Error',
+                message: 'No se pudo cargar la configuración de OHIF.',
+                type: 'error',
+              });
+              console.error(error);
             });
-            console.error(error);
-          });
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
+            });
+          }
         },
         storeContexts: [],
         options: {},
@@ -533,30 +618,42 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
 
       analyzeFrontalSliceRx: {
         commandFn: () => {
-          const title = 'Regiones de interés';
-          const services = {
-            notification: UINotificationService,
-            modal: UIModalService,
-          };
-          ohifConf.then(configuration => {
-            services.modal.show({
-              content: AnalizeRoiModal,
-              title,
-              contentProps: {
-                modality: 'rx',
-                ohifConf: configuration,
-                services: services,
-              },
+          if (!utils.isSeriesCT()) {
+            const title = 'Regiones de interés';
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            ohifConf.then(configuration => {
+              services.modal.show({
+                content: AnalizeRoiModal,
+                title,
+                contentProps: {
+                  modality: 'rx',
+                  ohifConf: configuration,
+                  services: services,
+                },
+              });
             });
-          });
-          ohifConf.catch(error => {
-            services.notification.show({
-              title: 'Error',
-              message: 'No se pudo cargar la configuración de OHIF.',
-              type: 'error',
+            ohifConf.catch(error => {
+              services.notification.show({
+                title: 'Error',
+                message: 'No se pudo cargar la configuración de OHIF.',
+                type: 'error',
+              });
+              console.error(error);
             });
-            console.error(error);
-          });
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un RX, se recomienda utilizar este modelo sobre series RX.',
+            });
+          }
         },
         storeContexts: [],
         options: {},
