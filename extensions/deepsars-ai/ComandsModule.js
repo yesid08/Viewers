@@ -855,6 +855,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   });
                 });
             } catch (error) {
+              console.log(error);
               UINotificationService.show({
                 title: 'Operación invalida',
                 message: 'No hay segmentaciones para guardar.',
