@@ -810,7 +810,12 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               var waddors = undefined;
               claves.forEach(data => {
                 var information = data.split('/');
-                if (information[6] === ids.StudyInstanceUID) {
+                console.log('information:', information);
+                if (
+                  information[6] === ids.StudyInstanceUID &&
+                  information[8] === ids.SeriesInstanceUID
+                ) {
+                  console.log('entra');
                   waddors = data;
                 }
               });

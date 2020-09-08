@@ -82,8 +82,7 @@ export const makeTransaction = (route, operation, data) => {
 export const segmentate_roi = async (
   toolName,
   activeSegmentIndex,
-  eraseWithRightClick,
-  UINotificationService
+  eraseWithRightClick
 ) => {
   var segmentationModule = cornerstoneTools.getModule('segmentation');
   var element = cornerstone.getEnabledElements()[0].element;
@@ -105,6 +104,7 @@ export const segmentate_roi = async (
     } else {
       cornerstoneTools.setToolActive('Zoom', { mouseButtonMask: 2 });
     }
+    console.log('IDS:', getDicomUIDs());
   });
 };
 

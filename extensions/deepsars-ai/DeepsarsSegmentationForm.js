@@ -31,12 +31,7 @@ const DeepsarsSegmentationForm = ({
 
   const onSave = () => {
     console.log(Tool, parseInt(Segmentation));
-    utils.segmentate_roi(
-      Tool,
-      parseInt(Segmentation),
-      eraserChecked,
-      UINotificationService
-    );
+    utils.segmentate_roi(Tool, parseInt(Segmentation), eraserChecked);
     onClose();
   };
 
