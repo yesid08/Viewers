@@ -40,7 +40,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             UINotificationService.show({
               title: 'Realizando predicción',
               message: 'Este proceso tomara unos segundos.',
-              duration: 1000 * 2,
+              duration: 1000 * 4,
             });
             var promisePetition = predictions.predictAPathology(payloadData);
 
@@ -95,11 +95,40 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               })
               .catch(rst => {
                 console.log(rst);
-                UINotificationService.show({
-                  type: 'error',
-                  title: 'Error',
-                  message: 'Sin conexión.',
-                });
+
+                if (rst.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
               });
           } else {
             UINotificationService.show({
@@ -189,11 +218,39 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               })
               .catch(rst => {
                 console.log(rst);
-                UINotificationService.show({
-                  type: 'error',
-                  title: 'Error',
-                  message: 'Sin conexión.',
-                });
+                if (rst.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
               });
           } else {
             UINotificationService.show({
@@ -715,11 +772,39 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               })
               .catch(error => {
                 console.log(error);
-                UINotificationService.show({
-                  title: 'Error en la operación',
-                  message: 'Por favor intente de nuevo.',
-                  type: 'error',
-                });
+                if (error.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (error.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (error.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (error.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
               });
           } else {
             UINotificationService.show({
@@ -852,12 +937,40 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                     message: 'Segmentaciones guardadas.',
                   });
                 })
-                .catch(param => {
-                  UINotificationService.show({
-                    title: 'Error al guardar',
-                    message: 'Por favor intente de nuevo.',
-                    type: 'error',
-                  });
+                .catch(rst => {
+                  if (rst.status == 400) {
+                    UINotificationService.show({
+                      type: 'error',
+                      title: 'Error de entidad',
+                      message:
+                        'Por favor verificar la entidad asociada a su usuario.',
+                      duration: 1000 * 4,
+                    });
+                  }
+                  if (rst.status == 403) {
+                    UINotificationService.show({
+                      type: 'error',
+                      title: 'Recurso prohibido',
+                      message: 'Sin permisos para este servicio.',
+                      duration: 1000 * 4,
+                    });
+                  }
+                  if (rst.status == 401) {
+                    UINotificationService.show({
+                      type: 'error',
+                      title: 'Error de autenticación',
+                      message: 'Usuario no autenticado.',
+                      duration: 1000 * 4,
+                    });
+                  }
+                  if (rst.status == 404) {
+                    UINotificationService.show({
+                      type: 'error',
+                      title: 'Error',
+                      message: 'Sin conexion.',
+                      duration: 1000 * 4,
+                    });
+                  }
                 });
             } catch (error) {
               console.log(error);

@@ -63,7 +63,9 @@ export const makeTransaction = (route, operation, data) => {
         if (xhttp.status == 200) {
           resolve(JSON.parse(xhttp.response));
         } else {
-          reject({ error: 'Sin conexión' });
+          const res = { error: 'Sin conexión', status: xhttp.status };
+          console.log(res);
+          reject(res);
         }
       }
     };
