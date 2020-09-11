@@ -11,10 +11,10 @@ const DeepsarsSegmentationForm = ({
   UINotificationService,
 }) => {
   const [Segmentation, setSegmentation] = useState('169');
-  const [Tool, setTool] = useState('CorrectionScissors');
-  const [eraserChecked, setEraserCheck] = useState(false);
+  /* const [Tool, setTool] = useState('Brush');
+  const [eraserChecked, setEraserCheck] = useState(true); */
 
-  const TOOL_OPTIONS = [
+  /* const TOOL_OPTIONS = [
     {
       value: 'CorrectionScissors',
       key: 'Tijeras',
@@ -27,18 +27,20 @@ const DeepsarsSegmentationForm = ({
       value: 'BrushEraser',
       key: 'Borrador',
     },
-  ];
+  ]; */
 
   const onSave = () => {
-    console.log(Tool, parseInt(Segmentation));
-    utils.segmentate_roi(Tool, parseInt(Segmentation), eraserChecked);
+    /* console.log(Tool, parseInt(Segmentation)); */
+    utils.segmentate_roi('Brush', parseInt(Segmentation), true);
     onClose();
   };
 
   return (
     <div>
       <div className="title">
-        {'Seleccione el tipo de segmentación y la herramienta a usar'}
+        {
+          'Seleccione el tipo de segmentación a realizar. Para borrar parte de una segmentación usar el clic derecho.'
+        }
       </div>
 
       <div>
@@ -50,7 +52,7 @@ const DeepsarsSegmentationForm = ({
         />
       </div>
 
-      <div>
+      {/* <div>
         <Select
           onChange={event => setTool(event.target.value)}
           options={TOOL_OPTIONS}
@@ -62,7 +64,7 @@ const DeepsarsSegmentationForm = ({
           onChange={event => setEraserCheck(!eraserChecked)}
         />
         {'Borrar Con click Derecho ?'}
-      </div>
+      </div> */}
 
       <div className="actions">
         <div className="action-cancel">
