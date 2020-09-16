@@ -100,7 +100,17 @@ export const segmentate_roi = async (
     segmentationModule.setters.activeSegmentIndex(element, activeSegmentIndex);
     segmentationModule.setters.activeSegmentIndex(element, activeSegmentIndex);
     console.log('Segmentation Module', segmentationModule);
-    cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+    if (toolName == 'FreehandScissors') {
+      const FreehandScissorsTool = cornerstoneTools.FreehandScissorsTool;
+
+      cornerstoneTools.addTool(FreehandScissorsTool);
+      cornerstoneTools.setToolActive('FreehandScissors', {
+        mouseButtonMask: 1,
+      });
+    } else {
+      cornerstoneTools.setToolActive(toolName, { mouseButtonMask: 1 });
+    }
+
     if (eraseWithRightClick && toolName != 'BrushEraser') {
       cornerstoneTools.setToolActive('BrushEraser', { mouseButtonMask: 2 });
     } else {
