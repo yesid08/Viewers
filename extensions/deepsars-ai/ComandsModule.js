@@ -723,6 +723,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
           var claves = Object.keys(segmentationModule.state.series);
           var ids = getDicomUIDs();
           var waddors = undefined;
+          var _idUser = localStorage.getItem('UID');
           claves.forEach(data => {
             var information = data.split('/');
             if (information[6] === ids.StudyInstanceUID) {
@@ -732,6 +733,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
           var petition = {
             StudyInstanceUID: ids.StudyInstanceUID,
             SeriesInstanceUID: ids.SeriesInstanceUID,
+            _idUser: _idUser,
           };
           var len =
             segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D
@@ -904,7 +906,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   waddors = data;
                 }
               });
-
+              var _idUser = localStorage.getItem('UID');
               var segmentation =
                 segmentationModule.state.series[waddors].labelmaps3D[0]
                   .labelmaps2D;
@@ -922,6 +924,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
               encodingSegmentation.clave = waddors;
               encodingSegmentation._segId = _segId;
+              encodingSegmentation._idUser = _idUser;
 
               console.log('***', encodingSegmentation);
 
@@ -985,7 +988,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      recoverSegmentation: {
+      /* recoverSegmentation: {
         commandFn: async () => {
           if (states[0].isActive == false) {
             UINotificationService.show({
@@ -1002,6 +1005,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             var petition = {
               StudyInstanceUID: ids.StudyInstanceUID,
               SeriesInstanceUID: ids.SeriesInstanceUID,
+              _idUser: _idUser,
             };
 
             try {
@@ -1035,7 +1039,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         },
         storeContexts: [],
         options: {},
-      },
+      }, */
     },
 
     defaultContext: ['VIEWER'],
