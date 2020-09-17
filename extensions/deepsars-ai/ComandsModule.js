@@ -294,6 +294,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               type: 'info',
               description:
                 'Hubo un problema prediciendo el modelo RX-Hallazgos',
+              duration: 1000 * 2,
             });
             const pathologiesData = await predictions.predictMultiplePathologies(
               payloadData
@@ -305,6 +306,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 type: 'error',
                 description:
                   'Hubo un problema prediciendo el modelo RX-Hallazgos',
+                duration: 1000 * 2,
               });
             } else {
               console.log(pathologiesData);
@@ -390,6 +392,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               type: 'info',
               description:
                 'Hubo un problema prediciendo el modelo RX-Hallazgos',
+              duration: 1000 * 2,
             });
             const pathologiesData = await predictions.predictMultiplePathologies(
               payloadData
