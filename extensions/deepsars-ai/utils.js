@@ -1,9 +1,9 @@
+/* eslint-disable no-console */
 import cornerstone from 'cornerstone-core';
 import OHIF from '@ohif/core';
 import cornerstoneTools from 'cornerstone-tools';
 import * as utils from './utils';
-import * as decoding from './segmentationModule/decoderV4';
-var recover = false;
+
 export const getDicomUIDs = () => {
   const defaultEnabledElement = cornerstone.getEnabledElements()[0];
   const image = defaultEnabledElement.image;
@@ -35,7 +35,7 @@ export const isSeriesCT = () => {
 export const getAllInstancesUIDs = () => {
   const allSlicesUIDS = [];
   const UIDsMap = OHIF.cornerstone.metadataProvider.imageIdToUIDs;
-  for (const [key, value] of UIDsMap.entries()) {
+  for (const [value] of UIDsMap.entries()) {
     allSlicesUIDS.push(value);
   }
   return allSlicesUIDS;

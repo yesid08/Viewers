@@ -1,8 +1,8 @@
 var dirsCodeVect = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
 function dirIdxVect(idx, shape_img) {
-  const W = shape_img[0];
-  const y = Math.floor(idx / shape_img[0]);
+  const W = shape_img[1];
+  const y = Math.floor(idx / shape_img[1]);
   const x = idx % shape_img[1];
   return [
     x + 1 + (y + 1) * W,
@@ -73,9 +73,9 @@ function findAndCodeContour(
       prevDiff = pixelValues[nextIdx] != current_label;
     }
     count++;
-  } while (nextIdx != idx && count != 5001);
+  } while (nextIdx != idx && count != 10001);
 
-  if (count < 40 || count > 5000) {
+  if (count < 40 || count > 10000) {
     valid = false;
   }
 
@@ -103,6 +103,7 @@ export function encodingSegmentations(annotData, rows, columns) {
       slice_count++;
       continue;
     }
+
     let pixelValues = Object.values(sliceData.pixelData);
     var pixelFound = new Uint16Array(shape_img[0] * shape_img[1]);
     let sliceDataEncode = {
@@ -149,5 +150,6 @@ export function encodingSegmentations(annotData, rows, columns) {
     slice_count++;
   }
   codedAnnotData.shape = [shape_img[0], shape_img[1], slice_count];
+  console.log('Antes de salir de la funcion:', codedAnnotData);
   return codedAnnotData;
 }

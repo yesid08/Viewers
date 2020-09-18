@@ -7,8 +7,8 @@ import * as predictions from './operationsAI/predictions';
 import * as heatmaps from './operationsAI/heatmaps';
 import cornerstone from 'cornerstone-core';
 import DeepsarsSegmentationForm from './DeepsarsSegmentationForm';
-import * as coding from './segmentationModule/encoderV4';
-import * as decoding from './segmentationModule/decoderV4';
+import * as coding from './segmentationModule/encoderV41';
+import * as decoding from './segmentationModule/decoderV41';
 import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
@@ -763,7 +763,9 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 } else {
                   respuesta.data.forEach(seg => {
                     var _segId = seg._segId;
+                    console.log('Recuper ada:', JSON.stringify(seg));
                     var segmentation = decoding.decodingSegmentations(seg);
+                    console.log('Decodific ada:', JSON.stringify(segmentation));
                     segmentation._segId = _segId;
                     segmentationModule.state.series[
                       seg.clave
@@ -913,14 +915,15 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               var segmentation =
                 segmentationModule.state.series[waddors].labelmaps3D[0]
                   .labelmaps2D;
+              console.log('Segmentation', JSON.stringify(segmentation));
               var _segId = segmentation._segId;
               console.log(_segId);
               var columns = cornerstone.getEnabledElements()[0].image.columns;
               var rows = cornerstone.getEnabledElements()[0].image.rows;
               var encodingSegmentation = coding.encodingSegmentations(
                 segmentation,
-                columns,
-                rows
+                rows,
+                columns
               );
 
               encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
@@ -929,7 +932,10 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               encodingSegmentation._segId = _segId;
               encodingSegmentation._idUser = _idUser;
 
-              console.log('***', encodingSegmentation);
+              console.log(
+                'Encoding segmentation',
+                JSON.stringify(encodingSegmentation)
+              );
 
               const result = utils.makeTransaction(
                 'segmentations',

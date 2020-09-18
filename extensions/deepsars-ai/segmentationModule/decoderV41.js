@@ -1,15 +1,15 @@
 function coord2idx(coord, shape_img) {
-  return coord[0] * shape_img[0] + coord[1];
+  return coord[0] * shape_img[1] + coord[1];
 }
 
 function idx2coord(idx, shape_img) {
-  const rows = Math.floor(idx / shape_img[0]);
+  const rows = Math.floor(idx / shape_img[1]);
   const cols = idx % shape_img[1];
   return [rows, cols];
 }
 
 function n8Array(y, x, pixelValue, shape_img) {
-  const W = shape_img[0];
+  const W = shape_img[1];
   const array_values = [
     pixelValue[x + 1 + (y + 1) * W],
     pixelValue[x + 1 + y * W],
@@ -25,8 +25,8 @@ function n8Array(y, x, pixelValue, shape_img) {
 }
 
 function n8UpDown(idx, active_label, pixelValue, shape_img) {
-  const W = shape_img[0];
-  const y = Math.floor(idx / shape_img[0]);
+  const W = shape_img[1];
+  const y = Math.floor(idx / shape_img[1]);
   const x = idx % shape_img[1];
   const bordersDown = [
     pixelValue[x + 1 + (y + 1) * W],
@@ -74,7 +74,7 @@ export function decodingSegmentations(codedAnnotData) {
   let shape_img = codedAnnotData.shape;
   const initPixelData = new Uint16Array(shape_img[0] * shape_img[1]);
 
-  // Recorre el arreglo con los cortes donde hay segmentación
+  // Recorre el arreglo con los cortes donde  hay segmentación
   for (const sliceData of codedAnnotData.slicesData) {
     if (sliceData == null) {
       retrivedAnnotData.push(null);
