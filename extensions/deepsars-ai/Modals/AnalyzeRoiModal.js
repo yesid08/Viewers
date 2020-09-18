@@ -71,7 +71,7 @@ const AnalizeRoiModal = ({ modality, ohifConf, services }) => {
         </div>
         <div className="action-save">
           <button className="btn btn-primary" onClick={onSave}>
-            {'Guardar'}
+            {'Predecir'}
           </button>
         </div>
       </div>
