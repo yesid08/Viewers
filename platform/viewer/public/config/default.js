@@ -29,9 +29,9 @@ window.config = {
     dicomWeb: [
       {
         name: 'Orthanc',
-        wadoUriRoot: 'https://deepsars.uis.edu.co/orthanc/wado',
-        qidoRoot: 'https://deepsars.uis.edu.co/orthanc/dicom-web',
-        wadoRoot: 'https://deepsars.uis.edu.co/orthanc/dicom-web',
+        wadoUriRoot: '/orthanc/wado',
+        qidoRoot: '/orthanc/dicom-web',
+        wadoRoot: '/orthanc/dicom-web',
         qidoSupportsIncludeField: false,
         imageRendering: 'wadors',
         thumbnailRendering: 'wadors',
