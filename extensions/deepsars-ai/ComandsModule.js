@@ -729,7 +729,9 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
           var _idUser = localStorage.getItem('UID');
           claves.forEach(data => {
             var information = data.split('/');
-            if (information[6] === ids.StudyInstanceUID) {
+            console.log('ids', ids);
+            console.log('information', information);
+            if (information[4] === ids.StudyInstanceUID) {
               waddors = data;
             }
           });
@@ -767,6 +769,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                     var segmentation = decoding.decodingSegmentations(seg);
                     console.log('Decodific ada:', JSON.stringify(segmentation));
                     segmentation._segId = _segId;
+                    console.log('Para comparar:**********', segmentationModule);
+                    console.log(seg.clave, waddors);
                     segmentationModule.state.series[
                       seg.clave
                     ].labelmaps3D[0].labelmaps2D = segmentation;
