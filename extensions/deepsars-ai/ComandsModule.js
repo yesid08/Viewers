@@ -908,8 +908,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 var information = data.split('/');
                 console.log('information:', information);
                 if (
-                  information[6] === ids.StudyInstanceUID &&
-                  information[8] === ids.SeriesInstanceUID
+                  information[4] === ids.StudyInstanceUID &&
+                  information[6] === ids.SeriesInstanceUID
                 ) {
                   console.log('entra');
                   waddors = data;
