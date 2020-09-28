@@ -890,112 +890,106 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       saveSegmentation: {
         commandFn: () => {
-          if (states[0].isActive == false) {
-            UINotificationService.show({
-              title: states[0].name,
-              message: states[0].message,
-              type: states[0].state,
+          try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const segmentationParam = urlParams.get('sec_user');
+            console.log('segmentationParam', segmentationParam);
+
+            var segmentationModule = cornerstoneTools.getModule('segmentation');
+            var claves = Object.keys(segmentationModule.state.series);
+            var ids = utils.getDicomUIDs();
+            var waddors = undefined;
+            claves.forEach(data => {
+              var information = data.split('/');
+              console.log('information:', information);
+              if (
+                information[4] === ids.StudyInstanceUID &&
+                information[6] === ids.SeriesInstanceUID
+              ) {
+                console.log('entra');
+                waddors = data;
+              }
             });
-          } else {
-            try {
-              var segmentationModule = cornerstoneTools.getModule(
-                'segmentation'
-              );
-              var claves = Object.keys(segmentationModule.state.series);
-              var ids = utils.getDicomUIDs();
-              var waddors = undefined;
-              claves.forEach(data => {
-                var information = data.split('/');
-                console.log('information:', information);
-                if (
-                  information[4] === ids.StudyInstanceUID &&
-                  information[6] === ids.SeriesInstanceUID
-                ) {
-                  console.log('entra');
-                  waddors = data;
+            var _idUser = localStorage.getItem('UID');
+            var segmentation =
+              segmentationModule.state.series[waddors].labelmaps3D[0]
+                .labelmaps2D;
+            console.log('Segmentation', JSON.stringify(segmentation));
+            var _segId = segmentation._segId;
+            console.log(_segId);
+            var columns = cornerstone.getEnabledElements()[0].image.columns;
+            var rows = cornerstone.getEnabledElements()[0].image.rows;
+            var encodingSegmentation = coding.encodingSegmentations(
+              segmentation,
+              rows,
+              columns
+            );
+
+            encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
+            encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
+            encodingSegmentation.clave = waddors;
+            encodingSegmentation._segId = _segId;
+            encodingSegmentation._idUser = _idUser;
+
+            console.log(
+              'Encoding segmentation',
+              JSON.stringify(encodingSegmentation)
+            );
+
+            const result = utils.makeTransaction(
+              'segmentations',
+              'write',
+              encodingSegmentation
+            );
+            result
+              .then(param => {
+                UINotificationService.show({
+                  title: 'Operacion exitosa',
+                  message: 'Segmentaciones guardadas.',
+                });
+              })
+              .catch(rst => {
+                if (rst.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
                 }
               });
-              var _idUser = localStorage.getItem('UID');
-              var segmentation =
-                segmentationModule.state.series[waddors].labelmaps3D[0]
-                  .labelmaps2D;
-              console.log('Segmentation', JSON.stringify(segmentation));
-              var _segId = segmentation._segId;
-              console.log(_segId);
-              var columns = cornerstone.getEnabledElements()[0].image.columns;
-              var rows = cornerstone.getEnabledElements()[0].image.rows;
-              var encodingSegmentation = coding.encodingSegmentations(
-                segmentation,
-                rows,
-                columns
-              );
-
-              encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
-              encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
-              encodingSegmentation.clave = waddors;
-              encodingSegmentation._segId = _segId;
-              encodingSegmentation._idUser = _idUser;
-
-              console.log(
-                'Encoding segmentation',
-                JSON.stringify(encodingSegmentation)
-              );
-
-              const result = utils.makeTransaction(
-                'segmentations',
-                'write',
-                encodingSegmentation
-              );
-              result
-                .then(param => {
-                  UINotificationService.show({
-                    title: 'Operacion exitosa',
-                    message: 'Segmentaciones guardadas.',
-                  });
-                })
-                .catch(rst => {
-                  if (rst.status == 400) {
-                    UINotificationService.show({
-                      type: 'error',
-                      title: 'Error de entidad',
-                      message:
-                        'Por favor verificar la entidad asociada a su usuario.',
-                      duration: 1000 * 4,
-                    });
-                  }
-                  if (rst.status == 403) {
-                    UINotificationService.show({
-                      type: 'error',
-                      title: 'Recurso prohibido',
-                      message: 'Sin permisos para este servicio.',
-                      duration: 1000 * 4,
-                    });
-                  }
-                  if (rst.status == 401) {
-                    UINotificationService.show({
-                      type: 'error',
-                      title: 'Error de autenticación',
-                      message: 'Usuario no autenticado.',
-                      duration: 1000 * 4,
-                    });
-                  }
-                  if (rst.status == 404) {
-                    UINotificationService.show({
-                      type: 'error',
-                      title: 'Error',
-                      message: 'Sin conexion.',
-                      duration: 1000 * 4,
-                    });
-                  }
-                });
-            } catch (error) {
-              console.log(error);
-              UINotificationService.show({
-                title: 'Operación invalida',
-                message: 'No hay segmentaciones para guardar.',
-                type: 'warning',
-              });
-            }
+          } catch (error) {
+            console.log(error);
+            UINotificationService.show({
+              title: 'Operación invalida',
+              message: 'No hay segmentaciones para guardar.',
+              type: 'warning',
+            });
           }
         },
         storeContexts: [],
