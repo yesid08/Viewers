@@ -720,6 +720,10 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       },
       showCurrentSegmentation: {
         commandFn: function() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const segmentationParam = urlParams.get('sec_user');
+          console.log('segmentationParam', segmentationParam);
+
           var segmentationModule = cornerstoneTools.getModule('segmentation');
           var element = cornerstone.getEnabledElements()[0].element;
           segmentationModule.getters.labelmap2D(element);
@@ -735,11 +739,20 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               waddors = data;
             }
           });
-          var petition = {
-            StudyInstanceUID: ids.StudyInstanceUID,
-            SeriesInstanceUID: ids.SeriesInstanceUID,
-            _idUser: _idUser,
-          };
+          var petition = undefined;
+          if (segmentationParam == true) {
+            petition = {
+              StudyInstanceUID: ids.StudyInstanceUID,
+              SeriesInstanceUID: ids.SeriesInstanceUID,
+              _idUser: _idUser,
+            };
+          } else {
+            petition = {
+              StudyInstanceUID: ids.StudyInstanceUID,
+              SeriesInstanceUID: ids.SeriesInstanceUID,
+            };
+          }
+
           var len =
             segmentationModule.state.series[waddors].labelmaps3D[0].labelmaps2D
               .length;
@@ -914,7 +927,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             var segmentation =
               segmentationModule.state.series[waddors].labelmaps3D[0]
                 .labelmaps2D;
-            console.log('Segmentation', JSON.stringify(segmentation));
+
             var _segId = segmentation._segId;
             console.log(_segId);
             var columns = cornerstone.getEnabledElements()[0].image.columns;
@@ -928,19 +941,19 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             encodingSegmentation.StudyInstanceUID = ids.StudyInstanceUID;
             encodingSegmentation.SeriesInstanceUID = ids.SeriesInstanceUID;
             encodingSegmentation.clave = waddors;
-            encodingSegmentation._segId = _segId;
-            encodingSegmentation._idUser = _idUser;
 
-            console.log(
-              'Encoding segmentation',
-              JSON.stringify(encodingSegmentation)
-            );
+            if (segmentationParam == true) {
+              encodingSegmentation._idUser = _idUser;
+            }
+
+            encodingSegmentation._segId = _segId;
 
             const result = utils.makeTransaction(
               'segmentations',
               'write',
               encodingSegmentation
             );
+
             result
               .then(param => {
                 UINotificationService.show({
