@@ -902,7 +902,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         options: {},
       },
       saveSegmentation: {
-        commandFn: () => {
+        commandFn: async () => {
           try {
             const urlParams = new URLSearchParams(window.location.search);
             const segmentationParam = urlParams.get('sec_user') == 'true';
@@ -944,8 +944,26 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             if (segmentationParam == true) {
               console.log(typeof segmentationParam, 'por usuario');
               encodingSegmentation._idUser = _idUser;
-            }
+              console.log('id del usuario', _idUser);
+              const algo = await utils.getSeriesId({
+                Level: 'Series',
+                Limit: 2,
+                Query: {
+                  SeriesInstanceUID: ids.SeriesInstanceUID,
+                },
+              });
+              console.log('id de la serie:', algo);
+              const data = {
+                query: { ParentSeries: algo[0] },
+                add: { annotated: _idUser },
+              };
 
+              utils
+                .makeTransaction('unlabeledStudies', 'add', data)
+                .then(response => {
+                  console.log('respuesta del make transactions', response);
+                });
+            }
             encodingSegmentation._segId = _segId;
 
             const result = utils.makeTransaction(

@@ -54,7 +54,6 @@ export const makeTransaction = (route, operation, data) => {
     route: route,
     _v: 3,
   };
-
   const promisePetition = new Promise((resolve, reject) => {
     var xhttp = new XMLHttpRequest();
     xhttp.timeout = 1000 * 120;
@@ -70,6 +69,38 @@ export const makeTransaction = (route, operation, data) => {
       }
     };
     xhttp.open('POST', `/trs/${route}/`, true);
+    xhttp.setRequestHeader(
+      'Authorization',
+      window.localStorage.getItem('token')
+    );
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send(JSON.stringify(requestPayload));
+  });
+
+  return promisePetition;
+};
+
+export const getSeriesId = data => {
+  const requestPayload = data;
+  const promisePetition = new Promise((resolve, reject) => {
+    var xhttp = new XMLHttpRequest();
+    xhttp.timeout = 1000 * 120;
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState == 4) {
+        if (xhttp.status == 200) {
+          resolve(JSON.parse(xhttp.response));
+        } else {
+          const res = { error: 'Sin conexión', status: xhttp.status };
+          console.log(res);
+          reject(res);
+        }
+      }
+    };
+    xhttp.open(
+      'POST',
+      'https://deepsarspruebas.uis.edu.co/orthanc/tools/find',
+      true
+    );
     xhttp.setRequestHeader(
       'Authorization',
       window.localStorage.getItem('token')
