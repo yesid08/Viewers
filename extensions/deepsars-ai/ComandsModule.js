@@ -721,7 +721,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       showCurrentSegmentation: {
         commandFn: function() {
           const urlParams = new URLSearchParams(window.location.search);
-          const segmentationParam = urlParams.get('sec_user');
+          const segmentationParam = urlParams.get('sec_user') == 'true';
           console.log('segmentationParam', segmentationParam);
 
           var segmentationModule = cornerstoneTools.getModule('segmentation');
@@ -905,7 +905,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         commandFn: () => {
           try {
             const urlParams = new URLSearchParams(window.location.search);
-            const segmentationParam = urlParams.get('sec_user');
+            const segmentationParam = urlParams.get('sec_user') == 'true';
             console.log('segmentationParam', segmentationParam);
 
             var segmentationModule = cornerstoneTools.getModule('segmentation');
@@ -919,7 +919,6 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 information[4] === ids.StudyInstanceUID &&
                 information[6] === ids.SeriesInstanceUID
               ) {
-                console.log('entra');
                 waddors = data;
               }
             });
@@ -943,6 +942,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
             encodingSegmentation.clave = waddors;
 
             if (segmentationParam == true) {
+              console.log(typeof segmentationParam, 'por usuario');
               encodingSegmentation._idUser = _idUser;
             }
 
