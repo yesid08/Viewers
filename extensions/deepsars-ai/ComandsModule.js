@@ -953,10 +953,10 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   SeriesInstanceUID: ids.SeriesInstanceUID,
                 },
               });
-              console.log('id de la serie:', algo[0], parseInt(algo[0]));
+              console.log('id de la serie:', algo[0]);
               const data = {
-                query: { ParentSeries: parseInt(algo[0]) },
-                add: { annotated: _idUser },
+                query: { ParentSeries: algo[0] },
+                add: { annotated: parseInt(_idUser) },
               };
 
               const respuesta = await utils.makeTransaction(
