@@ -154,12 +154,6 @@ const BUTTON_SAVE_SEGMENTATION = {
   commandName: 'saveSegmentation',
 };
 
-const BUTTON_RECOVER_SEGMENTATION = {
-  id: 'Recuperar',
-  label: 'Recuperar',
-  icon: 'info',
-  commandName: 'recoverSegmentation',
-};
 const BUTTON_SEGMENTATION = {
   id: 'deepsars_seg',
   label: 'Segmentación',
@@ -217,6 +211,29 @@ export const BUTTON_PROBABILITY = {
   label: 'Probabilidad',
   icon: 'measure-target',
 };
+
+const BUTTON_SARS_3D = {
+  id: 'Sars_3d',
+  label: 'Sars volumen',
+  icon: 'play',
+  type: 'command',
+  commandName: 'sars3d',
+};
+
+const BUTTON_SARS_2D = {
+  id: 'Sars_2d',
+  label: 'Sars slice',
+  icon: 'play',
+  type: 'command',
+  commandName: 'sars2d',
+};
+
+const BUTTON_SARS = {
+  label: 'Sars',
+  icon: 'brain',
+  buttons: [BUTTON_SARS_3D, BUTTON_SARS_2D],
+};
+
 export default {
   definitions: [
     BUTTON_SEGMENTATION,
@@ -225,6 +242,7 @@ export default {
     BUTTON_CT_STUDIES,
     BUTTON_RX_STUDIES,
     BUTTON_HEATMAP,
+    BUTTON_SARS,
     //BUTTON_CT_VOLUME,
     //BUTTON_CT_SLICE,
     //BUTTON_RX,

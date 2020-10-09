@@ -906,6 +906,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
           try {
             const urlParams = new URLSearchParams(window.location.search);
             const segmentationParam = urlParams.get('sec_user') == 'true';
+            //const segmentationParam = 'true' == 'true';
             console.log('segmentationParam', segmentationParam);
 
             var segmentationModule = cornerstoneTools.getModule('segmentation');
@@ -952,17 +953,19 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   SeriesInstanceUID: ids.SeriesInstanceUID,
                 },
               });
-              console.log('id de la serie:', algo);
+              console.log('id de la serie:', algo[0], parseInt(algo[0]));
               const data = {
-                query: { ParentSeries: algo[0] },
+                query: { ParentSeries: parseInt(algo[0]) },
                 add: { annotated: _idUser },
               };
 
-              utils
-                .makeTransaction('unlabeledStudies', 'add', data)
-                .then(response => {
-                  console.log('respuesta del make transactions', response);
-                });
+              const respuesta = await utils.makeTransaction(
+                'unlabeledStudies',
+                'add',
+                data
+              );
+
+              console.log('respuesta del make transactions', respuesta);
             }
             encodingSegmentation._segId = _segId;
 
@@ -1026,58 +1029,250 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      /* recoverSegmentation: {
-        commandFn: async () => {
-          if (states[0].isActive == false) {
-            UINotificationService.show({
-              title: states[0].name,
-              message: states[0].message,
-              type: states[0].state,
-            });
-          } else {
-            var segmentationModule = cornerstoneTools.getModule('segmentation');
-            var element = cornerstone.getEnabledElements()[0].element;
-            segmentationModule.getters.labelmap2D(element);
-            var ids = utils.getDicomUIDs();
-            console.log(ids);
-            var petition = {
-              StudyInstanceUID: ids.StudyInstanceUID,
-              SeriesInstanceUID: ids.SeriesInstanceUID,
-              _idUser: _idUser,
+      sars3d: {
+        commandFn: function() {
+          var dicomData = utils.getDicomUIDs();
+          if (utils.isSeriesCT()) {
+            const payloadData = {
+              microservice: 'orthanc',
+              task: 'predict_pathology',
+              file_ID: dicomData.SeriesInstanceUID,
+              file_type: 'volumen',
+              file_mod: 'ct',
+              file_view: 'axial',
+              task_class: 'classify',
+              task_mode: 'covid_levels',
             };
+            UINotificationService.show({
+              title: 'Realizando predicción',
+              message: 'Este proceso tomara unos segundos.',
+              duration: 1000 * 4,
+            });
+            var promisePetition = predictions.predictAPathology(payloadData);
 
-            try {
-              var result = await utils.makeTransaction(
-                'segmentations',
-                'readList',
-                petition
-              );
-              console.log(result.data.length, result);
-              result.data.forEach(seg => {
-                const _segId = seg._segId;
-                var segmentation = decoding.decodingSegmentations(seg);
-                segmentation._segId = _segId;
-                console.log('+++', segmentation);
-                segmentationModule.state.series[
-                  seg.clave
-                ].labelmaps3D[0].labelmaps2D = segmentation;
+            promisePetition
+              .then(response => {
+                console.log(response);
+                console.log(response.data.hasOwnProperty('error'));
+                if (response.data.hasOwnProperty('error')) {
+                  //Handle model with less than 20 slices
+                  var uidData = utils.getAllInstancesUIDs();
+                  const minInstancesNumber = 20;
+                  if (
+                    uidData.length < minInstancesNumber &&
+                    payloadData.file_type == 'volumen'
+                  ) {
+                    UINotificationService.show({
+                      title: 'Insuficientes instancias',
+                      type: 'warning',
+                      duration: 15 * 1000,
+                      autoClose: false,
+                      position: 'topRight',
+                      message:
+                        'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+                    });
+                  } else {
+                    UINotificationService.show({
+                      title: 'Error de Predicción',
+                      type: 'warning',
+                      duration: 5 * 1000,
+                      position: 'topRight',
+                      message: 'Por favor intente de nuevo',
+                    });
+                  }
+                } else {
+                  var pathology = response.data.class;
+                  var probability =
+                    response.data.probability.toFixed(2) * 100 + '%';
+                  BUTTONS.BUTTON_PATHOLOGY.label = pathology;
+                  BUTTONS.BUTTON_PROBABILITY.label = probability;
+
+                  UINotificationService.show({
+                    title: 'Predicción exitosa',
+                    message:
+                      'La clase predicha fue ' +
+                      pathology +
+                      ' con una confianza de ' +
+                      probability,
+                    duration: 1000 * 15,
+                    type: 'success',
+                  });
+                }
+              })
+              .catch(rst => {
+                console.log(rst);
+
+                if (rst.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
               });
-              UINotificationService.show({
-                title: 'Operacion exitosa',
-                message: 'Segmentaciones recuperadas.',
-              });
-            } catch (error) {
-              console.log(error);
-              UINotificationService.show({
-                title: 'Error',
-                message: 'No hay segmentaciones guardadas para este estudio.',
-              });
-            }
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
+            });
           }
         },
         storeContexts: [],
         options: {},
-      }, */
+      },
+      sars2d: {
+        commandFn: () => {
+          if (utils.isSeriesCT()) {
+            var dicomData = utils.getDicomUIDs();
+            const payloadData = {
+              microservice: 'orthanc',
+              task: 'predict_pathology',
+              file_ID: dicomData.SOPInstanceUID,
+              file_type: 'slice',
+              file_mod: 'ct',
+              file_view: 'axial',
+              task_class: 'classify',
+              task_mode: 'sars',
+            };
+
+            UINotificationService.show({
+              title: 'Realizando predicción',
+              message: 'Este proceso tomara unos segundos.',
+              duration: 1000 * 2,
+            });
+
+            var promisePetition = predictions.predictAPathology(payloadData);
+
+            promisePetition
+              .then(response => {
+                console.log(response);
+                console.log(response.data.hasOwnProperty('error'));
+                if (response.data.hasOwnProperty('error')) {
+                  //Handle model with less than 20 slices
+                  var uidData = utils.getAllInstancesUIDs();
+                  const minInstancesNumber = 20;
+                  if (
+                    uidData.length < minInstancesNumber &&
+                    payloadData.file_type == 'volumen'
+                  ) {
+                    UINotificationService.show({
+                      title: 'Insuficientes instancias',
+                      type: 'warning',
+                      duration: 15 * 1000,
+                      autoClose: false,
+                      position: 'topRight',
+                      message:
+                        'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+                    });
+                  } else {
+                    UINotificationService.show({
+                      title: 'Error de Predicción',
+                      type: 'warning',
+                      duration: 5 * 1000,
+                      position: 'topRight',
+                      message: 'Por favor intente de nuevo',
+                    });
+                  }
+                } else {
+                  var pathology = response.data.class;
+                  var probability =
+                    response.data.probability.toFixed(2) * 100 + '%';
+                  BUTTONS.BUTTON_PATHOLOGY.label = pathology;
+                  BUTTONS.BUTTON_PROBABILITY.label = probability;
+                  UINotificationService.show({
+                    title: 'Predicción exitosa',
+                    message:
+                      'La clase predicha fue ' +
+                      pathology +
+                      ' con una confianza de ' +
+                      probability,
+                    duration: 1000 * 15,
+                    type: 'success',
+                  });
+                }
+              })
+              .catch(rst => {
+                console.log(rst);
+                if (rst.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
+              });
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
+            });
+          }
+        },
+        storeContexts: [],
+        options: {},
+      },
     },
 
     defaultContext: ['VIEWER'],
