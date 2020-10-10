@@ -1029,13 +1029,14 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      sars3d: {
-        commandFn: function() {
-          var dicomData = utils.getDicomUIDs();
+      covid_levels: {
+        commandFn: async () => {
           if (utils.isSeriesCT()) {
+            const title = 'Niveles de covid';
+            var dicomData = utils.getDicomUIDs();
             const payloadData = {
               microservice: 'orthanc',
-              task: 'predict_pathology',
+              task: 'predict_pathologies',
               file_ID: dicomData.SeriesInstanceUID,
               file_type: 'volumen',
               file_mod: 'ct',
@@ -1043,99 +1044,70 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               task_class: 'classify',
               task_mode: 'covid_levels',
             };
-            UINotificationService.show({
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            services.notification.show({
               title: 'Realizando predicción',
-              message: 'Este proceso tomara unos segundos.',
-              duration: 1000 * 4,
+              message: 'Por favor espere un momento.',
+              type: 'info',
+              description: 'Hubo un problema prediciendo.',
+              duration: 1000 * 2,
             });
-            var promisePetition = predictions.predictAPathology(payloadData);
-
-            promisePetition
-              .then(response => {
-                console.log(response);
-                console.log(response.data.hasOwnProperty('error'));
-                if (response.data.hasOwnProperty('error')) {
-                  //Handle model with less than 20 slices
-                  var uidData = utils.getAllInstancesUIDs();
-                  const minInstancesNumber = 20;
-                  if (
-                    uidData.length < minInstancesNumber &&
-                    payloadData.file_type == 'volumen'
-                  ) {
-                    UINotificationService.show({
-                      title: 'Insuficientes instancias',
-                      type: 'warning',
-                      duration: 15 * 1000,
-                      autoClose: false,
-                      position: 'topRight',
-                      message:
-                        'El modelo requiere más instancias dicom para realizar un diagnóstico.',
-                    });
-                  } else {
-                    UINotificationService.show({
-                      title: 'Error de Predicción',
-                      type: 'warning',
-                      duration: 5 * 1000,
-                      position: 'topRight',
-                      message: 'Por favor intente de nuevo',
-                    });
-                  }
-                } else {
-                  var pathology = response.data.class;
-                  var probability =
-                    response.data.probability.toFixed(2) * 100 + '%';
-                  BUTTONS.BUTTON_PATHOLOGY.label = pathology;
-                  BUTTONS.BUTTON_PROBABILITY.label = probability;
-
-                  UINotificationService.show({
-                    title: 'Predicción exitosa',
-                    message:
-                      'La clase predicha fue ' +
-                      pathology +
-                      ' con una confianza de ' +
-                      probability,
-                    duration: 1000 * 15,
-                    type: 'success',
-                  });
-                }
-              })
-              .catch(rst => {
-                console.log(rst);
-
-                if (rst.status == 400) {
-                  UINotificationService.show({
-                    type: 'error',
-                    title: 'Error de entidad',
-                    message:
-                      'Por favor verificar la entidad asociada a su usuario.',
-                    duration: 1000 * 4,
-                  });
-                }
-                if (rst.status == 403) {
-                  UINotificationService.show({
-                    type: 'error',
-                    title: 'Recurso prohibido',
-                    message: 'Sin permisos para este servicio.',
-                    duration: 1000 * 4,
-                  });
-                }
-                if (rst.status == 401) {
-                  UINotificationService.show({
-                    type: 'error',
-                    title: 'Error de autenticación',
-                    message: 'Usuario no autenticado.',
-                    duration: 1000 * 4,
-                  });
-                }
-                if (rst.status == 404) {
-                  UINotificationService.show({
-                    type: 'error',
-                    title: 'Error',
-                    message: 'Sin conexion.',
-                    duration: 1000 * 4,
-                  });
-                }
+            const pathologiesData = await predictions.predictMultiplePathologies(
+              payloadData
+            );
+            if (pathologiesData.hasOwnProperty('error')) {
+              services.notification.show({
+                title: 'Error',
+                message: 'Sin conexión',
+                type: 'error',
+                description: 'Hubo un problema prediciendo',
+                duration: 1000 * 2,
               });
+            } else {
+              console.log(pathologiesData);
+              const data = [
+                {
+                  type: 'bar',
+                  name: 'Niveles de covid',
+                  marker: {
+                    color: '#7cb342',
+                  },
+                  orientation: 'v',
+                  x: Object.keys(pathologiesData),
+                  y: Object.values(pathologiesData),
+                },
+              ];
+              const layout = {
+                title: 'Niveles de covid',
+                plot_bgcolor: '#151A1F',
+                paper_bgcolor: '#151A1F',
+                font: {
+                  family: 'Roboto',
+                  color: '#ffffff',
+                },
+                xaxis: {
+                  title: 'Niveles',
+                  tickangle: -45,
+                },
+                yaxis: {
+                  title: 'Probabilidad [%]',
+                  gridcolor: '#ffffff',
+                  domain: [0, 100],
+                },
+                showlegend: false,
+              };
+              UIModalService.show({
+                content: probabilityDistributionModal,
+                title,
+                contentProps: {
+                  chartData: data,
+                  chartLayout: layout,
+                },
+              });
+            }
           } else {
             UINotificationService.show({
               title: 'Modalidad incorrecta',

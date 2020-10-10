@@ -167,6 +167,14 @@ const BUTTON_SEGMENTATION = {
   ],
 };
 
+const BUTTON_COVID_LEVELS = {
+  id: 'covid_levels',
+  label: 'Niveles de covid',
+  icon: 'play',
+  type: 'command',
+  commandName: 'covid_levels',
+};
+
 export const BUTTON_CT_STUDIES = {
   id: 'deepsars-ct-studies',
   label: 'Predicciones-CT',
@@ -175,6 +183,7 @@ export const BUTTON_CT_STUDIES = {
     BUTTON_CT_VOLUME_PREDICT,
     BUTTON_CT_SLICE_PREDICT,
     BUTTON_CT_AXIAL_ANALYZE,
+    BUTTON_COVID_LEVELS,
   ],
 };
 
@@ -190,7 +199,7 @@ export const BUTTON_RX_STUDIES = {
 };
 
 export const BUTTON_HEATMAP = {
-  label: 'Heat map',
+  label: 'Mapas xia',
   icon: 'brain',
   buttons: [
     BUTTON_CT_AXIAL_HEAT_MAP_2D,
@@ -212,14 +221,6 @@ export const BUTTON_PROBABILITY = {
   icon: 'measure-target',
 };
 
-const BUTTON_SARS_3D = {
-  id: 'Sars_3d',
-  label: 'Sars volumen',
-  icon: 'play',
-  type: 'command',
-  commandName: 'sars3d',
-};
-
 const BUTTON_SARS_2D = {
   id: 'Sars_2d',
   label: 'Sars slice',
@@ -231,7 +232,7 @@ const BUTTON_SARS_2D = {
 const BUTTON_SARS = {
   label: 'Sars',
   icon: 'brain',
-  buttons: [BUTTON_SARS_3D, BUTTON_SARS_2D],
+  buttons: [BUTTON_SARS_2D],
 };
 
 export default {
