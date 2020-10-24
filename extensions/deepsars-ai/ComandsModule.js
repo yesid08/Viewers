@@ -719,7 +719,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         options: {},
       },
       showCurrentSegmentation: {
-        commandFn: function() {
+        commandFn: function () {
           const urlParams = new URLSearchParams(window.location.search);
           const segmentationParam = urlParams.get('sec_user') == 'true';
           console.log('segmentationParam', segmentationParam);
@@ -1030,9 +1030,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         options: {},
       },
       covid_levels: {
-        commandFn: async () => {
+        commandFn: () => {
           if (utils.isSeriesCT()) {
-            const title = 'Niveles de covid';
             var dicomData = utils.getDicomUIDs();
             const payloadData = {
               microservice: 'orthanc',
@@ -1055,102 +1054,15 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               description: 'Hubo un problema prediciendo.',
               duration: 1000 * 2,
             });
-            const pathologiesData = await predictions.predictMultiplePathologies(
+
+            var promisePetition = predictions.predictMultiplePathologies(
               payloadData
             );
-            if (pathologiesData.hasOwnProperty('error')) {
-              services.notification.show({
-                title: 'Error',
-                message: 'Sin conexión',
-                type: 'error',
-                description: 'Hubo un problema prediciendo',
-                duration: 1000 * 2,
-              });
-            } else {
-              console.log(pathologiesData);
-              const data = [
-                {
-                  type: 'bar',
-                  name: 'Niveles de covid',
-                  marker: {
-                    color: '#7cb342',
-                  },
-                  orientation: 'v',
-                  x: Object.keys(pathologiesData),
-                  y: Object.values(pathologiesData),
-                },
-              ];
-              const layout = {
-                title: 'Niveles de covid',
-                plot_bgcolor: '#151A1F',
-                paper_bgcolor: '#151A1F',
-                font: {
-                  family: 'Roboto',
-                  color: '#ffffff',
-                },
-                xaxis: {
-                  title: 'Niveles',
-                  tickangle: -45,
-                },
-                yaxis: {
-                  title: 'Probabilidad [%]',
-                  gridcolor: '#ffffff',
-                  domain: [0, 100],
-                },
-                showlegend: false,
-              };
-              UIModalService.show({
-                content: probabilityDistributionModal,
-                title,
-                contentProps: {
-                  chartData: data,
-                  chartLayout: layout,
-                },
-              });
-            }
-          } else {
-            UINotificationService.show({
-              title: 'Modalidad incorrecta',
-              type: 'warning',
-              duration: 15 * 1000,
-              autoClose: false,
-              position: 'topRight',
-              message:
-                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
-            });
-          }
-        },
-        storeContexts: [],
-        options: {},
-      },
-      sars2d: {
-        commandFn: () => {
-          if (utils.isSeriesCT()) {
-            var dicomData = utils.getDicomUIDs();
-            const payloadData = {
-              microservice: 'orthanc',
-              task: 'predict_pathology',
-              file_ID: dicomData.SOPInstanceUID,
-              file_type: 'slice',
-              file_mod: 'ct',
-              file_view: 'axial',
-              task_class: 'classify',
-              task_mode: 'sars',
-            };
-
-            UINotificationService.show({
-              title: 'Realizando predicción',
-              message: 'Este proceso tomara unos segundos.',
-              duration: 1000 * 2,
-            });
-
-            var promisePetition = predictions.predictAPathology(payloadData);
-
             promisePetition
               .then(response => {
                 console.log(response);
-                console.log(response.data.hasOwnProperty('error'));
-                if (response.data.hasOwnProperty('error')) {
+                console.log(response.hasOwnProperty('error'));
+                if (response.hasOwnProperty('error')) {
                   //Handle model with less than 20 slices
                   var uidData = utils.getAllInstancesUIDs();
                   const minInstancesNumber = 20;
@@ -1177,21 +1089,120 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                     });
                   }
                 } else {
-                  var pathology = response.data.class;
-                  var probability =
-                    response.data.probability.toFixed(2) * 100 + '%';
-                  BUTTONS.BUTTON_PATHOLOGY.label = pathology;
-                  BUTTONS.BUTTON_PROBABILITY.label = probability;
+                  console.log(response);
+                  utils.generate_distribution('Niveles de covid', 'Niveles', response, services);
+                }
+              })
+              .catch(rst => {
+                console.log(rst);
+                if (rst.status == 400) {
                   UINotificationService.show({
-                    title: 'Predicción exitosa',
+                    type: 'error',
+                    title: 'Error de entidad',
                     message:
-                      'La clase predicha fue ' +
-                      pathology +
-                      ' con una confianza de ' +
-                      probability,
-                    duration: 1000 * 15,
-                    type: 'success',
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
                   });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
+              });
+          } else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
+            });
+          }
+        },
+        storeContexts: [],
+        options: {},
+      },
+      sars2d: {
+        commandFn: () => {
+          if (utils.isSeriesCT()) {
+            var dicomData = utils.getDicomUIDs();
+            const payloadData = {
+              microservice: 'orthanc',
+              task: 'predict_pathologies',
+              file_ID: dicomData.SOPInstanceUID,
+              file_type: 'slice',
+              file_mod: 'ct',
+              file_view: 'axial',
+              task_class: 'classify',
+              task_mode: 'sars',
+            };
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            UINotificationService.show({
+              title: 'Realizando predicción',
+              message: 'Este proceso tomara unos segundos.',
+              duration: 1000 * 2,
+            });
+
+            var promisePetition = predictions.predictMultiplePathologies(payloadData);
+
+            promisePetition
+              .then(response => {
+                console.log(response);
+                console.log(response.hasOwnProperty('error'));
+                if (response.hasOwnProperty('error')) {
+                  //Handle model with less than 20 slices
+                  var uidData = utils.getAllInstancesUIDs();
+                  const minInstancesNumber = 20;
+                  if (
+                    uidData.length < minInstancesNumber &&
+                    payloadData.file_type == 'volumen'
+                  ) {
+                    UINotificationService.show({
+                      title: 'Insuficientes instancias',
+                      type: 'warning',
+                      duration: 15 * 1000,
+                      autoClose: false,
+                      position: 'topRight',
+                      message:
+                        'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+                    });
+                  } else {
+                    UINotificationService.show({
+                      title: 'Error de Predicción',
+                      type: 'warning',
+                      duration: 5 * 1000,
+                      position: 'topRight',
+                      message: 'Por favor intente de nuevo',
+                    });
+                  }
+                } else {
+                  console.log(response);
+                  utils.generate_distribution('Probabilidades por clase', '', response, services);
                 }
               })
               .catch(rst => {

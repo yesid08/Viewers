@@ -2,7 +2,7 @@
 import cornerstone from 'cornerstone-core';
 import OHIF from '@ohif/core';
 import cornerstoneTools from 'cornerstone-tools';
-import * as utils from './utils';
+import probabilityDistributionModal from './Modals/ProbabilityDistributionModal';
 
 export const getDicomUIDs = () => {
   const defaultEnabledElement = cornerstone.getEnabledElements()[0];
@@ -16,7 +16,7 @@ export const getDicomUIDs = () => {
 };
 
 export const isSeriesCT = () => {
-  var dicomData = utils.getDicomUIDs();
+  var dicomData = getDicomUIDs();
   var dicomMetadata = OHIF.utils.studyMetadataManager.get(
     dicomData.StudyInstanceUID
   );
@@ -57,7 +57,7 @@ export const makeTransaction = (route, operation, data) => {
   const promisePetition = new Promise((resolve, reject) => {
     var xhttp = new XMLHttpRequest();
     xhttp.timeout = 1000 * 120;
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           resolve(JSON.parse(xhttp.response));
@@ -85,7 +85,7 @@ export const getSeriesId = data => {
   const promisePetition = new Promise((resolve, reject) => {
     var xhttp = new XMLHttpRequest();
     xhttp.timeout = 1000 * 120;
-    xhttp.onreadystatechange = function() {
+    xhttp.onreadystatechange = function () {
       if (xhttp.readyState == 4) {
         if (xhttp.status == 200) {
           resolve(JSON.parse(xhttp.response));
@@ -172,3 +172,47 @@ export const guid = () => {
     getFourRandomValues()
   );
 };
+
+export const generate_distribution = (title_layout, title_xaxis, pathologiesData, services) => {
+  const title = 'Resultados del modelo:';
+  const data = [
+    {
+      type: 'bar',
+      marker: {
+        color: '#7cb342',
+      },
+      orientation: 'v',
+      x: Object.keys(pathologiesData),
+      y: Object.values(pathologiesData),
+    },
+  ];
+  const layout = {
+    title: title_layout,
+    plot_bgcolor: '#151A1F',
+    paper_bgcolor: '#151A1F',
+    font: {
+      family: 'Roboto',
+      color: '#ffffff',
+    },
+    xaxis: {
+      title: title_xaxis,
+      tickangle: -45,
+    },
+    yaxis: {
+      title: 'Probabilidad [%]',
+      gridcolor: '#ffffff',
+      domain: [0, 100],
+    },
+    showlegend: false,
+  };
+
+  services.modal.show({
+    content: probabilityDistributionModal,
+    title,
+    contentProps: {
+      chartData: data,
+      chartLayout: layout,
+    },
+  });
+
+}
