@@ -20,16 +20,15 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
     definitions: {
       predictAxialCovidVolumeCt: {
         commandFn: () => {
-          /* UINotificationService.show({
-            title: 'No disponible',
-            message: 'Esta funcionalidad se encuentra en mantenimiento.',
-            type: 'warning',
-          }); */
           var dicomData = utils.getDicomUIDs();
           if (utils.isSeriesCT()) {
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
             const payloadData = {
               microservice: 'orthanc',
-              task: 'predict_pathology',
+              task: 'predict_pathologies',
               file_ID: dicomData.SeriesInstanceUID,
               file_type: 'volumen',
               file_mod: 'ct',
@@ -42,13 +41,13 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               message: 'Este proceso tomara unos segundos.',
               duration: 1000 * 4,
             });
-            var promisePetition = predictions.predictAPathology(payloadData);
+            var promisePetition = predictions.predictMultiplePathologies(payloadData);
 
             promisePetition
               .then(response => {
                 console.log(response);
-                console.log(response.data.hasOwnProperty('error'));
-                if (response.data.hasOwnProperty('error')) {
+                console.log(response.hasOwnProperty('error'));
+                if (response.hasOwnProperty('error')) {
                   //Handle model with less than 20 slices
                   var uidData = utils.getAllInstancesUIDs();
                   const minInstancesNumber = 20;
@@ -75,22 +74,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                     });
                   }
                 } else {
-                  var pathology = response.data.class;
-                  var probability =
-                    response.data.probability.toFixed(2) * 100 + '%';
-                  BUTTONS.BUTTON_PATHOLOGY.label = pathology;
-                  BUTTONS.BUTTON_PROBABILITY.label = probability;
-
-                  UINotificationService.show({
-                    title: 'Predicción exitosa',
-                    message:
-                      'La clase predicha fue ' +
-                      pathology +
-                      ' con una confianza de ' +
-                      probability,
-                    duration: 1000 * 15,
-                    type: 'success',
-                  });
+                  console.log(response);
+                  utils.generate_distribution('Probabilidades por clase', '', response, services);
                 }
               })
               .catch(rst => {
@@ -148,10 +133,14 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       predictAxialCovidSliceCt: {
         commandFn: () => {
           if (utils.isSeriesCT()) {
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
             var dicomData = utils.getDicomUIDs();
             const payloadData = {
               microservice: 'orthanc',
-              task: 'predict_pathology',
+              task: 'predict_pathologies',
               file_ID: dicomData.SOPInstanceUID,
               file_type: 'slice',
               file_mod: 'ct',
@@ -166,13 +155,13 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               duration: 1000 * 2,
             });
 
-            var promisePetition = predictions.predictAPathology(payloadData);
+            var promisePetition = predictions.predictMultiplePathologies(payloadData);
 
             promisePetition
               .then(response => {
                 console.log(response);
-                console.log(response.data.hasOwnProperty('error'));
-                if (response.data.hasOwnProperty('error')) {
+                console.log(response.hasOwnProperty('error'));
+                if (response.hasOwnProperty('error')) {
                   //Handle model with less than 20 slices
                   var uidData = utils.getAllInstancesUIDs();
                   const minInstancesNumber = 20;
@@ -199,21 +188,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                     });
                   }
                 } else {
-                  var pathology = response.data.class;
-                  var probability =
-                    response.data.probability.toFixed(2) * 100 + '%';
-                  BUTTONS.BUTTON_PATHOLOGY.label = pathology;
-                  BUTTONS.BUTTON_PROBABILITY.label = probability;
-                  UINotificationService.show({
-                    title: 'Predicción exitosa',
-                    message:
-                      'La clase predicha fue ' +
-                      pathology +
-                      ' con una confianza de ' +
-                      probability,
-                    duration: 1000 * 15,
-                    type: 'success',
-                  });
+                  console.log(response);
+                  utils.generate_distribution('Probabilidades por clase', '', response, services);
                 }
               })
               .catch(rst => {
@@ -268,10 +244,8 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         options: {},
       },
       predictFrontalMultilabelRx: {
-        //guia
         commandFn: async () => {
           if (!utils.isSeriesCT()) {
-            const title = 'Hallazgos encontrados';
             var dicomData = utils.getDicomUIDs();
             const payloadData = {
               microservice: 'orthanc',
@@ -296,60 +270,78 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                 'Hubo un problema prediciendo el modelo RX-Hallazgos',
               duration: 1000 * 2,
             });
-            const pathologiesData = await predictions.predictMultiplePathologies(
-              payloadData
-            );
-            if (pathologiesData.hasOwnProperty('error')) {
-              services.notification.show({
-                title: 'Error',
-                message: 'Sin conexión',
-                type: 'error',
-                description:
-                  'Hubo un problema prediciendo el modelo RX-Hallazgos',
-                duration: 1000 * 2,
+            var promisePetition = predictions.predictMultiplePathologies(payloadData);
+            promisePetition
+              .then(response => {
+                console.log(response);
+                console.log(response.hasOwnProperty('error'));
+                if (response.hasOwnProperty('error')) {
+                  //Handle model with less than 20 slices
+                  var uidData = utils.getAllInstancesUIDs();
+                  const minInstancesNumber = 20;
+                  if (
+                    uidData.length < minInstancesNumber &&
+                    payloadData.file_type == 'volumen'
+                  ) {
+                    UINotificationService.show({
+                      title: 'Insuficientes instancias',
+                      type: 'warning',
+                      duration: 15 * 1000,
+                      autoClose: false,
+                      position: 'topRight',
+                      message:
+                        'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+                    });
+                  } else {
+                    UINotificationService.show({
+                      title: 'Error de Predicción',
+                      type: 'warning',
+                      duration: 5 * 1000,
+                      position: 'topRight',
+                      message: 'Por favor intente de nuevo',
+                    });
+                  }
+                } else {
+                  console.log(response);
+                  utils.generate_distribution('Probabilidades de patologías', 'Patologías', response, services);
+                }
+              })
+              .catch(rst => {
+                console.log(rst);
+                if (rst.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
               });
-            } else {
-              console.log(pathologiesData);
-              const data = [
-                {
-                  type: 'bar',
-                  name: 'Probabilidad de patología',
-                  marker: {
-                    color: '#7cb342',
-                  },
-                  orientation: 'v',
-                  x: Object.keys(pathologiesData),
-                  y: Object.values(pathologiesData),
-                },
-              ];
-              const layout = {
-                title: 'Probabilidad de patologías',
-                plot_bgcolor: '#151A1F',
-                paper_bgcolor: '#151A1F',
-                font: {
-                  family: 'Roboto',
-                  color: '#ffffff',
-                },
-                xaxis: {
-                  title: 'Patologías',
-                  tickangle: -45,
-                },
-                yaxis: {
-                  title: 'Probabilidad [%]',
-                  gridcolor: '#ffffff',
-                  domain: [0, 100],
-                },
-                showlegend: false,
-              };
-              UIModalService.show({
-                content: probabilityDistributionModal,
-                title,
-                contentProps: {
-                  chartData: data,
-                  chartLayout: layout,
-                },
-              });
-            }
           } else {
             UINotificationService.show({
               title: 'Modalidad incorrecta',
@@ -368,8 +360,6 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       predictFrontalCovidRx: {
         commandFn: async () => {
           if (!utils.isSeriesCT()) {
-            const title = 'Hallazgos encontrados';
-            console.log('algo');
             var dicomData = utils.getDicomUIDs();
             const payloadData = {
               microservice: 'orthanc',
@@ -390,63 +380,80 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
               message:
                 'Por favor espere un momento, mientras se calculan los hallazgos RX de la imágen.',
               type: 'info',
-              description:
-                'Hubo un problema prediciendo el modelo RX-Hallazgos',
               duration: 1000 * 2,
             });
-            const pathologiesData = await predictions.predictMultiplePathologies(
-              payloadData
-            );
-            if (pathologiesData.hasOwnProperty('error')) {
-              services.notification.show({
-                title: 'Error',
-                message: 'Sin conexión',
-                type: 'error',
-                description:
-                  'Hubo un problema prediciendo el modelo RX-Hallazgos',
+            var promisePetition = predictions.predictMultiplePathologies(payloadData);
+            promisePetition
+              .then(response => {
+                console.log(response);
+                console.log(response.hasOwnProperty('error'));
+                if (response.hasOwnProperty('error')) {
+                  //Handle model with less than 20 slices
+                  var uidData = utils.getAllInstancesUIDs();
+                  const minInstancesNumber = 20;
+                  if (
+                    uidData.length < minInstancesNumber &&
+                    payloadData.file_type == 'volumen'
+                  ) {
+                    UINotificationService.show({
+                      title: 'Insuficientes instancias',
+                      type: 'warning',
+                      duration: 15 * 1000,
+                      autoClose: false,
+                      position: 'topRight',
+                      message:
+                        'El modelo requiere más instancias dicom para realizar un diagnóstico.',
+                    });
+                  } else {
+                    UINotificationService.show({
+                      title: 'Error de Predicción',
+                      type: 'warning',
+                      duration: 5 * 1000,
+                      position: 'topRight',
+                      message: 'Por favor intente de nuevo',
+                    });
+                  }
+                } else {
+                  console.log(response);
+                  utils.generate_distribution('Probabilidades de patologías', 'Patologías', response, services);
+                }
+              })
+              .catch(rst => {
+                console.log(rst);
+                if (rst.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
               });
-            } else {
-              console.log(pathologiesData);
-              const data = [
-                {
-                  type: 'bar',
-                  name: 'Probabilidad de patología',
-                  marker: {
-                    color: '#7cb342',
-                  },
-                  orientation: 'v',
-                  x: Object.keys(pathologiesData),
-                  y: Object.values(pathologiesData),
-                },
-              ];
-              const layout = {
-                title: 'Probabilidad de patologías',
-                plot_bgcolor: '#151A1F',
-                paper_bgcolor: '#151A1F',
-                font: {
-                  family: 'Roboto',
-                  color: '#ffffff',
-                },
-                xaxis: {
-                  title: 'Patologías',
-                  tickangle: -45,
-                },
-                yaxis: {
-                  title: 'Probabilidad [%]',
-                  gridcolor: '#ffffff',
-                  domain: [0, 100],
-                },
-                showlegend: false,
-              };
-              UIModalService.show({
-                content: probabilityDistributionModal,
-                title,
-                contentProps: {
-                  chartData: data,
-                  chartLayout: layout,
-                },
-              });
-            }
           } else {
             UINotificationService.show({
               title: 'Modalidad incorrecta',
