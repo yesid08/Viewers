@@ -175,6 +175,19 @@ export const guid = () => {
 
 export const generate_distribution = (title_layout, title_xaxis, pathologiesData, services) => {
   const title = 'Resultados del modelo:';
+  const keys = Object.keys(pathologiesData);
+  const values = Object.values(pathologiesData);
+  var max = 0.0;
+  var maximoString = undefined;
+  values.forEach(element => {
+
+    if (parseFloat(element) >= max) {
+      max = parseFloat(element);
+      maximoString = element;
+    }
+  });
+  const maximoKey = keys[values.indexOf(maximoString)];
+  console.log(maximoKey, maximoString);
   const data = [
     {
       type: 'bar',
@@ -212,6 +225,8 @@ export const generate_distribution = (title_layout, title_xaxis, pathologiesData
     contentProps: {
       chartData: data,
       chartLayout: layout,
+      predictedClass: maximoKey,
+      probability: maximoString,
     },
   });
 
