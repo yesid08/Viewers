@@ -12,7 +12,7 @@ import * as decoding from './segmentationModule/decoderV41';
 import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
-import probabilityDistributionModal from './Modals/ProbabilityDistributionModal';
+import { MODELS_INFORMATION } from './mocks/models_information';
 import AnalizeRoiModal from './Modals/AnalyzeRoiModal';
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -21,6 +21,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
       predictAxialCovidVolumeCt: {
         commandFn: () => {
           var dicomData = utils.getDicomUIDs();
+          console.log('this is the print:', MODELS_INFORMATION.ct_3d.train_samples, MODELS_INFORMATION.ct_3d.acc);
           if (utils.isSeriesCT()) {
             const services = {
               notification: UINotificationService,
@@ -75,7 +76,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   }
                 } else {
                   console.log(response);
-                  utils.generate_distribution('Probabilidades por clase', '', response, services);
+                  utils.generate_distribution('Probabilidades por clase', '', response, services, MODELS_INFORMATION.ct_3d.train_samples, MODELS_INFORMATION.ct_3d.acc);
                 }
               })
               .catch(rst => {
@@ -189,7 +190,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   }
                 } else {
                   console.log(response);
-                  utils.generate_distribution('Probabilidades por clase', '', response, services);
+                  utils.generate_distribution('Probabilidades por clase', '', response, services, MODELS_INFORMATION.ct_2d.train_samples, MODELS_INFORMATION.ct_2d.acc);
                 }
               })
               .catch(rst => {
@@ -303,7 +304,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   }
                 } else {
                   console.log(response);
-                  utils.generate_distribution('Probabilidades de patologías', 'Patologías', response, services);
+                  utils.generate_distribution('Probabilidades de patologías', 'Patologías', response, services, MODELS_INFORMATION.rx_hallazgos.train_samples, MODELS_INFORMATION.rx_hallazgos.acc);
                 }
               })
               .catch(rst => {
@@ -415,7 +416,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   }
                 } else {
                   console.log(response);
-                  utils.generate_distribution('Probabilidades de patologías', 'Patologías', response, services);
+                  utils.generate_distribution('Probabilidades de patologías', 'Patologías', response, services, MODELS_INFORMATION.rx_pneumonia.train_samples, MODELS_INFORMATION.rx_pneumonia.acc);
                 }
               })
               .catch(rst => {
@@ -1097,7 +1098,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   }
                 } else {
                   console.log(response);
-                  utils.generate_distribution('Niveles de covid', 'Niveles', response, services);
+                  utils.generate_distribution('Niveles de covid', 'Niveles', response, services, MODELS_INFORMATION.covid_levels.train_samples, MODELS_INFORMATION.covid_levels.acc);
                 }
               })
               .catch(rst => {
@@ -1209,7 +1210,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   }
                 } else {
                   console.log(response);
-                  utils.generate_distribution('Probabilidades por clase', '', response, services);
+                  utils.generate_distribution('Probabilidades por clase', '', response, services, MODELS_INFORMATION.sars_2d.train_samples, MODELS_INFORMATION.sars_2d.acc);
                 }
               })
               .catch(rst => {

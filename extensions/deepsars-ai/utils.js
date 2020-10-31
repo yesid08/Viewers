@@ -173,7 +173,7 @@ export const guid = () => {
   );
 };
 
-export const generate_distribution = (title_layout, title_xaxis, pathologiesData, services) => {
+export const generate_distribution = (title_layout, title_xaxis, pathologiesData, services, train_samples, acc) => {
   const title = 'Resultados del modelo:';
   const keys = Object.keys(pathologiesData);
   const values = Object.values(pathologiesData);
@@ -227,6 +227,8 @@ export const generate_distribution = (title_layout, title_xaxis, pathologiesData
       chartLayout: layout,
       predictedClass: maximoKey,
       probability: maximoString,
+      trainingSamples: train_samples,
+      validationAcc: acc
     },
   });
 
