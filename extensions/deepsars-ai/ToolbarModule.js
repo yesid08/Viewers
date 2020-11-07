@@ -24,6 +24,13 @@ const BUTTON_CT_SLICE_PREDICT = {
   type: 'command',
   commandName: 'predictAxialCovidSliceCt',
 };
+const BUTTON_CT_SLICE_MULTIMODAL = {
+  id: 'PredecirMultimodal',
+  label: 'Predecir slice multimodal',
+  icon: 'play',
+  type: 'command',
+  commandName: 'predictAxialMultimodalSliceCt',
+};
 const BUTTON_CT_AXIAL_HEAT_MAP_2D = {
   id: 'ct_axial_heat_map_2d',
   label: 'CT-2D',
@@ -184,6 +191,7 @@ export const BUTTON_CT_STUDIES = {
     BUTTON_CT_SLICE_PREDICT,
     BUTTON_CT_AXIAL_ANALYZE,
     BUTTON_COVID_LEVELS,
+    BUTTON_CT_SLICE_MULTIMODAL,
   ],
 };
 
