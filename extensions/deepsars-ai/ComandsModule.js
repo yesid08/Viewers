@@ -1377,7 +1377,101 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
+      sarsPred: {
+        commandFn: () => {
+          if (utils.isSeriesCT()) {
+            var dicomData = utils.getDicomUIDs();
+            const payloadData = {
+              microservice: 'orthanc',
+              task: 'predict_pathologies',
+              file_ID: dicomData.SOPInstanceUID,
+              file_type: 'slice',
+              file_mod: 'ct',
+              file_view: 'axial',
+              task_class: 'classify',
+              task_mode: 'sars_covid_specialized',
+            };
+            const services = {
+              notification: UINotificationService,
+              modal: UIModalService,
+            };
+            UINotificationService.show({
+              title: 'Realizando predicción',
+              message: 'Este proceso tomara unos segundos.',
+              duration: 1000 * 2,
+            });
+            var promisePetition = predictions.predictMultiplePathologies(payloadData);
+
+            promisePetition
+              .then(response => {
+                console.log(response);
+                console.log(response.hasOwnProperty('error'));
+                if (response.hasOwnProperty('error')) {
+                  UINotificationService.show({
+                    title: 'Error de Predicción',
+                    type: 'warning',
+                    duration: 5 * 1000,
+                    position: 'topRight',
+                    message: 'Por favor intente de nuevo',
+                  });
+
+                } else {
+                  console.log(response);
+                  utils.generate_distribution('Probabilidades por clase', '', response, services, MODELS_INFORMATION.sars_2d.train_samples, MODELS_INFORMATION.sars_2d.acc);
+                }
+              })
+              .catch(rst => {
+                console.log(rst);
+                if (rst.status == 400) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de entidad',
+                    message:
+                      'Por favor verificar la entidad asociada a su usuario.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 403) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Recurso prohibido',
+                    message: 'Sin permisos para este servicio.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 401) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error de autenticación',
+                    message: 'Usuario no autenticado.',
+                    duration: 1000 * 4,
+                  });
+                }
+                if (rst.status == 404) {
+                  UINotificationService.show({
+                    type: 'error',
+                    title: 'Error',
+                    message: 'Sin conexion.',
+                    duration: 1000 * 4,
+                  });
+                }
+              });
+          }
+          else {
+            UINotificationService.show({
+              title: 'Modalidad incorrecta',
+              type: 'warning',
+              duration: 15 * 1000,
+              autoClose: false,
+              position: 'topRight',
+              message:
+                'la serie actual no es un CT, se recomienda utilizar este modelo sobre series CT.',
+            });
+          }
+        }
+      }
     },
+
 
     defaultContext: ['VIEWER'],
   };

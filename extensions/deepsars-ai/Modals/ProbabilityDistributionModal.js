@@ -35,7 +35,7 @@ const probabilityDistributionModal = ({ chartData, chartLayout, predictedClass, 
           '-La clase predicha por el modelo fue '.concat("'", predictedClass, "'", ' con una confianza de ', probability, "%.")
         }
       </div>
-      <Plot data={chartData} layout={chartLayout} style={{ width: '100%' }} />
+      <Plot data={chartData} layout={chartLayout} style={{ width: '100%' }} config={{ displayModeBar: false }} />
       <div className='footer'>
         {
           '-Modelo entrenado con  '.concat(trainingSamples, " muestras y exactitud del ", validationAcc, "%.")

@@ -237,11 +237,22 @@ const BUTTON_SARS_2D = {
   commandName: 'sars2d',
 };
 
+const BUTTON_SARS_SPECIALIZED = {
+  id: 'Sars_spec',
+  label: 'Sars Prediction',
+  icon: 'play',
+  type: 'command',
+  commandName: 'sarsPred',
+};
+
 const BUTTON_SARS = {
   label: 'Sars',
   icon: 'brain',
-  buttons: [BUTTON_SARS_2D],
+  buttons: [BUTTON_SARS_2D,
+    BUTTON_SARS_SPECIALIZED],
 };
+
+
 
 export default {
   definitions: [
