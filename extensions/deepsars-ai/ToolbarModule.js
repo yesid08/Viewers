@@ -249,7 +249,8 @@ const BUTTON_SARS = {
   label: 'Sars',
   icon: 'brain',
   buttons: [BUTTON_SARS_2D,
-    BUTTON_SARS_SPECIALIZED],
+    //BUTTON_SARS_SPECIALIZED
+  ],
 };
 
 
