@@ -174,7 +174,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   });
                 } else {
                   console.log('Respuesta:', response);
-                  if (parseFloat(response.Covid) <= parseFloat(response.Normal)) {
+                  if (parseFloat(response.Covid) >= parseFloat(response.Normal)) {
                     predictions.predictMultiplePathologies(
                       {
                         microservice: 'orthanc',
