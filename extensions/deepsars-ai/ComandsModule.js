@@ -13,6 +13,7 @@ import * as utils from './utils';
 import { states } from './Estados/estadosHerramientas';
 import { ohifConf } from './index';
 import { MODELS_INFORMATION } from './mocks/models_information';
+import heatmapsModal from './Modals/heatmapsModal';
 import AnalizeRoiModal from './Modals/AnalyzeRoiModal';
 const deepsarsCommandsModule = ({ servicesManager }) => {
   const { UINotificationService, UIModalService } = servicesManager.services;
@@ -173,7 +174,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   });
                 } else {
                   console.log('Respuesta:', response);
-                  if (parseFloat(response.Covid) >= parseFloat(response.Normal)) {
+                  if (parseFloat(response.Covid) <= parseFloat(response.Normal)) {
                     predictions.predictMultiplePathologies(
                       {
                         microservice: 'orthanc',
@@ -1403,6 +1404,36 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
+      heatMaps: {
+        commandFn: () => {
+          const title = 'Mapas de Atención';
+          const services = {
+            notification: UINotificationService,
+            modal: UIModalService,
+          };
+          ohifConf.then(configuration => {
+            services.modal.show({
+              content: heatmapsModal,
+              title,
+              contentProps: {
+                modality: utils.isSeriesCT() ? 'ct' : 'rx',
+                view: utils.isSeriesCT() ? 'axial' : 'frontal',
+                services: services,
+              },
+            });
+          });
+          ohifConf.catch(error => {
+            services.notification.show({
+              title: 'Error',
+              message: 'No se pudo cargar la configuración de OHIF.',
+              type: 'error',
+            });
+            console.error(error);
+          });
+        },
+        storeContexts: [],
+        options: {},
+      }
       // sarsPred: {
       //   commandFn: () => {
       //     if (utils.isSeriesCT()) {

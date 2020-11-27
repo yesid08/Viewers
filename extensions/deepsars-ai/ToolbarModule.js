@@ -206,6 +206,14 @@ export const BUTTON_RX_STUDIES = {
   ],
 };
 
+const BUTTON_MODAL = {
+  id: 'Modal',
+  label: 'Show Modal',
+  icon: 'play',
+  type: 'command',
+  commandName: 'heatMaps',
+}
+
 export const BUTTON_HEATMAP = {
   label: 'Mapas xia',
   icon: 'brain',
@@ -214,6 +222,7 @@ export const BUTTON_HEATMAP = {
     BUTTON_CT_AXIAL_HEAT_MAP_3D,
     BUTTON_RX_FRONTAL_HEAT_MAP_3D,
     BUTTON_RX_COVID_HEATMAP,
+    BUTTON_MODAL
   ],
 };
 

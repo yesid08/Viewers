@@ -1,22 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Plot from 'react-plotly.js';
 import PropTypes from 'prop-types';
 import './ProbabilityDistributionModalStyles.styl'
 
+
 const probabilityDistributionModal = ({ chartData, chartLayout, predictedClass, probability, trainingSamples, validationAcc }) => {
-  console.log('ChartData:', chartData);
-  console.log('ChartLayout:', chartLayout);
+  console.log('ChartData:', chartData[0]);
   var yValue = chartData[0].y;
   var xValue = chartData[0].x;
   //console.log(yValue, xValue.indexOf(predictedClass), xValue.length);
   chartData[0].text = yValue.map(String);
-  chartData[0].textposition = 'auto';
+  chartData[0].textposition = 'outside';
   chartData[0].textfont = {
-    "size": 22
+    "size": 22,
+    "color": '#fffef7'
   };
-
+  //---
+  const [readMore, setReadMore] = useState(false);
+  const extraContent = <div>
+    <p className="extra-content">
+      Modelo entrenado con {trainingSamples} muestras y exactitud del {validationAcc}%.
+      </p>
+  </div>
+  const linkName = readMore ? '-Minimizar ' : '+Detalles del Modelo '
+  //---
   chartLayout.yaxis.range = [0, 100];
-  chartData[0].hoverinfo = 'none';
+  chartLayout.yaxis.gridcolor = '#697067';
+  chartData[0].hoverinfo = 'y';
   var colors = new Array(xValue.length);
   for (var i = 0; i < xValue.length; i++) {
     if (i == xValue.indexOf(predictedClass)) {
@@ -31,17 +41,17 @@ const probabilityDistributionModal = ({ chartData, chartLayout, predictedClass, 
   return (
     <div>
       <div className='title1'>
-        {
-          '-La clase predicha por el modelo fue '.concat("'", predictedClass, "'", ' con una confianza de ', probability, "%.")
-        }
+        {predictedClass} (Acc={probability}%).
       </div>
       <Plot data={chartData} layout={chartLayout} style={{ width: '100%' }} config={{ displayModeBar: false }} />
-      <div className='footer1'>
-        {
-          '-Modelo entrenado con  '.concat(trainingSamples, " muestras y exactitud del ", validationAcc, "%.")
-        }
+
+
+      <div className="App">
+        <a className="read-more-link" onClick={() => { setReadMore(!readMore) }}><h2>{linkName}</h2></a>
+        {readMore && extraContent}
       </div>
     </div>
+
 
   );
 };
