@@ -8,12 +8,18 @@ import * as heatmaps from '../operationsAI/heatmaps';
 const heatmapsModal = ({ modality, view, services }) => {
 
   //const heatAlgArray = ohifConf.views[modality];
-  console.log('HOLA SOY EL MODAL');
-  const heatmapSelectOptions = [];
+  //console.log('HOLA SOY EL MODAL');
+  const heatmapAlgSelectOptions = [];
+  const heatmapTypeSelectOptions = [];
   const heatAlgArray = ['cam', 'xrai', 'gradcam'];
+  const heatTypesArray = (modality == 'ct') ? ["CT-2D", "CT-3D"] : ["RX-Hallazgos", "RX-Covid"];
   const [heatAlg, setHeatAlg] = useState(heatAlgArray[0]);
+  const [heatTyp, setHeatTyp] = useState(heatTypesArray[0]);
   heatAlgArray.forEach(item => {
-    heatmapSelectOptions.push({ key: item, value: item });
+    heatmapAlgSelectOptions.push({ key: item, value: item });
+  });
+  heatTypesArray.forEach(item => {
+    heatmapTypeSelectOptions.push({ key: item, value: item });
   });
   const onSave = () => {
     var dicomData = utils.getDicomUIDs();
@@ -21,14 +27,15 @@ const heatmapsModal = ({ modality, view, services }) => {
       microservice: 'models',
       file_mod: modality,
       file_view: view,
-      task: 'diagnose',
-      file_type: 'slice',
+      task: (heatTyp == 'CT-2D') ? 'prepare' : 'diagnose',
+      file_type: (heatTyp == 'CT-3D') ? 'volumen' : 'slice',
       task_class: 'classify',
-      task_mode: 'covid',
-      file_ID: dicomData.SOPInstanceUID,
+      task_mode: (heatTyp == 'RX-Hallazgos') ? 'diseases' : 'covid',
+      file_ID: (heatTyp == "CT-2D" || heatTyp == "CT-3D") ? dicomData.SeriesInstanceUID : dicomData.SOPInstanceUID,
       heatmap_algorithm: heatAlg
     };
-    console.log(`Opción Seleccionada :`, heatAlg);
+    console.log(`UID : ${(heatTyp == "CT-2D" || heatTyp == "CT-3D") ? 'Serie' : 'Instancia'}`)
+    console.log(`Opciones Seleccionadas :${heatTyp} , ${heatAlg}`);
     console.log('Payload :', payloadData);
     heatmaps.calculateHeatmap(services, payloadData);
     services.modal.hide();
@@ -38,8 +45,13 @@ const heatmapsModal = ({ modality, view, services }) => {
     <div>
       <div>
         <Select
+          onChange={event => setHeatTyp(event.target.value)}
+          options={heatmapTypeSelectOptions}
+          label={'Tipo :'}
+        />
+        <Select
           onChange={event => setHeatAlg(event.target.value)}
-          options={heatmapSelectOptions}
+          options={heatmapAlgSelectOptions}
           label={'Algoritmo :'}
         />
       </div>

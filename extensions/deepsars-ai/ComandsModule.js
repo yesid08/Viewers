@@ -1404,7 +1404,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
         storeContexts: [],
         options: {},
       },
-      heatMaps: {
+      callHeatMapsModal: {
         commandFn: () => {
           const title = 'Mapas de Atención';
           const services = {
