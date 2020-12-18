@@ -174,7 +174,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                   });
                 } else {
                   console.log('Respuesta:', response);
-                  if (parseFloat(response.Covid) >= parseFloat(response.No-covid)) {
+                  if (parseFloat(response.Covid) >= parseFloat(response.No_covid)) {
                     predictions.predictMultiplePathologies(
                       {
                         microservice: 'orthanc',
@@ -211,7 +211,7 @@ const deepsarsCommandsModule = ({ servicesManager }) => {
                     UINotificationService.show({
                       title: 'Resultado:',
                       type: 'success',
-                      message: `Se estima una probabilidad de ${response.No-covid}% No-covid`,
+                      message: `Se estima una probabilidad de ${response.No_covid}% No-covid`,
                       duration: 1000 * 5,
                     });
 
